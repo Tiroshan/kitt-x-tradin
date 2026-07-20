@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KITT-X Trading Intelligence</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#050b14;color:#e7eef8;font-family:Arial,sans-serif}
+.app{min-height:100vh;display:grid;grid-template-columns:1.35fr 1fr;gap:12px;padding:12px}
+.panel{background:#08111e;border:1px solid #1b2b40;border-radius:14px;overflow:hidden}
+.top{height:72px;display:flex;align-items:center;gap:18px;padding:12px 18px;border-bottom:1px solid #17263a}
+.logo{font-size:25px;font-weight:800;font-style:italic;color:#11d9f4;letter-spacing:2px}.sub{font-size:10px;color:#11d9f4}
+select,.btn{background:#111c2c;color:#fff;border:1px solid #2b3b52;border-radius:8px;padding:10px 14px}
+.price{font-size:26px;font-weight:bold;margin-left:auto;color:#20e68b}.green{color:#20e68b}.red{color:#ff5864}.yellow{color:#f2c94c}
+.tf{display:flex;gap:6px;padding:10px;border-bottom:1px solid #17263a}.tf button{background:#101b2b;color:#cbd5e1;border:0;padding:8px 13px;border-radius:6px}.tf button.active{background:#0c7df0;color:#fff}
+.chart{height:600px;position:relative;padding:20px;background:repeating-linear-gradient(0deg,transparent 0 74px,#122033 75px),repeating-linear-gradient(90deg,transparent 0 90px,#122033 91px)}
+.candles{height:430px;display:flex;align-items:center;gap:8px;padding:0 8%;position:relative}
+.candle{width:12px;background:#18d98a;border-radius:2px;position:relative}.candle:before{content:"";position:absolute;left:5px;top:-18px;height:calc(100% + 36px);width:2px;background:inherit}.redc{background:#ff4f5f}
+.line{position:absolute;left:6%;right:6%;height:2px;background:#ffb21a;transform:rotate(-8deg);top:280px;box-shadow:0 0 8px #ffb21a}
+.zone{position:absolute;border:1px solid #18d98a;background:#18d98a18;padding:8px;color:#18d98a}.buy{left:9%;bottom:125px}.sell{right:10%;top:125px;border-color:#ff4f5f;color:#ff4f5f;background:#ff4f5f18}
+.indicators{position:absolute;bottom:18px;left:20px;right:20px;display:flex;gap:10px}.mini{flex:1;height:80px;background:#07101c;border:1px solid #1b2b40;border-radius:8px;padding:10px}.mini b{font-size:12px}.bars{height:35px;margin-top:8px;background:linear-gradient(90deg,#16c784 20%,transparent 20% 25%,#e94b5d 25% 40%,transparent 40% 45%,#16c784 45% 75%,transparent 75% 80%,#e94b5d 80%);opacity:.8}
+.right{padding:14px;display:flex;flex-direction:column;gap:12px}.card{background:#0a1524;border:1px solid #1b2b40;border-radius:14px;padding:16px}.title{font-size:18px;color:#a9b9d2;font-weight:bold;margin-bottom:12px}.score{display:flex;align-items:center;gap:20px}.circle{width:145px;height:145px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#20e68b 0 78%,#263244 78%);position:relative}.circle:after{content:"";position:absolute;inset:12px;border-radius:50%;background:#0a1524}.circle span{position:relative;z-index:1;font-size:38px;font-weight:bold}.metrics{flex:1;display:grid;gap:8px}.metric{display:flex;justify-content:space-between;border-bottom:1px solid #162337;padding:6px 0}.setup{display:grid;grid-template-columns:1fr 1fr;gap:10px}.kv{padding:9px;background:#0e1b2c;border-radius:8px}.kv small{display:block;color:#8292aa}.kv b{font-size:16px}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.flow .kv{text-align:center}.ai{line-height:1.7}.bottom{display:flex;justify-content:space-around;padding:14px;border-top:1px solid #17263a;color:#8292aa}.bottom b{color:#11d9f4}
+@media(max-width:900px){.app{grid-template-columns:1fr;padding:0}.right{padding:8px}.chart{height:540px}.app>.panel:first-child{border-radius:0}.score{flex-direction:column}.flow{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<section class="panel">
+  <div class="top"><div><div class="logo">KITT-X</div><div class="sub">TRADING INTELLIGENCE</div></div><select><option>BTCUSDT</option><option>ETHUSDT</option><option>SOLUSDT</option><option>XRPUSDT</option></select><div class="price">$66,721.4 <small class="green">+1.92%</small></div></div>
+  <div class="tf"><button>1m</button><button>5m</button><button class="active">15m</button><button>1H</button><button>4H</button><button>1D</button><button>Indicators</button></div>
+  <div class="chart">
+    <div class="candles">
+      <i class="candle" style="height:55px"></i><i class="candle redc" style="height:80px"></i><i class="candle" style="height:110px"></i><i class="candle" style="height:70px"></i><i class="candle" style="height:140px"></i><i class="candle" style="height:95px"></i><i class="candle redc" style="height:125px"></i><i class="candle" style="height:180px"></i><i class="candle" style="height:145px"></i><i class="candle" style="height:205px"></i><i class="candle" style="height:240px"></i><i class="candle redc" style="height:175px"></i><i class="candle" style="height:270px"></i><i class="candle" style="height:220px"></i>
+      <div class="line"></div>
+    </div>
+    <div class="zone buy">LIQUIDITY POOL<br>(BUY SIDE)</div><div class="zone sell">LIQUIDITY POOL<br>(SELL SIDE)</div>
+    <div class="indicators"><div class="mini"><b>VOLUME</b><div class="bars"></div></div><div class="mini"><b>CVD</b><div class="bars"></div></div><div class="mini"><b>RSI 14</b><div class="bars"></div></div></div>
+  </div>
+  <div class="bottom"><span>〽<br><b>Chart</b></span><span>⚙<br>Tools</span><span>◉<br>KITT</span><span>◷<br>TF</span><span>⌕<br>Symbol</span></div>
+</section>
+<section class="right">
+  <div class="card"><div class="title">KITT-X MARKET SCORE</div><div class="score"><div class="circle"><span>78</span></div><div class="metrics"><div class="metric">Trend <b class="green">BULLISH</b></div><div class="metric">Momentum <b class="green">78%</b></div><div class="metric">Volume <b class="green">STRONG</b></div><div class="metric">Liquidity <b class="green">ABOVE</b></div><div class="metric">Smart Money <b class="green">BUY BIAS</b></div><div class="metric">Funding / OI <b class="yellow">NEUTRAL</b></div></div></div><h2 class="green">STRONG BUY</h2></div>
+  <div class="card"><div class="title">KITT-X TRADE SETUP <span class="green" style="float:right">LONG BIAS</span></div><div class="setup"><div class="kv"><small>Entry Zone</small><b class="green">66,400 - 66,750</b></div><div class="kv"><small>Stop Loss</small><b class="red">65,720</b></div><div class="kv"><small>Take Profit 1</small><b class="green">67,600</b></div><div class="kv"><small>Take Profit 2</small><b class="green">68,800</b></div><div class="kv"><small>Risk / Reward</small><b>1 : 2.35</b></div><div class="kv"><small>Confidence</small><b class="green">78%</b></div></div></div>
+  <div class="card"><div class="title">ORDER FLOW <small>15m</small></div><div class="flow"><div class="kv"><small>Delta</small><b class="green">+12.45K</b></div><div class="kv"><small>Buy Pressure</small><b class="green">64%</b></div><div class="kv"><small>Sell Pressure</small><b class="red">36%</b></div><div class="kv"><small>OI Change</small><b class="green">+2.31%</b></div></div></div>
+  <div class="card ai"><div class="title">KITT-X AI ANALYSIS <span class="yellow">NEW</span></div>BTC දැනට Bullish momentum එකක් පෙන්වනවා. Price liquidity above තියෙන නිසා buy-side smart money activity එකක් පේනවා. Entry zone එක 66,400–66,750 අතර. <br><br><button class="btn">▶ Sinhala Voice Analysis</button></div>
+</section>
+</div>
+</body>
+</html>
