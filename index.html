@@ -2,135 +2,119 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>KITT-X V3 Trading Intelligence</title>
 
 <style>
-
-*{
-box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
 margin:0;
 background:#050b14;
 color:#e8eef7;
-font-family:Arial,sans-serif;
+font-family:Arial,sans-serif
 }
 
 .app{
-min-height:100vh;
 display:grid;
 grid-template-columns:1.4fr 1fr;
 gap:12px;
 padding:12px;
+min-height:100vh
 }
 
-.panel,
-.card{
+.panel,.card{
 background:#08111e;
 border:1px solid #1b2b40;
-border-radius:14px;
+border-radius:14px
 }
 
-.panel{
-overflow:hidden;
-}
+.panel{overflow:hidden}
 
 .top{
 display:flex;
 align-items:center;
 gap:12px;
 padding:16px;
-border-bottom:1px solid #17263a;
+border-bottom:1px solid #17263a
 }
 
 .logo{
-font-size:27px;
+font-size:26px;
 font-weight:bold;
 font-style:italic;
-color:#11d9f4;
-letter-spacing:2px;
+color:#11d9f4
 }
 
 .sub{
 font-size:10px;
-color:#11d9f4;
+color:#11d9f4
 }
 
-select,
-button{
+select,.btn{
 background:#111c2c;
 color:white;
 border:1px solid #2b3b52;
 border-radius:8px;
-padding:10px 13px;
+padding:10px
 }
 
 .price{
 margin-left:auto;
 font-size:24px;
-font-weight:bold;
+font-weight:bold
 }
 
-.live,
-.green{
-color:#20e68b;
-}
-
-.red{
-color:#ff5864;
-}
-
-.yellow{
-color:#f2c94c;
-}
+.live,.green{color:#20e68b}
+.red{color:#ff5864}
+.yellow{color:#f2c94c}
 
 .tools{
 display:flex;
 gap:6px;
 padding:10px;
-flex-wrap:wrap;
-border-bottom:1px solid #17263a;
+flex-wrap:wrap
 }
 
 .tools button{
-cursor:pointer;
+background:#101b2b;
+color:#cbd5e1;
+border:0;
+padding:8px 12px;
+border-radius:6px
 }
 
-.chart-box{
-height:580px;
-width:100%;
+.chartbox{
+height:600px
 }
 
-canvas{
+.chart{
 width:100%;
-height:100%;
-display:block;
+height:100%
 }
 
 .right{
 display:flex;
 flex-direction:column;
 gap:12px;
+padding:4px
 }
 
 .card{
-padding:16px;
+padding:16px
 }
 
 .title{
 font-size:17px;
-font-weight:bold;
 color:#a9b9d2;
-margin-bottom:14px;
+font-weight:bold;
+margin-bottom:12px
 }
 
 .score{
 display:flex;
-align-items:center;
 gap:20px;
+align-items:center
 }
 
 .circle{
@@ -139,102 +123,90 @@ height:140px;
 border-radius:50%;
 display:grid;
 place-items:center;
-background:conic-gradient(#20e68b 0deg,#20e68b 280deg,#263244 280deg);
-position:relative;
+background:conic-gradient(#20e68b 0 78%,#263244 78%);
+position:relative
 }
 
 .circle:after{
 content:"";
 position:absolute;
 inset:12px;
-border-radius:50%;
 background:#0a1524;
+border-radius:50%
 }
 
 .circle span{
-z-index:2;
+z-index:1;
 font-size:38px;
-font-weight:bold;
+font-weight:bold
 }
 
 .metrics{
-flex:1;
+flex:1
 }
 
 .metric{
 display:flex;
 justify-content:space-between;
-padding:7px 0;
-border-bottom:1px solid #162337;
+padding:6px 0;
+border-bottom:1px solid #162337
 }
 
 .setup{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:8px;
+gap:8px
 }
 
 .kv{
 background:#0e1b2c;
-padding:10px;
-border-radius:8px;
+padding:9px;
+border-radius:8px
 }
 
 .kv small{
 display:block;
-color:#8292aa;
-margin-bottom:5px;
-}
-
-.kv b{
-font-size:15px;
+color:#8292aa
 }
 
 .signal{
-font-size:28px;
+font-size:27px;
 font-weight:bold;
-margin-bottom:15px;
+margin-bottom:12px
 }
 
 .flow{
 display:grid;
 grid-template-columns:repeat(4,1fr);
-gap:8px;
+gap:8px
 }
 
 .flow .kv{
-text-align:center;
+text-align:center
 }
 
 .ai{
-line-height:1.7;
+line-height:1.6
 }
 
 @media(max-width:900px){
-
 .app{
 grid-template-columns:1fr;
-padding:4px;
+padding:0
 }
 
-.chart-box{
-height:500px;
+.chartbox{
+height:500px
 }
 
 .score{
-flex-direction:column;
+flex-direction:column
 }
 
 .flow{
-grid-template-columns:repeat(2,1fr);
+grid-template-columns:repeat(2,1fr)
 }
-
-.price{
-font-size:18px;
 }
-
-}
-
 </style>
 </head>
 
@@ -247,48 +219,28 @@ font-size:18px;
 <div class="top">
 
 <div>
-
 <div class="logo">KITT-X</div>
-
-<div class="sub">
-LIVE TRADING INTELLIGENCE V3
-</div>
-
+<div class="sub">LIVE TRADING INTELLIGENCE V3</div>
 </div>
 
 <select id="symbol">
-
-<option value="BTCUSDT">BTCUSDT</option>
-
-<option value="ETHUSDT">ETHUSDT</option>
-
-<option value="SOLUSDT">SOLUSDT</option>
-
-<option value="XRPUSDT">XRPUSDT</option>
-
-<option value="DOGEUSDT">DOGEUSDT</option>
-
+<option>BTCUSDT</option>
+<option>ETHUSDT</option>
+<option>SOLUSDT</option>
+<option>XRPUSDT</option>
+<option>DOGEUSDT</option>
 </select>
 
 <select id="interval">
-
 <option value="1m">1m</option>
-
 <option value="5m">5m</option>
-
 <option value="15m" selected>15m</option>
-
 <option value="1h">1H</option>
-
 <option value="4h">4H</option>
-
 <option value="1d">1D</option>
-
 </select>
 
-<span class="live">
-● LIVE
-</span>
+<span class="live">● LIVE</span>
 
 <div id="price" class="price">
 Loading...
@@ -296,43 +248,24 @@ Loading...
 
 </div>
 
-
 <div class="tools">
 
-<button onclick="setIndicator('ema20')">
-EMA 20
-</button>
-
-<button onclick="setIndicator('ema50')">
-EMA 50
-</button>
-
-<button onclick="setIndicator('rsi')">
-RSI
-</button>
-
-<button onclick="setIndicator('macd')">
-MACD
-</button>
-
-<button onclick="loadData()">
-↻ Refresh
-</button>
+<button>▦ Candles</button>
+<button>EMA 20</button>
+<button>EMA 50</button>
+<button>RSI</button>
+<button>MACD</button>
+<button class="btn" onclick="loadData()">↻ Refresh</button>
 
 </div>
 
+<div class="chartbox">
 
-<div class="chart-box">
-
-<canvas id="chart"></canvas>
+<canvas id="chart" class="chart"></canvas>
 
 </div>
 
-</section>
-
-
-<section class="right">
-
+</section><section class="right">
 
 <div class="card">
 
@@ -343,79 +276,39 @@ KITT-X MARKET SCORE
 <div class="score">
 
 <div class="circle">
-
-<span id="score">
---
-</span>
-
+<span id="score">--</span>
 </div>
-
 
 <div class="metrics">
 
 <div class="metric">
-
-<span>Trend</span>
-
-<b id="trend" class="green">
---
-</b>
-
+Trend
+<b id="trend" class="green">--</b>
 </div>
 
-
 <div class="metric">
-
-<span>RSI 14</span>
-
-<b id="rsi">
---
-</b>
-
+RSI 14
+<b id="rsi">--</b>
 </div>
 
-
 <div class="metric">
-
-<span>EMA 20</span>
-
-<b id="ema20">
---
-</b>
-
+EMA 20
+<b id="ema20">--</b>
 </div>
 
-
 <div class="metric">
-
-<span>EMA 50</span>
-
-<b id="ema50">
---
-</b>
-
+EMA 50
+<b id="ema50">--</b>
 </div>
 
-
 <div class="metric">
-
-<span>MACD</span>
-
-<b id="macd">
---
-</b>
-
+MACD
+<b id="macd">--</b>
 </div>
 
-
 <div class="metric">
-
-<span>Signal</span>
-
-<b id="signal" class="yellow">
---
-</b>
-
+Signal
+<b id="signal" class="yellow">--</b>
 </div>
 
 </div>
@@ -435,85 +328,36 @@ KITT-X TRADE SETUP
 ANALYZING...
 </div>
 
-
 <div class="setup">
 
-
 <div class="kv">
-
-<small>
-Live Price
-</small>
-
-<b id="entry" class="green">
---
-</b>
-
+<small>Live Price</small>
+<b id="entry" class="green">--</b>
 </div>
 
-
 <div class="kv">
-
-<small>
-Stop Loss
-</small>
-
-<b id="sl" class="red">
---
-</b>
-
+<small>Stop Loss</small>
+<b id="sl" class="red">--</b>
 </div>
 
-
 <div class="kv">
-
-<small>
-Take Profit 1
-</small>
-
-<b id="tp1" class="green">
---
-</b>
-
+<small>Take Profit 1</small>
+<b id="tp1" class="green">--</b>
 </div>
 
-
 <div class="kv">
-
-<small>
-Take Profit 2
-</small>
-
-<b id="tp2" class="green">
---
-</b>
-
+<small>Take Profit 2</small>
+<b id="tp2" class="green">--</b>
 </div>
 
-
 <div class="kv">
-
-<small>
-Risk / Reward
-</small>
-
-<b>
-1 : 2.35
-</b>
-
+<small>Risk / Reward</small>
+<b>1 : 2.35</b>
 </div>
 
-
 <div class="kv">
-
-<small>
-Confidence
-</small>
-
-<b id="confidence" class="green">
---
-</b>
-
+<small>Confidence</small>
+<b id="confidence" class="green">--</b>
 </div>
 
 </div>
@@ -525,60 +369,29 @@ Confidence
 
 <div class="title">
 MARKET DATA
+<small>LIVE</small>
 </div>
 
 <div class="flow">
 
-
 <div class="kv">
-
-<small>
-24h Change
-</small>
-
-<b id="change">
---
-</b>
-
+<small>24h Change</small>
+<b id="change">--</b>
 </div>
 
-
 <div class="kv">
-
-<small>
-24h High
-</small>
-
-<b id="high">
---
-</b>
-
+<small>24h High</small>
+<b id="high">--</b>
 </div>
 
-
 <div class="kv">
-
-<small>
-24h Low
-</small>
-
-<b id="low">
---
-</b>
-
+<small>24h Low</small>
+<b id="low">--</b>
 </div>
 
-
 <div class="kv">
-
-<small>
-Volume
-</small>
-
-<b id="volume">
---
-</b>
-
+<small>Volume</small>
+<b id="volume">--</b>
 </div>
 
 </div>
@@ -589,42 +402,27 @@ Volume
 <div class="card ai">
 
 <div class="title">
-
 KITT-X AI ANALYSIS
+<span class="yellow">V3</span>
+</div>
 
-<span class="yellow">
-V3
+<span id="analysis">
+Loading technical analysis...
 </span>
 
-</div>
+<br><br>
 
-
-<div id="analysis">
-
-Loading technical analysis...
-
-</div>
-
-
-<br>
-
-
-<button onclick="speak()">
-
-▶ Voice Analysis
-
+<button class="btn" onclick="speak()">
+▶ Sinhala Voice Analysis
 </button>
 
 </div>
 
-
 </section>
 
-</div>
+</div><script>
 
-
-</html>
-<scrconst $ = id => document.getElementById(id);
+const $ = id => document.getElementById(id);
 
 const canvas = $("chart");
 const ctx = canvas.getContext("2d");
@@ -1347,4 +1145,3 @@ loadData,
 );
 
 </script>
-
