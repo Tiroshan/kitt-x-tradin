@@ -623,33 +623,29 @@ Loading technical analysis...
 </div>
 
 
+</html>
 <script>
-
 
 const $ = id => document.getElementById(id);
 
-
 const canvas = $("chart");
-
 const ctx = canvas.getContext("2d");
 
-
 let candles = [];
-
 let socket = null;
-
-let currentPrice = 0;
 
 
 /* FORMAT */
 
-function formatPrice(number){
+function formatPrice(n){
 
-return Number(number).toLocaleString(
+if(!isFinite(n)) return "--";
+
+return Number(n).toLocaleString(
 undefined,
 {
 minimumFractionDigits:2,
-maximumFractionDigits:2
+maximumFractionDigits:6
 }
 );
 
@@ -660,12 +656,13 @@ maximumFractionDigits:2
 
 function calculateEMA(values,period){
 
+if(!values.length) return [];
+
 let multiplier = 2/(period+1);
 
 let ema = values[0];
 
 let result = [ema];
-
 
 for(let i=1;i<values.length;i++){
 
@@ -676,7 +673,6 @@ result.push(ema);
 
 }
 
-
 return result;
 
 }
@@ -686,176 +682,114 @@ return result;
 
 function calculateRSI(values,period=14){
 
-if(values.length <= period){
-
-return 50;
-
-}
-
+if(values.length < period+1) return 50;
 
 let gains = 0;
-
 let losses = 0;
-
 
 for(let i=1;i<=period;i++){
 
-let difference =
+let diff =
 values[i]-values[i-1];
 
+if(diff>=0){
 
-if(difference >= 0){
-
-gains += difference;
+gains += diff;
 
 }else{
 
-losses -= difference;
+losses -= diff;
 
 }
 
 }
 
-
-let averageGain =
-gains/period;
-
-let averageLoss =
-losses/period;
-
+let avgGain = gains/period;
+let avgLoss = losses/period;
 
 for(let i=period+1;i<values.length;i++){
 
-let difference =
+let diff =
 values[i]-values[i-1];
 
-let gain =
-Math.max(difference,0);
+let gain = Math.max(diff,0);
+let loss = Math.max(-diff,0);
 
-let loss =
-Math.max(-difference,0);
+avgGain =
+(avgGain*(period-1)+gain)/period;
 
-
-averageGain =
-((averageGain*(period-1))+gain)/period;
-
-
-averageLoss =
-((averageLoss*(period-1))+loss)/period;
+avgLoss =
+(avgLoss*(period-1)+loss)/period;
 
 }
 
-
-if(averageLoss === 0){
-
-return 100;
-
-}
-
+if(avgLoss===0) return 100;
 
 let rs =
-averageGain/averageLoss;
-
+avgGain/avgLoss;
 
 return 100-(100/(1+rs));
 
 }
 
 
-/* CHART */
+/* DRAW CHART */
 
 function drawChart(){
 
-if(candles.length === 0){
+if(!candles.length) return;
 
-return;
+let width = canvas.clientWidth;
+let height = canvas.clientHeight;
 
-}
-
-
-let width =
-canvas.clientWidth;
-
-let height =
-canvas.clientHeight;
-
+if(width<=0 || height<=0) return;
 
 let ratio =
 window.devicePixelRatio || 1;
 
-
-canvas.width =
-width*ratio;
-
-canvas.height =
-height*ratio;
-
+canvas.width = width*ratio;
+canvas.height = height*ratio;
 
 ctx.setTransform(
-ratio,
-0,
-0,
-ratio,
-0,
-0
+ratio,0,0,ratio,0,0
 );
-
 
 ctx.clearRect(
-0,
-0,
-width,
-height
+0,0,width,height
 );
-
 
 let highest =
 Math.max(...candles.map(c=>c.high));
 
-
 let lowest =
 Math.min(...candles.map(c=>c.low));
 
-
 let range =
-highest-lowest;
+highest-lowest || 1;
 
-
-if(range === 0){
-
-range = 1;
-
-}
-
-
-function priceY(price){
+function y(price){
 
 return 20+
 ((highest-price)/range)*
-(height-60);
+(height-50);
 
 }
 
 
 /* GRID */
 
-ctx.strokeStyle =
-"#122033";
-
-ctx.lineWidth = 1;
-
+ctx.strokeStyle="#122033";
 
 for(let i=1;i<8;i++){
 
-let y =
+let lineY =
 i*height/8;
-
 
 ctx.beginPath();
 
-ctx.moveTo(0,y);
+ctx.moveTo(0,lineY);
 
-ctx.lineTo(width,y);
+ctx.lineTo(width,lineY);
 
 ctx.stroke();
 
@@ -867,17 +801,13 @@ ctx.stroke();
 let gap =
 width/candles.length;
 
-
-candles.forEach((candle,index)=>{
+candles.forEach((c,index)=>{
 
 let x =
-index*gap+
-gap/2;
-
+index*gap+gap/2;
 
 let bullish =
-candle.close >= candle.open;
-
+c.close>=c.open;
 
 ctx.strokeStyle =
 bullish
@@ -886,43 +816,28 @@ bullish
 :
 "#ff5864";
 
-
 ctx.fillStyle =
 ctx.strokeStyle;
 
 
+/* WICK */
+
 ctx.beginPath();
 
-ctx.moveTo(
-x,
-priceY(candle.high)
-);
+ctx.moveTo(x,y(c.high));
 
-ctx.lineTo(
-x,
-priceY(candle.low)
-);
+ctx.lineTo(x,y(c.low));
 
 ctx.stroke();
 
 
-let top =
-priceY(
-Math.max(
-candle.open,
-candle.close
-)
-);
+/* BODY */
 
+let top =
+y(Math.max(c.open,c.close));
 
 let bottom =
-priceY(
-Math.min(
-candle.open,
-candle.close
-)
-);
-
+y(Math.min(c.open,c.close));
 
 ctx.fillRect(
 x-3,
@@ -934,45 +849,29 @@ Math.max(2,bottom-top)
 });
 
 
-/* EMA 20 */
+/* EMA LINES */
 
-let closePrices =
+let closes =
 candles.map(c=>c.close);
 
-
-let ema20 =
-calculateEMA(
-closePrices,
-20
-);
-
-
-let ema50 =
-calculateEMA(
-closePrices,
-50
-);
-
-
 drawLine(
-ema20,
+calculateEMA(closes,20),
 "#f2c94c",
-priceY,
+y,
 gap
 );
 
-
 drawLine(
-ema50,
+calculateEMA(closes,50),
 "#11d9f4",
-priceY,
+y,
 gap
 );
 
 }
 
 
-/* DRAW LINE */
+/* DRAW EMA LINE */
 
 function drawLine(
 values,
@@ -981,26 +880,21 @@ priceY,
 gap
 ){
 
-ctx.strokeStyle =
-color;
+ctx.strokeStyle=color;
 
-ctx.lineWidth = 1.5;
+ctx.lineWidth=1.5;
 
 ctx.beginPath();
-
 
 values.forEach((value,index)=>{
 
 let x =
-index*gap+
-gap/2;
-
+index*gap+gap/2;
 
 let y =
 priceY(value);
 
-
-if(index === 0){
+if(index===0){
 
 ctx.moveTo(x,y);
 
@@ -1012,19 +906,17 @@ ctx.lineTo(x,y);
 
 });
 
-
 ctx.stroke();
 
 }
 
 
-/* LOAD DATA */
+/* LOAD CANDLE DATA */
 
 async function loadData(){
 
 let symbol =
 $("symbol").value;
-
 
 let interval =
 $("interval").value;
@@ -1032,39 +924,42 @@ $("interval").value;
 
 try{
 
-
 let response =
 await fetch(
 
-"https://api.binance.com/api/v3/klines"+
-"?symbol="+symbol+
-"&interval="+interval+
+"https://api.binance.com/api/v3/klines?symbol="+
+symbol+
+"&interval="+
+interval+
 "&limit=100"
 
 );
+
+
+if(!response.ok){
+
+throw new Error(
+"Binance API Error: "+
+response.status
+);
+
+}
 
 
 let data =
 await response.json();
 
 
-if(!Array.isArray(data)){
-
-throw new Error("Invalid data");
-
-}
-
-
 candles =
-data.map(item=>({
+data.map(x=>({
 
-open:Number(item[1]),
+open:Number(x[1]),
 
-high:Number(item[2]),
+high:Number(x[2]),
 
-low:Number(item[3]),
+low:Number(x[3]),
 
-close:Number(item[4])
+close:Number(x[4])
 
 }));
 
@@ -1073,93 +968,47 @@ let closes =
 candles.map(c=>c.close);
 
 
-let ema20Array =
-calculateEMA(
-closes,
-20
-);
+let ema20Arr =
+calculateEMA(closes,20);
 
-
-let ema50Array =
-calculateEMA(
-closes,
-50
-);
+let ema50Arr =
+calculateEMA(closes,50);
 
 
 let ema20 =
-ema20Array[
-ema20Array.length-1
-];
-
+ema20Arr.at(-1);
 
 let ema50 =
-ema50Array[
-ema50Array.length-1
-];
+ema50Arr.at(-1);
 
 
-let rsiValue =
+let rsi =
 calculateRSI(closes);
 
 
 let ema12 =
-calculateEMA(
-closes,
-12
-);
-
+calculateEMA(closes,12);
 
 let ema26 =
-calculateEMA(
-closes,
-26
-);
+calculateEMA(closes,26);
 
 
 let macd =
-ema12[ema12.length-1]
--
-ema26[ema26.length-1];
+ema12.at(-1)-ema26.at(-1);
 
 
 /* SCORE */
 
-let score = 50;
+let score=50;
 
+if(ema20>ema50) score+=15;
+else score-=15;
 
-if(ema20 > ema50){
+if(rsi>50) score+=10;
+else score-=10;
 
-score += 15;
-
-}else{
-
-score -= 15;
-
-}
-
-
-if(rsiValue > 50){
-
-score += 10;
-
-}else{
-
-score -= 10;
-
-}
-
-
-if(macd > 0){
-
-score += 10;
-
-}else{
-
-score -= 10;
-
-}
-
+if(macd>0) score+=10;
+else score-=10;
 
 score =
 Math.max(
@@ -1175,82 +1024,65 @@ Math.round(score)
 
 let signal;
 
+if(score>=65){
 
-if(score >= 65){
+signal="LONG BIAS";
 
-signal =
-"LONG BIAS";
+}else if(score<=35){
 
-}else if(score <= 35){
-
-signal =
-"SHORT BIAS";
+signal="SHORT BIAS";
 
 }else{
 
-signal =
-"WAIT";
+signal="WAIT";
 
 }
 
 
 /* UPDATE SCORE */
 
-$("score").textContent =
-score;
-
+$("score").textContent=score;
 
 $("trend").textContent =
-ema20 > ema50
+ema20>ema50
 ?
 "BULLISH"
 :
 "BEARISH";
 
-
 $("rsi").textContent =
-rsiValue.toFixed(2);
-
+rsi.toFixed(2);
 
 $("ema20").textContent =
 formatPrice(ema20);
 
-
 $("ema50").textContent =
 formatPrice(ema50);
-
 
 $("macd").textContent =
 macd.toFixed(4);
 
-
 $("signal").textContent =
 signal;
 
-
 $("confidence").textContent =
 score+"%";
-
 
 $("tradeSignal").textContent =
 signal;
 
 
-if(signal === "LONG BIAS"){
+if(signal==="LONG BIAS"){
 
 $("tradeSignal").className =
 "signal green";
 
-}
-
-else if(signal === "SHORT BIAS"){
+}else if(signal==="SHORT BIAS"){
 
 $("tradeSignal").className =
 "signal red";
 
-}
-
-else{
+}else{
 
 $("tradeSignal").className =
 "signal yellow";
@@ -1258,14 +1090,11 @@ $("tradeSignal").className =
 }
 
 
-/* ANALYSIS */
-
 $("analysis").textContent =
-
 symbol+
-" "+interval+
-" technical analysis: "+
-"Trend is "+
+" "+
+interval+
+" analysis: Trend is "+
 (
 ema20>ema50
 ?
@@ -1273,21 +1102,19 @@ ema20>ema50
 :
 "BEARISH"
 )+
-". RSI is "+
-rsiValue.toFixed(2)+
-". MACD momentum is "+
+". RSI "+
+rsi.toFixed(2)+
+". MACD "+
 (
-macd>=0
+macd>0
 ?
 "POSITIVE"
 :
 "NEGATIVE"
 )+
-". Current KITT-X signal is "+
-signal+".";
+". Signal: "+
+signal;
 
-
-/* DRAW */
 
 drawChart();
 
@@ -1297,9 +1124,102 @@ drawChart();
 console.log(error);
 
 $("analysis").textContent =
-"Market data connection error. Please refresh.";
+"Market data error: "+
+error.message;
 
 }
+
+}
+
+
+/* MARKET DATA */
+
+async function loadMarketData(){
+
+let symbol =
+$("symbol").value;
+
+
+try{
+
+let response =
+await fetch(
+
+"https://api.binance.com/api/v3/ticker/24hr?symbol="+
+symbol
+
+);
+
+
+if(!response.ok){
+
+throw new Error("Market API error");
+
+}
+
+
+let data =
+await response.json();
+
+
+$("change").textContent =
+Number(data.priceChangePercent)
+.toFixed(2)+"%";
+
+
+$("high").textContent =
+formatPrice(data.highPrice);
+
+
+$("low").textContent =
+formatPrice(data.lowPrice);
+
+
+$("volume").textContent =
+Number(data.volume).toLocaleString();
+
+
+/* FALLBACK PRICE */
+
+if(!$("price").textContent ||
+$("price").textContent==="Loading..." ||
+$("price").textContent==="Connection Error"){
+
+updatePrice(
+Number(data.lastPrice)
+);
+
+}
+
+}catch(error){
+
+console.log("Market data error",error);
+
+}
+
+}
+
+
+/* PRICE UPDATE */
+
+function updatePrice(price){
+
+if(!price || !isFinite(price)) return;
+
+$("price").textContent =
+"$"+formatPrice(price);
+
+$("entry").textContent =
+formatPrice(price);
+
+$("sl").textContent =
+formatPrice(price*0.9898);
+
+$("tp1").textContent =
+formatPrice(price*1.018);
+
+$("tp2").textContent =
+formatPrice(price*1.035);
 
 }
 
@@ -1313,7 +1233,6 @@ if(socket){
 socket.close();
 
 }
-
 
 let symbol =
 $("symbol").value.toLowerCase();
@@ -1335,39 +1254,8 @@ function(event){
 let data =
 JSON.parse(event.data);
 
-
-let price =
-Number(data.p);
-
-
-currentPrice =
-price;
-
-
-$("price").textContent =
-"$"+
-formatPrice(price);
-
-
-$("entry").textContent =
-formatPrice(price);
-
-
-$("sl").textContent =
-formatPrice(
-price*0.9898
-);
-
-
-$("tp1").textContent =
-formatPrice(
-price*1.018
-);
-
-
-$("tp2").textContent =
-formatPrice(
-price*1.035
+updatePrice(
+Number(data.p)
 );
 
 };
@@ -1376,17 +1264,31 @@ price*1.035
 socket.onerror =
 function(){
 
-$("price").textContent =
-"Connection Error";
+console.log(
+"WebSocket failed. REST price is used."
+);
 
 };
 
 }
 
 
+/* REFRESH EVERYTHING */
+
+function refreshAll(){
+
+loadData();
+
+loadMarketData();
+
+connectLivePrice();
+
+}
+
+
 /* INDICATOR BUTTON */
 
-function setIndicator(name){
+function setIndicator(){
 
 loadData();
 
@@ -1397,24 +1299,14 @@ loadData();
 
 function speak(){
 
-if(
-"speechSynthesis"
-in window
-){
-
-let text =
-$("analysis").textContent;
-
+if("speechSynthesis" in window){
 
 let voice =
 new SpeechSynthesisUtterance(
-text
+$("analysis").textContent
 );
 
-
-speechSynthesis.speak(
-voice
-);
+speechSynthesis.speak(voice);
 
 }
 
@@ -1425,44 +1317,35 @@ voice
 
 $("symbol").addEventListener(
 "change",
-function(){
-
-connectLivePrice();
-
-loadData();
-
-}
+refreshAll
 );
-
 
 $("interval").addEventListener(
 "change",
-function(){
-
-loadData();
-
-}
+loadData
 );
-
 
 window.addEventListener(
 "resize",
-function(){
-
-drawChart();
-
-}
+drawChart
 );
 
 
 /* START */
 
-connectLivePrice();
+refreshAll();
 
-loadData();
 
+/* AUTO REFRESH */
+
+setInterval(
+loadMarketData,
+10000
+);
+
+setInterval(
+loadData,
+30000
+);
 
 </script>
-
-</body>
-</html>
