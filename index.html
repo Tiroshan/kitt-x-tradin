@@ -1554,6 +1554,209 @@ loadData();
 loadMarketData();
 
 connectLivePrice();
+function connectLivePrice(){
+
+if(socket){
+
+socket.close();
+
+}
+
+let symbol =
+$("symbol").value.toLowerCase();
+
+socket =
+new WebSocket(
+
+"wss://stream.binance.com:9443/ws/"+
+symbol+
+"@trade"
+
+);
+
+
+socket.onopen =
+function(){
+
+console.log(
+"Live price connected:"
++
+symbol
+);
+
+};
+
+
+socket.onmessage =
+function(event){
+
+let data =
+JSON.parse(
+event.data
+);
+
+let price =
+Number(data.p);
+
+let tradeTime =
+Number(data.T);
+
+let interval =
+$("interval").value;
+
+let intervalMs;
+
+
+if(interval==="1m"){
+
+intervalMs=60000;
+
+}
+
+else if(interval==="5m"){
+
+intervalMs=300000;
+
+}
+
+else if(interval==="15m"){
+
+intervalMs=900000;
+
+}
+
+else if(interval==="1h"){
+
+intervalMs=3600000;
+
+}
+
+else if(interval==="4h"){
+
+intervalMs=14400000;
+
+}
+
+else if(interval==="1d"){
+
+intervalMs=86400000;
+
+}
+
+
+let candleTime =
+Math.floor(
+tradeTime/
+intervalMs
+)*
+intervalMs;
+
+
+let last =
+candles[
+candles.length-1
+];
+
+
+/* NEW CANDLE */
+
+if(
+!last ||
+last.time !== candleTime
+){
+
+candles.push({
+
+time:candleTime,
+
+open:price,
+
+high:price,
+
+low:price,
+
+close:price
+
+});
+
+
+if(
+candles.length>100
+){
+
+candles.shift();
+
+}
+
+}
+
+
+/* UPDATE LIVE CANDLE */
+
+else{
+
+last.close =
+price;
+
+
+if(
+price>
+last.high
+){
+
+last.high =
+price;
+
+}
+
+
+if(
+price<
+last.low
+){
+
+last.low =
+price;
+
+}
+
+}
+
+
+/* UPDATE PRICE */
+
+updatePrice(
+price
+);
+
+
+/* LIVE CHART */
+
+drawChart();
+
+};
+
+
+socket.onerror =
+function(){
+
+console.log(
+"Live WebSocket error"
+);
+
+};
+
+
+socket.onclose =
+function(){
+
+console.log(
+"Live WebSocket closed"
+);
+
+};
+
+}
 
 }
 
