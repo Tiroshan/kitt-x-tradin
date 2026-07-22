@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KITT-X V8 Delta Intelligence</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+background:#050b14;
+color:#e8eef7;
+font-family:Arial,sans-serif
+}
+
+.app{
+min-height:100vh;
+display:grid;
+grid-template-columns:1.45fr 1fr;
+gap:12px;
+padding:12px
+}
+
+.panel,.card{
+background:#08111e;
+border:1px solid #1b2b40;
+border-radius:14px
+}
+
+.panel{overflow:hidden}
+
+.top{
+display:flex;
+align-items:center;
+gap:10px;
+padding:16px;
+border-bottom:1px solid #17263a;
+flex-wrap:wrap
+}
+
+.logo{
+font-size:27px;
+font-weight:bold;
+font-style:italic;
+color:#11d9f4;
+letter-spacing:2px
+}
+
+.sub{
+font-size:10px;
+color:#11d9f4
+}
+
+select,input,button{
+background:#111c2c;
+color:white;
+border:1px solid #2b3b52;
+border-radius:8px;
+padding:10px 13px
+}
+
+input{width:170px}
+
+button{cursor:pointer}
+
+button:hover{
+border-color:#11d9f4
+}
+
+.price{
+margin-left:auto;
+font-size:24px;
+font-weight:bold
+}
+
+.live,.green{color:#20e68b}
+.red{color:#ff5864}
+.yellow{color:#f2c94c}
+.cyan{color:#11d9f4}
+
+.tools{
+display:flex;
+gap:6px;
+padding:10px;
+flex-wrap:wrap;
+border-bottom:1px solid #17263a
+}
+
+.chart-box{
+height:580px;
+width:100%
+}
+
+canvas{
+width:100%;
+height:100%;
+display:block
+}
+
+.right{
+display:flex;
+flex-direction:column;
+gap:12px
+}
+
+.card{
+padding:16px
+}
+
+.title{
+font-size:17px;
+font-weight:bold;
+color:#a9b9d2;
+margin-bottom:14px
+}
+
+.score{
+display:flex;
+align-items:center;
+gap:20px
+}
+
+.circle{
+width:140px;
+height:140px;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:conic-gradient(
+#20e68b 0deg,
+#20e68b 280deg,
+#263244 280deg
+);
+position:relative
+}
+
+.circle:after{
+content:"";
+position:absolute;
+inset:12px;
+border-radius:50%;
+background:#0a1524
+}
+
+.circle span{
+z-index:2;
+font-size:38px;
+font-weight:bold
+}
+
+.metrics{flex:1}
+
+.metric{
+display:flex;
+justify-content:space-between;
+padding:7px 0;
+border-bottom:1px solid #162337
+}
+
+.setup{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px
+}
+
+.kv{
+background:#0e1b2c;
+padding:10px;
+border-radius:8px
+}
+
+.kv small{
+display:block;
+color:#8292aa;
+margin-bottom:5px
+}
+
+.kv b{
+font-size:15px
+}
+
+.signal{
+font-size:28px;
+font-weight:bold;
+margin-bottom:15px
+}
+
+.flow{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:8px
+}
+
+.flow .kv{text-align:center}
+
+.ai{
+line-height:1.7
+}
+
+.reason{
+background:#0e1b2c;
+padding:10px;
+border-radius:8px;
+font-size:13px;
+line-height:1.8;
+margin-top:10px
+}
+
+.deltaBox{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px
+}
+
+.deltaBox .kv{
+text-align:center
+}
+
+.status{
+font-size:12px;
+color:#8292aa;
+margin-top:8px
+}
+
+@media(max-width:900px){
+
+.app{
+grid-template-columns:1fr;
+padding:4px
+}
+
+.chart-box{
+height:500px
+}
+
+.score{
+flex-direction:column
+}
+
+.flow{
+grid-template-columns:repeat(2,1fr)
+}
+
+.price{
+font-size:18px;
+margin-left:0
+}
+
+input{
+width:145px
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<section class="panel">
+
+<div class="top">
+
+<div>
+<div class="logo">KITT-X</div>
+<div class="sub">PRO DELTA CONFLUENCE ENGINE V8</div>
+</div>
+
+<input
+id="coinSearch"
+placeholder="🔍 Search coin..."
+autocomplete="off"
+>
+
+<select id="symbol">
+<option value="BTCUSDT">BTCUSDT</option>
+</select>
+
+<select id="interval">
+<option value="1m">1m</option>
+<option value="5m">5m</option>
+<option value="15m" selected>15m</option>
+<option value="1h">1H</option>
+<option value="4h">4H</option>
+<option value="1d">1D</option>
+</select>
+
+<span class="live">● LIVE</span>
+
+<div id="price" class="price">
+Loading...
+</div>
+
+</div>
+
+<div class="tools">
+
+<button onclick="refreshAll()">↻ Refresh</button>
+
+<button onclick="loadData()">
+⚡ Update Analysis
+</button>
+
+</div>
+
+<div class="chart-box">
+<canvas id="chart"></canvas>
+</div>
+
+</section>
+
+
+<section class="right">
+
+
+<div class="card">
+
+<div class="title">
+KITT-X CONFLUENCE SCORE
+</div>
+
+<div class="score">
+
+<div class="circle">
+<span id="score">--</span>
+</div>
+
+<div class="metrics">
+
+<div class="metric">
+<span>Trend</span>
+<b id="trend" class="green">--</b>
+</div>
+
+<div class="metric">
+<span>EMA 20/50/200</span>
+<b id="emaTrend">--</b>
+</div>
+
+<div class="metric">
+<span>RSI 14</span>
+<b id="rsi">--</b>
+</div>
+
+<div class="metric">
+<span>MACD</span>
+<b id="macd">--</b>
+</div>
+
+<div class="metric">
+<span>ADX</span>
+<b id="adx">--</b>
+</div>
+
+<div class="metric">
+<span>Supertrend</span>
+<b id="supertrend">--</b>
+</div>
+
+<div class="metric">
+<span>Volume</span>
+<b id="volumeSignal">--</b>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">
+KITT-X TRADE SETUP
+</div>
+
+<div id="tradeSignal" class="signal yellow">
+ANALYZING...
+</div>
+
+<div class="setup">
+
+<div class="kv">
+<small>Live Price</small>
+<b id="entry" class="green">--</b>
+</div>
+
+<div class="kv">
+<small>Stop Loss</small>
+<b id="sl" class="red">--</b>
+</div>
+
+<div class="kv">
+<small>Take Profit 1</small>
+<b id="tp1" class="green">--</b>
+</div>
+
+<div class="kv">
+<small>Take Profit 2</small>
+<b id="tp2" class="green">--</b>
+</div>
+
+<div class="kv">
+<small>Risk / Reward</small>
+<b>1 : 2.5</b>
+</div>
+
+<div class="kv">
+<small>Confidence</small>
+<b id="confidence" class="green">--</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">
+🔥 LIVE CANDLE DELTA
+</div>
+
+<div class="deltaBox">
+
+<div class="kv">
+<small>Buy Volume</small>
+<b id="buyVolume" class="green">--</b>
+</div>
+
+<div class="kv">
+<small>Sell Volume</small>
+<b id="sellVolume" class="red">--</b>
+</div>
+
+<div class="kv">
+<small>Delta</small>
+<b id="delta">--</b>
+</div>
+
+<div class="kv">
+<small>Delta %</small>
+<b id="deltaPercent">--</b>
+</div>
+
+<div class="kv">
+<small>Buy %</small>
+<b id="buyPercent" class="green">--</b>
+</div>
+
+<div class="kv">
+<small>Sell %</small>
+<b id="sellPercent" class="red">--</b>
+</div>
+
+</div>
+
+<br>
+
+<div id="deltaStatus"
+class="signal yellow"
+style="font-size:20px">
+
+WAITING...
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">
+MARKET DATA
+</div>
+
+<div class="flow">
+
+<div class="kv">
+<small>24h Change</small>
+<b id="change">--</b>
+</div>
+
+<div class="kv">
+<small>24h High</small>
+<b id="high">--</b>
+</div>
+
+<div class="kv">
+<small>24h Low</small>
+<b id="low">--</b>
+</div>
+
+<div class="kv">
+<small>24h Volume</small>
+<b id="volume">--</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card ai">
+
+<div class="title">
+KITT-X AI ANALYSIS
+<span class="yellow">V8</span>
+</div>
+
+<div id="analysis">
+Loading technical analysis...
+</div>
+
+<div class="reason" id="reasons">
+Waiting for confluence analysis...
+</div>
+
+<br>
+
+<button onclick="speak()">
+▶ Voice Analysis
+</button>
+
+<div id="status" class="status">
+Connecting to Binance...
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<script>
+
+"use strict";
+
+
+const $=id=>document.getElementById(id);
+
+const canvas=$("chart");
+
+const ctx=canvas.getContext("2d");
+
+
+let candles=[];
+
+let allCoins=[];
+
+let tradeSocket=null;
+
+let deltaSocket=null;
+
+let currentPrice=0;
+
+let lastATR=0;
+
+let lastSignal="WAIT";
+
+
+let liveBuyVolume=0;
+
+let liveSellVolume=0;
+
+let currentCandleTime=0;
+
+
+function formatPrice(n){
+
+if(!Number.isFinite(n)){
+
+return "--";
+
+}
+
+return Number(n).toLocaleString(
+
+undefined,
+
+{
+
+minimumFractionDigits:2,
+
+maximumFractionDigits:6
+
+}
+
+);
+
+}
+
+
+function formatVolume(n){
+
+if(!Number.isFinite(n)){
+
+return "--";
+
+}
+
+if(n>=1000000){
+
+return (n/1000000).toFixed(2)+"M";
+
+}
+
+if(n>=1000){
+
+return (n/1000).toFixed(2)+"K";
+
+}
+
+return n.toFixed(4);
+
+}
+
+
+function calculateEMA(values,period){
+
+if(!values.length){
+
+return [];
+
+}
+
+let multiplier=2/(period+1);
+
+let ema=values[0];
+
+let result=[ema];
+
+for(let i=1;i<values.length;i++){
+
+ema=(values[i]-ema)*multiplier+ema;
+
+result.push(ema);
+
+}
+
+return result;
+
+}
+
+
+function calculateRSI(values,period=14){
+
+if(values.length<=period){
+
+return 50;
+
+}
+
+let gains=0;
+
+let losses=0;
+
+for(let i=1;i<=period;i++){
+
+let diff=values[i]-values[i-1];
+
+if(diff>=0){
+
+gains+=diff;
+
+}else{
+
+losses-=diff;
+
+}
+
+}
+
+let avgGain=gains/period;
+
+let avgLoss=losses/period;
+
+for(let i=period+1;i<values.length;i++){
+
+let diff=values[i]-values[i-1];
+
+let gain=Math.max(diff,0);
+
+let loss=Math.max(-diff,0);
+
+avgGain=((avgGain*(period-1))+gain)/period;
+
+avgLoss=((avgLoss*(period-1))+loss)/period;
+
+}
+
+if(avgLoss===0){
+
+return 100;
+
+}
+
+let rs=avgGain/avgLoss;
+
+return 100-(100/(1+rs));
+
+}
+
+
+function calculateATR(data,period=14){
+
+if(data.length<period+1){
+
+return 0;
+
+}
+
+let trs=[];
+
+for(let i=1;i<data.length;i++){
+
+let current=data[i];
+
+let previous=data[i-1];
+
+let tr=Math.max(
+
+current.high-current.low,
+
+Math.abs(current.high-previous.close),
+
+Math.abs(current.low-previous.close)
+
+);
+
+trs.push(tr);
+
+}
+
+let recent=trs.slice(-period);
+
+return recent.reduce((a,b)=>a+b,0)/recent.length;
+
+}
+
+
+function calculateMACD(values){
+
+let ema12=calculateEMA(values,12);
+
+let ema26=calculateEMA(values,26);
+
+let line=[];
+
+for(let i=0;i<values.length;i++){
+
+line.push(ema12[i]-ema26[i]);
+
+}
+
+let signal=calculateEMA(line,9);
+
+let macd=line.at(-1);
+
+let signalValue=signal.at(-1);
+
+return{
+
+macd:macd,
+
+signal:signalValue,
+
+histogram:macd-signalValue
+
+};
+
+}
+
+
+function calculateADX(data,period=14){
+
+if(data.length<period*2){
+
+return{
+
+adx:20,
+
+plusDI:50,
+
+minusDI:50
+
+};
+
+}
+
+let tr=[];
+
+let plusDM=[];
+
+let minusDM=[];
+
+for(let i=1;i<data.length;i++){
+
+let up=data[i].high-data[i-1].high;
+
+let down=data[i-1].low-data[i].low;
+
+let trueRange=Math.max(
+
+data[i].high-data[i].low,
+
+Math.abs(data[i].high-data[i-1].close),
+
+Math.abs(data[i].low-data[i-1].close)
+
+);
+
+tr.push(trueRange);
+
+plusDM.push(
+
+up>down&&up>0?up:0
+
+);
+
+minusDM.push(
+
+down>up&&down>0?down:0
+
+);
+
+}
+
+let start=Math.max(0,tr.length-period);
+
+let atr=tr.slice(start).reduce((a,b)=>a+b,0)/period;
+
+let plus=plusDM.slice(start).reduce((a,b)=>a+b,0)/period;
+
+let minus=minusDM.slice(start).reduce((a,b)=>a+b,0)/period;
+
+if(atr===0){
+
+return{
+
+adx:0,
+
+plusDI:0,
+
+minusDI:0
+
+};
+
+}
+
+let plusDI=(plus/atr)*100;
+
+let minusDI=(minus/atr)*100;
+
+let dx=Math.abs(plusDI-minusDI)/
+
+Math.max(plusDI+minusDI,1)*100;
+
+return{
+
+adx:dx,
+
+plusDI:plusDI,
+
+minusDI:minusDI
+
+};
+
+}
+
+
+function calculateSupertrend(data){
+
+if(data.length<10){
+
+return{
+
+direction:"BULLISH"
+
+};
+
+}
+
+let atr=calculateATR(data,10);
+
+let last=data.at(-1);
+
+let hl2=(last.high+last.low)/2;
+
+let upper=hl2+(3*atr);
+
+let lower=hl2-(3*atr);
+
+if(last.close>=hl2){
+
+return{
+
+direction:"BULLISH",
+
+value:lower
+
+};
+
+}
+
+return{
+
+direction:"BEARISH",
+
+value:upper
+
+};
+
+}
+
+
+function getIntervalMs(){
+
+let intervals={
+
+"1m":60000,
+
+"5m":300000,
+
+"15m":900000,
+
+"1h":3600000,
+
+"4h":14400000,
+
+"1d":86400000
+
+};
+
+return intervals[$("interval").value]||900000;
+
+}
+
+
+function updateDeltaUI(){
+
+let total=liveBuyVolume+liveSellVolume;
+
+if(total<=0){
+
+return;
+
+}
+
+let delta=liveBuyVolume-liveSellVolume;
+
+let deltaPercent=(delta/total)*100;
+
+let buyPercent=(liveBuyVolume/total)*100;
+
+let sellPercent=(liveSellVolume/total)*100;
+
+$("buyVolume").textContent=
+
+formatVolume(liveBuyVolume);
+
+$("sellVolume").textContent=
+
+formatVolume(liveSellVolume);
+
+$("delta").textContent=
+
+(delta>=0?"+":"")+
+
+formatVolume(delta);
+
+$("deltaPercent").textContent=
+
+(deltaPercent>=0?"+":"")+
+
+deltaPercent.toFixed(2)+"%";
+
+$("buyPercent").textContent=
+
+buyPercent.toFixed(1)+"%";
+
+$("sellPercent").textContent=
+
+sellPercent.toFixed(1)+"%";
+
+
+if(deltaPercent>=10){
+
+$("deltaStatus").textContent=
+
+"🟢 BUYERS CONTROL";
+
+$("deltaStatus").className=
+
+"signal green";
+
+}else if(deltaPercent<=-10){
+
+$("deltaStatus").textContent=
+
+"🔴 SELLERS CONTROL";
+
+$("deltaStatus").className=
+
+"signal red";
+
+}else{
+
+$("deltaStatus").textContent=
+
+"🟡 BALANCED FLOW";
+
+$("deltaStatus").className=
+
+"signal yellow";
+
+}
+
+}
+
+
+function drawLine(values,priceY,gap){
+
+if(!values.length){
+
+return;
+
+}
+
+ctx.beginPath();
+
+values.forEach((value,index)=>{
+
+let x=index*gap+gap/2;
+
+let y=priceY(value);
+
+if(index===0){
+
+ctx.moveTo(x,y);
+
+}else{
+
+ctx.lineTo(x,y);
+
+}
+
+});
+
+ctx.stroke();
+
+}
+
+
+function drawChart(){
+
+if(!candles.length){
+
+return;
+
+}
+
+let width=canvas.clientWidth;
+
+let height=canvas.clientHeight;
+
+if(width<=0||height<=0){
+
+return;
+
+}
+
+let ratio=window.devicePixelRatio||1;
+
+canvas.width=width*ratio;
+
+canvas.height=height*ratio;
+
+ctx.setTransform(ratio,0,0,ratio,0,0);
+
+ctx.clearRect(0,0,width,height);
+
+
+let highest=Math.max(
+
+...candles.map(c=>c.high)
+
+);
+
+let lowest=Math.min(
+
+...candles.map(c=>c.low)
+
+);
+
+if(currentPrice>highest){
+
+highest=currentPrice;
+
+}
+
+if(currentPrice<lowest){
+
+lowest=currentPrice;
+
+}
+
+let range=highest-lowest||1;
+
+
+function priceY(price){
+
+return 20+
+
+((highest-price)/range)*(height-60);
+
+}
+
+
+ctx.strokeStyle="#122033";
+
+ctx.lineWidth=1;
+
+for(let i=1;i<8;i++){
+
+let y=i*height/8;
+
+ctx.beginPath();
+
+ctx.moveTo(0,y);
+
+ctx.lineTo(width,y);
+
+ctx.stroke();
+
+}
+
+
+let gap=width/candles.length;
+
+
+candles.forEach((c,index)=>{
+
+let x=index*gap+gap/2;
+
+let bullish=c.close>=c.open;
+
+ctx.strokeStyle=bullish?
+
+"#20e68b":"#ff5864";
+
+ctx.fillStyle=ctx.strokeStyle;
+
+ctx.beginPath();
+
+ctx.moveTo(x,priceY(c.high));
+
+ctx.lineTo(x,priceY(c.low));
+
+ctx.stroke();
+
+let top=priceY(
+
+Math.max(c.open,c.close)
+
+);
+
+let bottom=priceY(
+
+Math.min(c.open,c.close)
+
+);
+
+ctx.fillRect(
+
+x-4,
+
+top,
+
+8,
+
+Math.max(2,bottom-top)
+
+);
+
+});
+
+
+let closes=candles.map(c=>c.close);
+
+
+ctx.strokeStyle="#f2c94c";
+
+drawLine(
+
+calculateEMA(closes,20),
+
+priceY,
+
+gap
+
+);
+
+
+ctx.strokeStyle="#11d9f4";
+
+drawLine(
+
+calculateEMA(closes,50),
+
+priceY,
+
+gap
+
+);
+
+
+ctx.strokeStyle="#ffffff";
+
+drawLine(
+
+calculateEMA(closes,200),
+
+priceY,
+
+gap
+
+);
+
+
+if(currentPrice>0){
+
+let liveY=priceY(currentPrice);
+
+ctx.strokeStyle="#ffffff";
+
+ctx.setLineDash([6,6]);
+
+ctx.beginPath();
+
+ctx.moveTo(0,liveY);
+
+ctx.lineTo(width,liveY);
+
+ctx.stroke();
+
+ctx.setLineDash([]);
+
+ctx.fillStyle="#ffffff";
+
+ctx.font="bold 12px Arial";
+
+ctx.fillText(
+
+"$"+formatPrice(currentPrice),
+
+Math.max(5,width-125),
+
+Math.max(15,liveY-6)
+
+);
+
+}
+
+}
+
+
+async function loadAllCoins(){
+
+try{
+
+let response=await fetch(
+
+"https://api.binance.com/api/v3/exchangeInfo"
+
+);
+
+let data=await response.json();
+
+allCoins=data.symbols.filter(
+
+coin=>
+
+coin.status==="TRADING"&&
+
+coin.quoteAsset==="USDT"
+
+);
+
+allCoins.sort(
+
+(a,b)=>a.symbol.localeCompare(b.symbol)
+
+);
+
+updateCoinList(allCoins);
+
+$("status").textContent=
+
+"● "+allCoins.length+
+
+" USDT coins loaded";
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+
+function updateCoinList(coins){
+
+let select=$("symbol");
+
+let current=select.value;
+
+select.innerHTML="";
+
+coins.forEach(coin=>{
+
+let option=document.createElement("option");
+
+option.value=coin.symbol;
+
+option.textContent=coin.symbol;
+
+select.appendChild(option);
+
+});
+
+if(coins.some(c=>c.symbol===current)){
+
+select.value=current;
+
+}else if(
+
+coins.some(c=>c.symbol==="BTCUSDT")
+
+){
+
+select.value="BTCUSDT";
+
+}
+
+}
+
+
+async function loadData(){
+
+let symbol=$("symbol").value;
+
+let interval=$("interval").value;
+
+try{
+
+let response=await fetch(
+
+"https://api.binance.com/api/v3/klines"+
+
+"?symbol="+symbol+
+
+"&interval="+interval+
+
+"&limit=200"
+
+);
+
+if(!response.ok){
+
+throw new Error("Candle API Error");
+
+}
+
+let data=await response.json();
+
+candles=data.map(item=>({
+
+time:Number(item[0]),
+
+open:Number(item[1]),
+
+high:Number(item[2]),
+
+low:Number(item[3]),
+
+close:Number(item[4]),
+
+volume:Number(item[5])
+
+}));
+
+
+let closes=candles.map(c=>c.close);
+
+let ema20=calculateEMA(closes,20).at(-1);
+
+let ema50=calculateEMA(closes,50).at(-1);
+
+let ema200=calculateEMA(closes,200).at(-1);
+
+let rsi=calculateRSI(closes);
+
+let macd=calculateMACD(closes);
+
+let adx=calculateADX(candles);
+
+let atr=calculateATR(candles);
+
+let supertrend=calculateSupertrend(candles);
+
+lastATR=atr;
+
+
+let avgVolume=
+
+candles.slice(-20)
+
+.reduce((sum,c)=>sum+c.volume,0)/20;
+
+let currentVolume=candles.at(-1).volume;
+
+let volumeConfirmed=currentVolume>avgVolume;
+
+
+let score=50;
+
+let reasons=[];
+
+
+if(ema20>ema50){
+
+score+=10;
+
+reasons.push("✓ EMA 20 > EMA 50: Bullish");
+
+}else{
+
+score-=10;
+
+reasons.push("✓ EMA 20 < EMA 50: Bearish");
+
+}
+
+
+if(ema50>ema200){
+
+score+=10;
+
+reasons.push("✓ EMA 50 > EMA 200: Long-term bullish");
+
+}else{
+
+score-=10;
+
+reasons.push("✓ EMA 50 < EMA 200: Long-term bearish");
+
+}
+
+
+if(rsi>=50&&rsi<=70){
+
+score+=10;
+
+reasons.push("✓ RSI supports bullish momentum");
+
+}else if(rsi<40){
+
+score-=10;
+
+reasons.push("✓ RSI weak momentum");
+
+}else if(rsi>70){
+
+score-=5;
+
+reasons.push("⚠ RSI overbought");
+
+}
+
+
+if(macd.histogram>0){
+
+score+=10;
+
+reasons.push("✓ MACD bullish");
+
+}else{
+
+score-=10;
+
+reasons.push("✓ MACD bearish");
+
+}
+
+
+if(adx.adx>20){
+
+if(adx.plusDI>adx.minusDI){
+
+score+=10;
+
+reasons.push("✓ ADX bullish trend strength");
+
+}else{
+
+score-=10;
+
+reasons.push("✓ ADX bearish trend strength");
+
+}
+
+}else{
+
+reasons.push("⚠ ADX weak trend");
+
+}
+
+
+if(supertrend.direction==="BULLISH"){
+
+score+=10;
+
+reasons.push("✓ Supertrend bullish");
+
+}else{
+
+score-=10;
+
+reasons.push("✓ Supertrend bearish");
+
+}
+
+
+if(volumeConfirmed){
+
+score+=5;
+
+reasons.push("✓ Volume confirmed");
+
+}else{
+
+reasons.push("⚠ Volume weak");
+
+}
+
+
+let totalDelta=liveBuyVolume-liveSellVolume;
+
+let totalDeltaVolume=
+
+liveBuyVolume+liveSellVolume;
+
+let deltaPercent=
+
+totalDeltaVolume>0?
+
+(totalDelta/totalDeltaVolume)*100:0;
+
+
+if(deltaPercent>=10){
+
+score+=5;
+
+reasons.push("✓ Live delta: Buyers control");
+
+}else if(deltaPercent<=-10){
+
+score-=5;
+
+reasons.push("✓ Live delta: Sellers control");
+
+}
+
+
+score=Math.max(
+
+0,
+
+Math.min(100,Math.round(score))
+
+);
+
+
+let signal;
+
+if(score>=75){
+
+signal="STRONG LONG";
+
+}else if(score>=60){
+
+signal="LONG";
+
+}else if(score<=25){
+
+signal="STRONG SHORT";
+
+}else if(score<=40){
+
+signal="SHORT";
+
+}else{
+
+signal="WAIT";
+
+}
+
+lastSignal=signal;
+
+
+$("score").textContent=score;
+
+$("trend").textContent=
+
+ema20>ema50?"BULLISH":"BEARISH";
+
+$("trend").className=
+
+ema20>ema50?"green":"red";
+
+$("emaTrend").textContent=
+
+ema20>ema50?"BULLISH":"BEARISH";
+
+$("rsi").textContent=rsi.toFixed(2);
+
+$("macd").textContent=
+
+macd.histogram>0?"BULLISH":"BEARISH";
+
+$("adx").textContent=adx.adx.toFixed(2);
+
+$("supertrend").textContent=
+
+supertrend.direction;
+
+$("supertrend").className=
+
+supertrend.direction==="BULLISH"?
+
+"green":"red";
+
+$("volumeSignal").textContent=
+
+volumeConfirmed?"CONFIRMED":"WEAK";
+
+
+$("tradeSignal").textContent=signal;
+
+
+if(signal.includes("LONG")){
+
+$("tradeSignal").className="signal green";
+
+}else if(signal.includes("SHORT")){
+
+$("tradeSignal").className="signal red";
+
+}else{
+
+$("tradeSignal").className="signal yellow";
+
+}
+
+
+$("confidence").textContent=score+"%";
+
+
+$("analysis").textContent=
+
+symbol+" "+interval+
+
+" analysis: Trend is "+
+
+(ema20>ema50?"BULLISH":"BEARISH")+
+
+". RSI "+rsi.toFixed(2)+
+
+". ADX "+adx.adx.toFixed(2)+
+
+". MACD momentum is "+
+
+(macd.histogram>0?"POSITIVE":"NEGATIVE")+
+
+". Current live candle delta shows "+
+
+(deltaPercent>=10?
+
+"BUYER PRESSURE":
+
+deltaPercent<=-10?
+
+"SELLER PRESSURE":
+
+"BALANCED FLOW")+
+
+". KITT-X signal: "+signal+".";
+
+
+$("reasons").innerHTML=
+
+reasons.join("<br>");
+
+
+if(currentPrice>0){
+
+updatePrice(currentPrice);
+
+}
+
+drawChart();
+
+}catch(error){
+
+console.error(error);
+
+$("analysis").textContent=
+
+"Market data error.";
+
+}
+
+}
+
+
+async function loadMarketData(){
+
+let symbol=$("symbol").value;
+
+try{
+
+let response=await fetch(
+
+"https://api.binance.com/api/v3/ticker/24hr?symbol="+symbol
+
+);
+
+let data=await response.json();
+
+$("change").textContent=
+
+Number(data.priceChangePercent).toFixed(2)+"%";
+
+$("high").textContent=
+
+"$"+formatPrice(Number(data.highPrice));
+
+$("low").textContent=
+
+"$"+formatPrice(Number(data.lowPrice));
+
+$("volume").textContent=
+
+Number(data.volume).toLocaleString();
+
+if(currentPrice===0){
+
+updatePrice(Number(data.lastPrice));
+
+}
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+
+function updatePrice(price){
+
+if(!Number.isFinite(price)||price<=0){
+
+return;
+
+}
+
+currentPrice=price;
+
+$("price").textContent=
+
+"$"+formatPrice(price);
+
+$("entry").textContent=
+
+formatPrice(price);
+
+
+let atr=lastATR||price*0.01;
+
+
+if(lastSignal.includes("LONG")){
+
+$("sl").textContent=
+
+formatPrice(price-(atr*1.5));
+
+$("tp1").textContent=
+
+formatPrice(price+(atr*2));
+
+$("tp2").textContent=
+
+formatPrice(price+(atr*3.5));
+
+}else if(lastSignal.includes("SHORT")){
+
+$("sl").textContent=
+
+formatPrice(price+(atr*1.5));
+
+$("tp1").textContent=
+
+formatPrice(price-(atr*2));
+
+$("tp2").textContent=
+
+formatPrice(price-(atr*3.5));
+
+}else{
+
+$("sl").textContent="--";
+
+$("tp1").textContent="--";
+
+$("tp2").textContent="--";
+
+}
+
+drawChart();
+
+}
+
+
+function connectTradeStream(){
+
+if(tradeSocket){
+
+tradeSocket.close();
+
+}
+
+let symbol=$("symbol").value.toLowerCase();
+
+tradeSocket=new WebSocket(
+
+"wss://stream.binance.com:9443/ws/"+
+symbol+"@trade"
+
+);
+
+
+tradeSocket.onmessage=function(event){
+
+let data=JSON.parse(event.data);
+
+let price=Number(data.p);
+
+let time=Number(data.T);
+
+let intervalMs=getIntervalMs();
+
+let candleTime=
+
+Math.floor(time/intervalMs)*intervalMs;
+
+let last=candles.at(-1);
+
+
+if(!last||last.time!==candleTime){
+
+candles.push({
+
+time:candleTime,
+
+open:price,
+
+high:price,
+
+low:price,
+
+close:price,
+
+volume:0
+
+});
+
+if(candles.length>200){
+
+candles.shift();
+
+}
+
+}else{
+
+last.close=price;
+
+last.high=Math.max(last.high,price);
+
+last.low=Math.min(last.low,price);
+
+}
+
+updatePrice(price);
+
+};
+
+}
+
+
+function connectDeltaStream(){
+
+if(deltaSocket){
+
+deltaSocket.close();
+
+}
+
+let symbol=$("symbol").value.toLowerCase();
+
+deltaSocket=new WebSocket(
+
+"wss://stream.binance.com:9443/ws/"+
+symbol+"@aggTrade"
+
+);
+
+deltaSocket.onmessage=function(event){
+
+let data=JSON.parse(event.data);
+
+let price=Number(data.p);
+
+let quantity=Number(data.q);
+
+let time=Number(data.T);
+
+let intervalMs=getIntervalMs();
+
+let candleTime=
+
+Math.floor(time/intervalMs)*intervalMs;
+
+
+if(currentCandleTime!==candleTime){
+
+currentCandleTime=candleTime;
+
+liveBuyVolume=0;
+
+liveSellVolume=0;
+
+}
+
+
+if(data.m===true){
+
+liveSellVolume+=quantity;
+
+}else{
+
+liveBuyVolume+=quantity;
+
+}
+
+updateDeltaUI();
+
+};
+
+}
+
+
+function refreshAll(){
+
+currentPrice=0;
+
+liveBuyVolume=0;
+
+liveSellVolume=0;
+
+currentCandleTime=0;
+
+loadData();
+
+loadMarketData();
+
+connectTradeStream();
+
+connectDeltaStream();
+
+}
+
+
+function speak(){
+
+if("speechSynthesis" in window){
+
+let voice=
+
+new SpeechSynthesisUtterance(
+
+$("analysis").textContent
+
+);
+
+speechSynthesis.speak(voice);
+
+}
+
+}
+
+
+$("coinSearch").addEventListener(
+
+"input",
+
+function(){
+
+let search=this.value.toUpperCase().trim();
+
+let filtered=allCoins.filter(
+
+coin=>coin.symbol.includes(search)
+
+);
+
+updateCoinList(filtered);
+
+}
+
+);
+
+
+$("symbol").addEventListener(
+
+"change",
+
+function(){
+
+refreshAll();
+
+}
+
+);
+
+
+$("interval").addEventListener(
+
+"change",
+
+function(){
+
+refreshAll();
+
+}
+
+);
+
+
+window.addEventListener(
+
+"resize",
+
+function(){
+
+drawChart();
+
+}
+
+);
+
+
+loadAllCoins();
+
+refreshAll();
+
+
+setInterval(
+
+loadMarketData,
+
+10000
+
+);
+
+
+setInterval(
+
+loadData,
+
+30000
+
+);
+
+</script>
+
+</body>
+</html>
