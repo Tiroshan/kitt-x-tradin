@@ -1397,7 +1397,94 @@ async function loadMarketData(){
 
 }
 
+function updatePrice(price){
 
+    if(!Number.isFinite(price) || price <= 0){
+
+        return;
+
+    }
+
+    currentPrice = price;
+
+    $("price").textContent =
+        "$" + formatPrice(price);
+
+    $("entry").textContent =
+        formatPrice(price);
+
+
+    // CURRENT SIGNAL
+    let signal =
+        $("signal").textContent;
+
+
+    // LONG SETUP
+    if(signal === "LONG BIAS"){
+
+        $("sl").textContent =
+            formatPrice(price * 0.9898);
+
+        $("tp1").textContent =
+            formatPrice(price * 1.018);
+
+        $("tp2").textContent =
+            formatPrice(price * 1.035);
+
+        $("sl").className =
+            "red";
+
+        $("tp1").className =
+            "green";
+
+        $("tp2").className =
+            "green";
+
+    }
+
+
+    // SHORT SETUP
+    else if(signal === "SHORT BIAS"){
+
+        $("sl").textContent =
+            formatPrice(price * 1.0102);
+
+        $("tp1").textContent =
+            formatPrice(price * 0.982);
+
+        $("tp2").textContent =
+            formatPrice(price * 0.965);
+
+        $("sl").className =
+            "red";
+
+        $("tp1").className =
+            "green";
+
+        $("tp2").className =
+            "green";
+
+    }
+
+
+    // WAIT SETUP
+    else{
+
+        $("sl").textContent =
+            "--";
+
+        $("tp1").textContent =
+            "--";
+
+        $("tp2").textContent =
+            "--";
+
+    }
+
+
+    drawChart();
+
+}
 
 
 
