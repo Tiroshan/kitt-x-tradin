@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>KITT-X V3 Trading Intelligence</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+background:#050b14;
+color:#e8eef7;
+font-family:Arial,sans-serif;
+}
+
+.app{
+min-height:100vh;
+display:grid;
+grid-template-columns:1.4fr 1fr;
+gap:12px;
+padding:12px;
+}
+
+.panel,
+.card{
+background:#08111e;
+border:1px solid #1b2b40;
+border-radius:14px;
+}
+
+.panel{
+overflow:hidden;
+}
+
+.top{
+display:flex;
+align-items:center;
+gap:12px;
+padding:16px;
+border-bottom:1px solid #17263a;
+}
+
+.logo{
+font-size:27px;
+font-weight:bold;
+font-style:italic;
+color:#11d9f4;
+letter-spacing:2px;
+}
+
+.sub{
+font-size:10px;
+color:#11d9f4;
+}
+
+select,
+button{
+background:#111c2c;
+color:white;
+border:1px solid #2b3b52;
+border-radius:8px;
+padding:10px 13px;
+}
+
+.price{
+margin-left:auto;
+font-size:24px;
+font-weight:bold;
+}
+
+.live,
+.green{
+color:#20e68b;
+}
+
+.red{
+color:#ff5864;
+}
+
+.yellow{
+color:#f2c94c;
+}
+
+.tools{
+display:flex;
+gap:6px;
+padding:10px;
+flex-wrap:wrap;
+border-bottom:1px solid #17263a;
+}
+
+.tools button{
+cursor:pointer;
+}
+
+.chart-box{
+height:580px;
+width:100%;
+}
+
+canvas{
+width:100%;
+height:100%;
+display:block;
+}
+
+.right{
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+.card{
+padding:16px;
+}
+
+.title{
+font-size:17px;
+font-weight:bold;
+color:#a9b9d2;
+margin-bottom:14px;
+}
+
+.score{
+display:flex;
+align-items:center;
+gap:20px;
+}
+
+.circle{
+width:140px;
+height:140px;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:conic-gradient(#20e68b 0deg,#20e68b 280deg,#263244 280deg);
+position:relative;
+}
+
+.circle:after{
+content:"";
+position:absolute;
+inset:12px;
+border-radius:50%;
+background:#0a1524;
+}
+
+.circle span{
+z-index:2;
+font-size:38px;
+font-weight:bold;
+}
+
+.metrics{
+flex:1;
+}
+
+.metric{
+display:flex;
+justify-content:space-between;
+padding:7px 0;
+border-bottom:1px solid #162337;
+}
+
+.setup{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+}
+
+.kv{
+background:#0e1b2c;
+padding:10px;
+border-radius:8px;
+}
+
+.kv small{
+display:block;
+color:#8292aa;
+margin-bottom:5px;
+}
+
+.kv b{
+font-size:15px;
+}
+
+.signal{
+font-size:28px;
+font-weight:bold;
+margin-bottom:15px;
+}
+
+.flow{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:8px;
+}
+
+.flow .kv{
+text-align:center;
+}
+
+.ai{
+line-height:1.7;
+}
+
+@media(max-width:900px){
+
+.app{
+grid-template-columns:1fr;
+padding:4px;
+}
+
+.chart-box{
+height:500px;
+}
+
+.score{
+flex-direction:column;
+}
+
+.flow{
+grid-template-columns:repeat(2,1fr);
+}
+
+.price{
+font-size:18px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<section class="panel">
+
+<div class="top">
+
+<div>
+
+<div class="logo">KITT-X</div>
+
+<div class="sub">
+LIVE TRADING INTELLIGENCE V3
+</div>
+
+</div>
+
+<select id="symbol">
+
+<option value="BTCUSDT">BTCUSDT</option>
+
+<option value="ETHUSDT">ETHUSDT</option>
+
+<option value="SOLUSDT">SOLUSDT</option>
+
+<option value="XRPUSDT">XRPUSDT</option>
+
+<option value="DOGEUSDT">DOGEUSDT</option>
+
+</select>
+
+<select id="interval">
+
+<option value="1m">1m</option>
+
+<option value="5m">5m</option>
+
+<option value="15m" selected>15m</option>
+
+<option value="1h">1H</option>
+
+<option value="4h">4H</option>
+
+<option value="1d">1D</option>
+
+</select>
+
+<span class="live">
+● LIVE
+</span>
+
+<div id="price" class="price">
+Loading...
+</div>
+
+</div>
+
+
+<div class="tools">
+
+<button onclick="setIndicator('ema20')">
+EMA 20
+</button>
+
+<button onclick="setIndicator('ema50')">
+EMA 50
+</button>
+
+<button onclick="setIndicator('rsi')">
+RSI
+</button>
+
+<button onclick="setIndicator('macd')">
+MACD
+</button>
+
+<button onclick="loadData()">
+↻ Refresh
+</button>
+
+</div>
+
+
+<div class="chart-box">
+
+<canvas id="chart"></canvas>
+
+</div>
+
+</section>
+
+
+<section class="right">
+
+
+<div class="card">
+
+<div class="title">
+KITT-X MARKET SCORE
+</div>
+
+<div class="score">
+
+<div class="circle">
+
+<span id="score">
+--
+</span>
+
+</div>
+
+
+<div class="metrics">
+
+<div class="metric">
+
+<span>Trend</span>
+
+<b id="trend" class="green">
+--
+</b>
+
+</div>
+
+
+<div class="metric">
+
+<span>RSI 14</span>
+
+<b id="rsi">
+--
+</b>
+
+</div>
+
+
+<div class="metric">
+
+<span>EMA 20</span>
+
+<b id="ema20">
+--
+</b>
+
+</div>
+
+
+<div class="metric">
+
+<span>EMA 50</span>
+
+<b id="ema50">
+--
+</b>
+
+</div>
+
+
+<div class="metric">
+
+<span>MACD</span>
+
+<b id="macd">
+--
+</b>
+
+</div>
+
+
+<div class="metric">
+
+<span>Signal</span>
+
+<b id="signal" class="yellow">
+--
+</b>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">
+KITT-X TRADE SETUP
+</div>
+
+<div id="tradeSignal" class="signal yellow">
+ANALYZING...
+</div>
+
+
+<div class="setup">
+
+
+<div class="kv">
+
+<small>
+Live Price
+</small>
+
+<b id="entry" class="green">
+--
+</b>
+
+</div>
+
+
+<div class="kv">
+
+<small>
+Stop Loss
+</small>
+
+<b id="sl" class="red">
+--
+</b>
+
+</div>
+
+
+<div class="kv">
+
+<small>
+Take Profit 1
+</small>
+
+<b id="tp1" class="green">
+--
+</b>
+
+</div>
+
+
+<div class="kv">
+
+<small>
+Take Profit 2
+</small>
+
+<b id="tp2" class="green">
+--
+</b>
+
+</div>
+
+
+<div class="kv">
+
+<small>
+Risk / Reward
+</small>
+
+<b>
+1 : 2.35
+</b>
+
+</div>
+
+
+<div class="kv">
+
+<small>
+Confidence
+</small>
+
+<b id="confidence" class="green">
+--
+</b>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">
+MARKET DATA
+</div>
+
+<div class="flow">
+
+
+<div class="kv">
+
+<small>
+24h Change
+</small>
+
+<b id="change">
+--
+</b>
+
+</div>
+
+
+<div class="kv">
+
+<small>
+24h High
+</small>
+
+<b id="high">
+--
+</b>
+
+</div>
+
+
+<div class="kv">
+
+<small>
+24h Low
+</small>
+
+<b id="low">
+--
+</b>
+
+</div>
+
+
+<div class="kv">
+
+<small>
+Volume
+</small>
+
+<b id="volume">
+--
+</b>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card ai">
+
+<div class="title">
+
+KITT-X AI ANALYSIS
+
+<span class="yellow">
+V3
+</span>
+
+</div>
+
+
+<div id="analysis">
+
+Loading technical analysis...
+
+</div>
+
+
+<br>
+
+
+<button onclick="speak()">
+
+▶ Voice Analysis
+
+</button>
+
+</div>
+
+
+</section>
+
+</div>
+
+
+<script>
+
+
+const $ = id => document.getElementById(id);
+
+
+const canvas = $("chart");
+
+const ctx = canvas.getContext("2d");
+
+
+let candles = [];
+
+let socket = null;
+
+let currentPrice = 0;
+
+
+/* FORMAT */
+
+function formatPrice(number){
+
+return Number(number).toLocaleString(
+undefined,
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+);
+
+}
+
+
+/* EMA */
+
+function calculateEMA(values,period){
+
+let multiplier = 2/(period+1);
+
+let ema = values[0];
+
+let result = [ema];
+
+
+for(let i=1;i<values.length;i++){
+
+ema =
+(values[i]-ema)*multiplier+ema;
+
+result.push(ema);
+
+}
+
+
+return result;
+
+}
+
+
+/* RSI */
+
+function calculateRSI(values,period=14){
+
+if(values.length <= period){
+
+return 50;
+
+}
+
+
+let gains = 0;
+
+let losses = 0;
+
+
+for(let i=1;i<=period;i++){
+
+let difference =
+values[i]-values[i-1];
+
+
+if(difference >= 0){
+
+gains += difference;
+
+}else{
+
+losses -= difference;
+
+}
+
+}
+
+
+let averageGain =
+gains/period;
+
+let averageLoss =
+losses/period;
+
+
+for(let i=period+1;i<values.length;i++){
+
+let difference =
+values[i]-values[i-1];
+
+let gain =
+Math.max(difference,0);
+
+let loss =
+Math.max(-difference,0);
+
+
+averageGain =
+((averageGain*(period-1))+gain)/period;
+
+
+averageLoss =
+((averageLoss*(period-1))+loss)/period;
+
+}
+
+
+if(averageLoss === 0){
+
+return 100;
+
+}
+
+
+let rs =
+averageGain/averageLoss;
+
+
+return 100-(100/(1+rs));
+
+}
+
+
+/* CHART */
+
+function drawChart(){
+
+if(candles.length === 0){
+
+return;
+
+}
+
+
+let width =
+canvas.clientWidth;
+
+let height =
+canvas.clientHeight;
+
+
+let ratio =
+window.devicePixelRatio || 1;
+
+
+canvas.width =
+width*ratio;
+
+canvas.height =
+height*ratio;
+
+
+ctx.setTransform(
+ratio,
+0,
+0,
+ratio,
+0,
+0
+);
+
+
+ctx.clearRect(
+0,
+0,
+width,
+height
+);
+
+
+let highest =
+Math.max(...candles.map(c=>c.high));
+
+
+let lowest =
+Math.min(...candles.map(c=>c.low));
+
+
+let range =
+highest-lowest;
+
+
+if(range === 0){
+
+range = 1;
+
+}
+
+
+function priceY(price){
+
+return 20+
+((highest-price)/range)*
+(height-60);
+
+}
+
+
+/* GRID */
+
+ctx.strokeStyle =
+"#122033";
+
+ctx.lineWidth = 1;
+
+
+for(let i=1;i<8;i++){
+
+let y =
+i*height/8;
+
+
+ctx.beginPath();
+
+ctx.moveTo(0,y);
+
+ctx.lineTo(width,y);
+
+ctx.stroke();
+
+}
+
+
+/* CANDLES */
+
+let gap =
+width/candles.length;
+
+
+candles.forEach((candle,index)=>{
+
+let x =
+index*gap+
+gap/2;
+
+
+let bullish =
+candle.close >= candle.open;
+
+
+ctx.strokeStyle =
+bullish
+?
+"#20e68b"
+:
+"#ff5864";
+
+
+ctx.fillStyle =
+ctx.strokeStyle;
+
+
+ctx.beginPath();
+
+ctx.moveTo(
+x,
+priceY(candle.high)
+);
+
+ctx.lineTo(
+x,
+priceY(candle.low)
+);
+
+ctx.stroke();
+
+
+let top =
+priceY(
+Math.max(
+candle.open,
+candle.close
+)
+);
+
+
+let bottom =
+priceY(
+Math.min(
+candle.open,
+candle.close
+)
+);
+
+
+ctx.fillRect(
+x-3,
+top,
+6,
+Math.max(2,bottom-top)
+);
+
+});
+
+
+/* EMA 20 */
+
+let closePrices =
+candles.map(c=>c.close);
+
+
+let ema20 =
+calculateEMA(
+closePrices,
+20
+);
+
+
+let ema50 =
+calculateEMA(
+closePrices,
+50
+);
+
+
+drawLine(
+ema20,
+"#f2c94c",
+priceY,
+gap
+);
+
+
+drawLine(
+ema50,
+"#11d9f4",
+priceY,
+gap
+);
+
+}
+
+
+/* DRAW LINE */
+
+function drawLine(
+values,
+color,
+priceY,
+gap
+){
+
+ctx.strokeStyle =
+color;
+
+ctx.lineWidth = 1.5;
+
+ctx.beginPath();
+
+
+values.forEach((value,index)=>{
+
+let x =
+index*gap+
+gap/2;
+
+
+let y =
+priceY(value);
+
+
+if(index === 0){
+
+ctx.moveTo(x,y);
+
+}else{
+
+ctx.lineTo(x,y);
+
+}
+
+});
+
+
+ctx.stroke();
+
+}
+
+
+/* LOAD DATA */
+
+async function loadData(){
+
+let symbol =
+$("symbol").value;
+
+
+let interval =
+$("interval").value;
+
+
+try{
+
+
+let response =
+await fetch(
+
+"https://api.binance.com/api/v3/klines"+
+"?symbol="+symbol+
+"&interval="+interval+
+"&limit=100"
+
+);
+
+
+let data =
+await response.json();
+
+
+if(!Array.isArray(data)){
+
+throw new Error("Invalid data");
+
+}
+
+
+candles =
+data.map(item=>({
+
+open:Number(item[1]),
+
+high:Number(item[2]),
+
+low:Number(item[3]),
+
+close:Number(item[4])
+
+}));
+
+
+let closes =
+candles.map(c=>c.close);
+
+
+let ema20Array =
+calculateEMA(
+closes,
+20
+);
+
+
+let ema50Array =
+calculateEMA(
+closes,
+50
+);
+
+
+let ema20 =
+ema20Array[
+ema20Array.length-1
+];
+
+
+let ema50 =
+ema50Array[
+ema50Array.length-1
+];
+
+
+let rsiValue =
+calculateRSI(closes);
+
+
+let ema12 =
+calculateEMA(
+closes,
+12
+);
+
+
+let ema26 =
+calculateEMA(
+closes,
+26
+);
+
+
+let macd =
+ema12[ema12.length-1]
+-
+ema26[ema26.length-1];
+
+
+/* SCORE */
+
+let score = 50;
+
+
+if(ema20 > ema50){
+
+score += 15;
+
+}else{
+
+score -= 15;
+
+}
+
+
+if(rsiValue > 50){
+
+score += 10;
+
+}else{
+
+score -= 10;
+
+}
+
+
+if(macd > 0){
+
+score += 10;
+
+}else{
+
+score -= 10;
+
+}
+
+
+score =
+Math.max(
+0,
+Math.min(
+100,
+Math.round(score)
+)
+);
+
+
+/* SIGNAL */
+
+let signal;
+
+
+if(score >= 65){
+
+signal =
+"LONG BIAS";
+
+}else if(score <= 35){
+
+signal =
+"SHORT BIAS";
+
+}else{
+
+signal =
+"WAIT";
+
+}
+
+
+/* UPDATE SCORE */
+
+$("score").textContent =
+score;
+
+
+$("trend").textContent =
+ema20 > ema50
+?
+"BULLISH"
+:
+"BEARISH";
+
+
+$("rsi").textContent =
+rsiValue.toFixed(2);
+
+
+$("ema20").textContent =
+formatPrice(ema20);
+
+
+$("ema50").textContent =
+formatPrice(ema50);
+
+
+$("macd").textContent =
+macd.toFixed(4);
+
+
+$("signal").textContent =
+signal;
+
+
+$("confidence").textContent =
+score+"%";
+
+
+$("tradeSignal").textContent =
+signal;
+
+
+if(signal === "LONG BIAS"){
+
+$("tradeSignal").className =
+"signal green";
+
+}
+
+else if(signal === "SHORT BIAS"){
+
+$("tradeSignal").className =
+"signal red";
+
+}
+
+else{
+
+$("tradeSignal").className =
+"signal yellow";
+
+}
+
+
+/* ANALYSIS */
+
+$("analysis").textContent =
+
+symbol+
+" "+interval+
+" technical analysis: "+
+"Trend is "+
+(
+ema20>ema50
+?
+"BULLISH"
+:
+"BEARISH"
+)+
+". RSI is "+
+rsiValue.toFixed(2)+
+". MACD momentum is "+
+(
+macd>=0
+?
+"POSITIVE"
+:
+"NEGATIVE"
+)+
+". Current KITT-X signal is "+
+signal+".";
+
+
+/* DRAW */
+
+drawChart();
+
+
+}catch(error){
+
+console.log(error);
+
+$("analysis").textContent =
+"Market data connection error. Please refresh.";
+
+}
+
+}
+
+
+/* LIVE PRICE */
+
+function connectLivePrice(){
+
+if(socket){
+
+socket.close();
+
+}
+
+
+let symbol =
+$("symbol").value.toLowerCase();
+
+
+socket =
+new WebSocket(
+
+"wss://stream.binance.com:9443/ws/"+
+symbol+
+"@trade"
+
+);
+
+
+socket.onmessage =
+function(event){
+
+let data =
+JSON.parse(event.data);
+
+
+let price =
+Number(data.p);
+
+
+currentPrice =
+price;
+
+
+$("price").textContent =
+"$"+
+formatPrice(price);
+
+
+$("entry").textContent =
+formatPrice(price);
+
+
+$("sl").textContent =
+formatPrice(
+price*0.9898
+);
+
+
+$("tp1").textContent =
+formatPrice(
+price*1.018
+);
+
+
+$("tp2").textContent =
+formatPrice(
+price*1.035
+);
+
+};
+
+
+socket.onerror =
+function(){
+
+$("price").textContent =
+"Connection Error";
+
+};
+
+}
+
+
+/* INDICATOR BUTTON */
+
+function setIndicator(name){
+
+loadData();
+
+}
+
+
+/* VOICE */
+
+function speak(){
+
+if(
+"speechSynthesis"
+in window
+){
+
+let text =
+$("analysis").textContent;
+
+
+let voice =
+new SpeechSynthesisUtterance(
+text
+);
+
+
+speechSynthesis.speak(
+voice
+);
+
+}
+
+}
+
+
+/* EVENTS */
+
+$("symbol").addEventListener(
+"change",
+function(){
+
+connectLivePrice();
+
+loadData();
+
+}
+);
+
+
+$("interval").addEventListener(
+"change",
+function(){
+
+loadData();
+
+}
+);
+
+
+window.addEventListener(
+"resize",
+function(){
+
+drawChart();
+
+}
+);
+
+
+/* START */
+
+connectLivePrice();
+
+loadData();
+
+
+</script>
+
+</body>
+</html>
