@@ -1333,65 +1333,7 @@ $("analysis").textContent =
 }
 
 
-async function loadMarketData(){
 
-let symbol = $("symbol").value;
-
-
-try{
-
-let response = await fetch(
-
-"https://api.binance.com/api/v3/ticker/24hr?symbol=" +
-
-symbol
-
-);
-
-
-if(!response.ok){
-
-throw new Error("24h API Error");
-
-}
-
-
-let data = await response.json();
-
-
-$("change").textContent =
-
-Number(data.priceChangePercent).toFixed(2) + "%";
-
-
-$("high").textContent =
-
-formatPrice(data.highPrice);
-
-
-$("low").textContent =
-
-formatPrice(data.lowPrice);
-
-
-$("volume").textContent =
-
-Number(data.volume).toLocaleString();
-
-
-if(currentPrice === 0){
-
-updatePrice(Number(data.lastPrice));
-
-}
-
-}catch(error){
-
-console.error(error);
-
-}
-
-}
 
 
 function updatePrice(price){
