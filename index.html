@@ -1805,3 +1805,776 @@ y
 ctx.stroke();
 
 }
+async function loadData(){
+
+let symbol =
+$("symbol").value;
+
+let interval =
+$("interval").value;
+
+try{
+
+let response =
+await fetch(
+
+"https://api.binance.com/api/v3/klines?symbol="+
+symbol+
+"&interval="+
+interval+
+"&limit=100"
+
+);
+
+if(!response.ok){
+
+throw new Error(
+"Candle API Error"
+);
+
+}
+
+let data =
+await response.json();
+
+
+candles =
+data.map(
+
+item=>({
+
+time:Number(item[0]),
+
+open:Number(item[1]),
+
+high:Number(item[2]),
+
+low:Number(item[3]),
+
+close:Number(item[4])
+
+})
+
+);
+
+
+let closes =
+candles.map(
+c=>c.close
+);
+
+
+let ema20Array =
+calculateEMA(
+closes,
+20
+);
+
+let ema50Array =
+calculateEMA(
+closes,
+50
+);
+
+
+let ema20 =
+ema20Array[
+ema20Array.length-1
+];
+
+
+let ema50 =
+ema50Array[
+ema50Array.length-1
+];
+
+
+let rsi =
+calculateRSI(
+closes
+);
+
+
+let ema12 =
+calculateEMA(
+closes,
+12
+);
+
+let ema26 =
+calculateEMA(
+closes,
+26
+);
+
+
+let macd =
+
+ema12[
+ema12.length-1
+]
+
+-
+
+ema26[
+ema26.length-1
+];
+
+
+let score = 50;
+
+
+if(
+ema20>ema50
+){
+
+score+=15;
+
+}else{
+
+score-=15;
+
+}
+
+
+if(
+rsi>50
+){
+
+score+=10;
+
+}else{
+
+score-=10;
+
+}
+
+
+if(
+macd>0
+){
+
+score+=10;
+
+}else{
+
+score-=10;
+
+}
+
+
+score =
+Math.max(
+0,
+Math.min(
+100,
+Math.round(score)
+)
+);
+
+
+let signal;
+
+
+if(
+score>=65
+){
+
+signal =
+"LONG BIAS";
+
+}
+
+else if(
+score<=35
+){
+
+signal =
+"SHORT BIAS";
+
+}
+
+else{
+
+signal =
+"WAIT";
+
+}
+
+
+$("score").textContent =
+score;
+
+
+$("trend").textContent =
+
+ema20>ema50
+
+?
+
+"BULLISH"
+
+:
+
+"BEARISH";
+
+
+$("rsi").textContent =
+rsi.toFixed(2);
+
+
+$("ema20").textContent =
+formatPrice(
+ema20
+);
+
+
+$("ema50").textContent =
+formatPrice(
+ema50
+);
+
+
+$("macd").textContent =
+macd.toFixed(4);
+
+
+$("signal").textContent =
+signal;
+
+
+$("confidence").textContent =
+score+
+"%";
+
+
+$("tradeSignal").textContent =
+signal;
+
+
+if(
+signal===
+"LONG BIAS"
+){
+
+$("tradeSignal").className =
+"signal green";
+
+}
+
+else if(
+signal===
+"SHORT BIAS"
+){
+
+$("tradeSignal").className =
+"signal red";
+
+}
+
+else{
+
+$("tradeSignal").className =
+"signal yellow";
+
+}
+
+
+$("analysis").textContent =
+
+symbol+
+" "+
+interval+
+" analysis: Trend is "+
+(
+ema20>ema50
+?
+"BULLISH"
+:
+"BEARISH"
+)+
+". RSI "+
+rsi.toFixed(2)+
+". MACD "+
+(
+macd>0
+?
+"POSITIVE"
+:
+"NEGATIVE"
+)+
+". Signal: "+
+signal+
+".";
+
+
+drawChart();
+
+}
+
+catch(error){
+
+console.log(error);
+
+$("analysis").textContent =
+"Market data error: "+
+error.message;
+
+}
+
+}
+
+
+async function loadMarketData(){
+
+let symbol =
+$("symbol").value;
+
+
+try{
+
+let response =
+await fetch(
+
+"https://api.binance.com/api/v3/ticker/24hr?symbol="+
+symbol
+
+);
+
+
+let data =
+await response.json();
+
+
+$("change").textContent =
+Number(
+data.priceChangePercent
+).toFixed(2)+
+"%";
+
+
+$("high").textContent =
+formatPrice(
+data.highPrice
+);
+
+
+$("low").textContent =
+formatPrice(
+data.lowPrice
+);
+
+
+$("volume").textContent =
+Number(
+data.volume
+).toLocaleString();
+
+
+if(
+currentPrice===0
+){
+
+updatePrice(
+Number(
+data.lastPrice
+)
+);
+
+}
+
+}
+
+catch(error){
+
+console.log(
+"Market data error",
+error
+);
+
+}
+
+}
+
+
+function updatePrice(
+price
+){
+
+if(
+!price ||
+!isFinite(price)
+){
+
+return;
+
+}
+
+
+currentPrice =
+price;
+
+
+$("price").textContent =
+"$"+
+formatPrice(
+price
+);
+
+
+$("entry").textContent =
+formatPrice(
+price
+);
+
+
+$("sl").textContent =
+formatPrice(
+price*
+0.9898
+);
+
+
+$("tp1").textContent =
+formatPrice(
+price*
+1.018
+);
+
+
+$("tp2").textContent =
+formatPrice(
+price*
+1.035
+);
+
+
+drawChart();
+
+}
+
+
+function getIntervalMs(){
+
+let interval =
+$("interval").value;
+
+
+if(
+interval==="1m"
+){
+
+return 60000;
+
+}
+
+
+if(
+interval==="5m"
+){
+
+return 300000;
+
+}
+
+
+if(
+interval==="15m"
+){
+
+return 900000;
+
+}
+
+
+if(
+interval==="1h"
+){
+
+return 3600000;
+
+}
+
+
+if(
+interval==="4h"
+){
+
+return 14400000;
+
+}
+
+
+if(
+interval==="1d"
+){
+
+return 86400000;
+
+}
+
+
+return 900000;
+
+}
+
+
+function connectLivePrice(){
+
+if(
+socket
+){
+
+socket.close();
+
+}
+
+
+let symbol =
+$("symbol").value.toLowerCase();
+
+
+socket =
+new WebSocket(
+
+"wss://stream.binance.com:9443/ws/"+
+symbol+
+"@trade"
+
+);
+
+
+socket.onmessage =
+function(event){
+
+let data =
+JSON.parse(
+event.data
+);
+
+
+let price =
+Number(
+data.p
+);
+
+
+let tradeTime =
+Number(
+data.T
+);
+
+
+let intervalMs =
+getIntervalMs();
+
+
+let candleTime =
+
+Math.floor(
+tradeTime/
+intervalMs
+)
+*
+intervalMs;
+
+
+let last =
+candles[
+candles.length-1
+];
+
+
+if(
+!last ||
+last.time !== candleTime
+){
+
+candles.push({
+
+time:candleTime,
+
+open:price,
+
+high:price,
+
+low:price,
+
+close:price
+
+});
+
+
+if(
+candles.length>100
+){
+
+candles.shift();
+
+}
+
+}
+
+
+else{
+
+last.close =
+price;
+
+
+if(
+price>last.high
+){
+
+last.high =
+price;
+
+}
+
+
+if(
+price<last.low
+){
+
+last.low =
+price;
+
+}
+
+}
+
+
+updatePrice(
+price
+);
+
+
+};
+
+
+socket.onerror =
+function(){
+
+console.log(
+"WebSocket error"
+);
+
+};
+
+
+socket.onclose =
+function(){
+
+console.log(
+"WebSocket closed"
+);
+
+};
+
+}
+
+
+function refreshAll(){
+
+currentPrice =
+0;
+
+
+loadData();
+
+loadMarketData();
+
+connectLivePrice();
+
+}
+
+
+function speak(){
+
+if(
+"speechSynthesis"
+in window
+){
+
+let voice =
+
+new SpeechSynthesisUtterance(
+
+$("analysis").textContent
+
+);
+
+
+speechSynthesis.speak(
+voice
+);
+
+}
+
+}
+
+
+$("symbol").addEventListener(
+
+"change",
+
+function(){
+
+refreshAll();
+
+}
+
+);
+
+
+$("interval").addEventListener(
+
+"change",
+
+function(){
+
+loadData();
+
+}
+
+);
+
+
+window.addEventListener(
+
+"resize",
+
+function(){
+
+drawChart();
+
+}
+
+);
+
+
+refreshAll();
+
+
+setInterval(
+
+loadMarketData,
+
+10000
+
+);
+
+
+setInterval(
+
+loadData,
+
+30000
+
+);
+
+</script>
+
+</body>
+
+</html>
