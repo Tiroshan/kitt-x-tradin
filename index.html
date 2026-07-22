@@ -1398,46 +1398,7 @@ async function loadMarketData(){
 }
 
 
-function updatePrice(price){
 
-if(!Number.isFinite(price) || price <= 0){
-
-return;
-
-}
-
-
-currentPrice = price;
-
-
-$("price").textContent =
-
-"$" + formatPrice(price);
-
-
-$("entry").textContent =
-
-formatPrice(price);
-
-
-$("sl").textContent =
-
-formatPrice(price * 0.9898);
-
-
-$("tp1").textContent =
-
-formatPrice(price * 1.018);
-
-
-$("tp2").textContent =
-
-formatPrice(price * 1.035);
-
-
-drawChart();
-
-}
 
 
 function getIntervalMs(){
