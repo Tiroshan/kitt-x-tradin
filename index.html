@@ -1333,7 +1333,69 @@ $("analysis").textContent =
 }
 
 
+async function loadMarketData(){
 
+    const symbol = $("symbol").value;
+
+    try{
+
+        const response = await fetch(
+            "https://api.binance.com/api/v3/ticker/24hr?symbol=" + symbol
+        );
+
+        if(!response.ok){
+
+            throw new Error("24H Market API Error");
+
+        }
+
+        const data = await response.json();
+
+        // 24H CHANGE
+        $("change").textContent =
+            Number(data.priceChangePercent).toFixed(2) + "%";
+
+        // 24H HIGH
+        $("high").textContent =
+            "$" + formatPrice(Number(data.highPrice));
+
+        // 24H LOW
+        $("low").textContent =
+            "$" + formatPrice(Number(data.lowPrice));
+
+        // 24H VOLUME
+        $("volume").textContent =
+            Number(data.volume).toLocaleString();
+
+        // Current price fallback
+        if(currentPrice === 0){
+
+            updatePrice(
+                Number(data.lastPrice)
+            );
+
+        }
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Market data error:",
+            error
+        );
+
+        $("change").textContent = "--";
+
+        $("high").textContent = "--";
+
+        $("low").textContent = "--";
+
+        $("volume").textContent = "--";
+
+    }
+
+}
 
 
 function updatePrice(price){
