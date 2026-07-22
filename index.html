@@ -1764,7 +1764,126 @@ loadData,
 );
 
 
-</script>
+</script>// ===============================
+// ALL BINANCE USDT COINS
+// ===============================
+
+async function loadAllCoins(){
+
+    const symbolSelect =
+        $("symbol");
+
+    try{
+
+        const response =
+            await fetch(
+                "https://api.binance.com/api/v3/exchangeInfo"
+            );
+
+        if(!response.ok){
+
+            throw new Error(
+                "Coin API Error"
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+
+        const coins =
+            data.symbols.filter(
+
+                coin =>
+
+                coin.status === "TRADING" &&
+
+                coin.quoteAsset === "USDT" &&
+
+                coin.isSpotTradingAllowed === true
+
+            );
+
+
+        symbolSelect.innerHTML = "";
+
+
+        coins.sort(
+
+            (a,b) =>
+
+            a.symbol.localeCompare(
+                b.symbol
+            )
+
+        );
+
+
+        coins.forEach(
+
+            coin => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    coin.symbol;
+
+
+                option.textContent =
+                    coin.symbol;
+
+
+                symbolSelect.appendChild(
+                    option
+                );
+
+            }
+
+        );
+
+
+        // BTC default
+
+        if(
+            coins.some(
+                coin =>
+                coin.symbol === "BTCUSDT"
+            )
+        ){
+
+            symbolSelect.value =
+                "BTCUSDT";
+
+        }
+
+
+        $("status").textContent =
+            "● " +
+            coins.length +
+            " Binance USDT coins loaded";
+
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Coin loading error:",
+            error
+        );
+
+
+        $("status").textContent =
+            "Coin loading error";
+
+    }
+
+}
 
 </body>
 
