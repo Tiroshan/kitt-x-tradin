@@ -1,0 +1,3285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>KITT-X V12.5 PRO</title>
+
+<style>
+
+*{
+box-sizing:border-box
+}
+
+body{
+margin:0;
+background:#050b14;
+color:#e8eef7;
+font-family:Arial,sans-serif;
+overflow-x:hidden
+}
+
+.app{
+min-height:100vh;
+display:grid;
+grid-template-columns:minmax(0,1.55fr) minmax(350px,1fr);
+gap:12px;
+padding:12px
+}
+
+.panel,.card{
+background:#08111e;
+border:1px solid #1b2b40;
+border-radius:14px
+}
+
+.panel{
+overflow:hidden
+}
+
+.top{
+display:flex;
+align-items:center;
+gap:8px;
+padding:14px;
+border-bottom:1px solid #17263a;
+flex-wrap:wrap
+}
+
+.logo{
+font-size:27px;
+font-weight:bold;
+font-style:italic;
+letter-spacing:2px;
+color:#11d9f4
+}
+
+.sub{
+font-size:10px;
+color:#11d9f4
+}
+
+select,
+input,
+button{
+background:#111c2c;
+color:#fff;
+border:1px solid #2b3b52;
+border-radius:8px;
+padding:10px 12px
+}
+
+input{
+width:145px
+}
+
+button{
+cursor:pointer
+}
+
+button:hover{
+background:#1d344d
+}
+
+.price{
+margin-left:auto;
+font-size:23px;
+font-weight:bold
+}
+
+.live{
+color:#20e68b
+}
+
+.green{
+color:#20e68b
+}
+
+.red{
+color:#ff5864
+}
+
+.yellow{
+color:#f2c94c
+}
+
+.blue{
+color:#11d9f4
+}
+
+.tools{
+display:flex;
+gap:6px;
+padding:9px;
+flex-wrap:wrap;
+border-bottom:1px solid #17263a
+}
+
+.chart-wrap{
+position:relative;
+height:640px;
+background:#060d17
+}
+
+#chart{
+width:100%;
+height:100%;
+display:block;
+cursor:crosshair
+}
+
+.chart-info{
+position:absolute;
+top:10px;
+left:10px;
+background:#091522e8;
+border:1px solid #263b55;
+border-radius:6px;
+padding:7px 9px;
+font-size:11px;
+pointer-events:none;
+z-index:4
+}
+
+.chart-status{
+position:absolute;
+right:10px;
+top:10px;
+font-size:11px;
+background:#091522e8;
+padding:6px 8px;
+border-radius:6px;
+color:#8292aa;
+pointer-events:none
+}
+
+.right{
+display:flex;
+flex-direction:column;
+gap:12px
+}
+
+.card{
+padding:15px
+}
+
+.title{
+font-size:16px;
+font-weight:bold;
+color:#a9b9d2;
+margin-bottom:13px
+}
+
+.timeframe-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:7px
+}
+
+.timeframe-box{
+background:#0e1b2c;
+padding:11px 4px;
+border-radius:8px;
+text-align:center
+}
+
+.timeframe-box small{
+display:block;
+color:#8292aa;
+margin-bottom:6px
+}
+
+.final-bias{
+margin-top:10px;
+padding:13px;
+border-radius:9px;
+text-align:center;
+font-size:20px;
+font-weight:bold;
+background:#101d2e
+}
+
+.score{
+display:flex;
+gap:18px;
+align-items:center
+}
+
+.circle{
+width:130px;
+height:130px;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:conic-gradient(
+#20e68b 0deg,
+#20e68b 280deg,
+#263244 280deg
+);
+position:relative;
+flex-shrink:0
+}
+
+.circle:after{
+content:"";
+position:absolute;
+inset:11px;
+border-radius:50%;
+background:#0a1524
+}
+
+.circle span{
+z-index:2;
+font-size:36px;
+font-weight:bold
+}
+
+.metrics{
+flex:1
+}
+
+.metric{
+display:flex;
+justify-content:space-between;
+padding:6px 0;
+border-bottom:1px solid #162337;
+font-size:13px
+}
+
+.setup{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:7px
+}
+
+.kv{
+background:#0e1b2c;
+padding:9px;
+border-radius:8px
+}
+
+.kv small{
+display:block;
+color:#8292aa;
+margin-bottom:5px
+}
+
+.kv b{
+font-size:13px
+}
+
+.signal{
+font-size:27px;
+font-weight:bold;
+margin-bottom:12px
+}
+
+.flow{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:7px
+}
+
+.flow .kv{
+text-align:center
+}
+
+.ai{
+line-height:1.7
+}
+
+.notice{
+font-size:11px;
+color:#8292aa;
+margin-top:8px
+}
+
+.control-row{
+display:flex;
+gap:7px;
+flex-wrap:wrap;
+margin-top:10px
+}
+
+.control-row input{
+width:110px
+}
+
+.locked{
+border:1px solid #20e68b!important
+}
+
+.signal-box{
+background:#0b1726;
+border:1px solid #233a55;
+border-radius:10px;
+padding:12px;
+font-size:12px;
+line-height:1.6;
+white-space:pre-line;
+margin-top:10px
+}
+
+@media(max-width:950px){
+
+.app{
+grid-template-columns:1fr;
+padding:4px
+}
+
+.chart-wrap{
+height:520px
+}
+
+}
+
+@media(max-width:600px){
+
+.timeframe-grid{
+grid-template-columns:repeat(2,1fr)
+}
+
+.flow{
+grid-template-columns:repeat(2,1fr)
+}
+
+.score{
+align-items:flex-start
+}
+
+.circle{
+width:105px;
+height:105px
+}
+
+.price{
+margin-left:0;
+font-size:18px
+}
+
+.chart-wrap{
+height:470px
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<section class="panel">
+
+<div class="top">
+
+<div>
+
+<div class="logo">KITT-X</div>
+
+<div class="sub">
+V12.5 PRO • CONFIRMED SIGNAL ENGINE
+</div>
+
+</div>
+
+<input
+id="coinSearch"
+placeholder="Search coin..."
+oninput="filterCoins()"
+>
+
+<select id="symbol">
+
+<option>Loading Coins...</option>
+
+</select>
+
+<select id="interval">
+
+<option value="1m">1m</option>
+<option value="5m">5m</option>
+<option value="15m" selected>15m</option>
+<option value="1h">1H</option>
+<option value="4h">4H</option>
+<option value="1d">1D</option>
+
+</select>
+
+<span class="live">
+● LIVE
+</span>
+
+<div id="price" class="price">
+Loading...
+</div>
+
+</div>
+
+
+<div class="tools">
+
+<button onclick="refreshAll()">
+↻ Refresh
+</button>
+
+<button onclick="resetView()">
+⟳ Reset
+</button>
+
+<button onclick="toggleEMA()">
+EMA
+</button>
+
+<button onclick="toggleVWAP()">
+VWAP
+</button>
+
+<button onclick="toggleVolume()">
+VOLUME
+</button>
+
+<button onclick="toggleRSI()">
+RSI
+</button>
+
+<button onclick="toggleMACD()">
+MACD
+</button>
+
+<button onclick="candlePlus()">
+Candle +
+</button>
+
+<button onclick="candleMinus()">
+Candle -
+</button>
+
+<button onclick="copySignal()">
+Copy Signal
+</button>
+
+<button onclick="sendWhatsApp()">
+WhatsApp
+</button>
+
+<button onclick="speak()">
+▶ Voice
+</button>
+
+</div>
+
+
+<div class="chart-wrap">
+
+<canvas id="chart"></canvas>
+
+<div id="chartInfo" class="chart-info">
+Move mouse over chart
+</div>
+
+<div class="chart-status">
+Drag = History • Wheel = Zoom
+</div>
+
+</div>
+
+</section>
+
+
+<section class="right">
+
+
+<div class="card">
+
+<div class="title">
+MULTI-TIMEFRAME CONFIRMATION
+</div>
+
+<div class="timeframe-grid">
+
+<div class="timeframe-box">
+<small>5 MIN</small>
+<b id="tf5m">--</b>
+</div>
+
+<div class="timeframe-box">
+<small>15 MIN</small>
+<b id="tf15m">--</b>
+</div>
+
+<div class="timeframe-box">
+<small>1 HOUR</small>
+<b id="tf1h">--</b>
+</div>
+
+<div class="timeframe-box">
+<small>4 HOUR</small>
+<b id="tf4h">--</b>
+</div>
+
+</div>
+
+<div id="finalBias"
+class="final-bias yellow">
+
+WAITING FOR CONFIRMATION...
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">
+KITT-X MARKET SCORE
+</div>
+
+<div class="score">
+
+<div class="circle">
+<span id="score">--</span>
+</div>
+
+<div class="metrics">
+
+<div class="metric">
+<span>Trend</span>
+<b id="trend">--</b>
+</div>
+
+<div class="metric">
+<span>Strength</span>
+<b id="strength">--</b>
+</div>
+
+<div class="metric">
+<span>RSI</span>
+<b id="rsi">--</b>
+</div>
+
+<div class="metric">
+<span>EMA 20</span>
+<b id="ema20">--</b>
+</div>
+
+<div class="metric">
+<span>EMA 50</span>
+<b id="ema50">--</b>
+</div>
+
+<div class="metric">
+<span>EMA 200</span>
+<b id="ema200">--</b>
+</div>
+
+<div class="metric">
+<span>MACD</span>
+<b id="macd">--</b>
+</div>
+
+<div class="metric">
+<span>ATR</span>
+<b id="atr">--</b>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">
+SMART TRADE SETUP
+</div>
+
+<div id="tradeSignal"
+class="signal yellow">
+
+WAITING FOR CONFIRMED SIGNAL
+
+</div>
+
+<div class="setup">
+
+<div class="kv">
+<small>Entry</small>
+<b id="entry">--</b>
+</div>
+
+<div class="kv">
+<small>Stop Loss</small>
+<b id="sl">--</b>
+</div>
+
+<div class="kv">
+<small>TP 1</small>
+<b id="tp1">--</b>
+</div>
+
+<div class="kv">
+<small>TP 2</small>
+<b id="tp2">--</b>
+</div>
+
+<div class="kv">
+<small>TP 3</small>
+<b id="tp3">--</b>
+</div>
+
+<div class="kv">
+<small>TP 4</small>
+<b id="tp4">--</b>
+</div>
+
+<div class="kv">
+<small>TP 5</small>
+<b id="tp5">--</b>
+</div>
+
+<div class="kv">
+<small>Risk / Reward</small>
+<b id="rr">--</b>
+</div>
+
+<div class="kv">
+<small>Confidence</small>
+<b id="confidence">--</b>
+</div>
+
+<div class="kv">
+<small>Status</small>
+<b id="setupStatus">WAITING</b>
+</div>
+
+</div>
+
+<div class="control-row">
+
+<input
+id="riskAmount"
+type="number"
+value="1"
+min="0.1"
+step="0.1"
+placeholder="Risk $"
+oninput="calculateProfit()"
+>
+
+<input
+id="positionSize"
+type="number"
+value="100"
+min="1"
+step="1"
+placeholder="Position $"
+oninput="calculateProfit()"
+>
+
+</div>
+
+<div class="setup">
+
+<div class="kv">
+<small>TP1 Profit</small>
+<b id="profit1">$--</b>
+</div>
+
+<div class="kv">
+<small>TP2 Profit</small>
+<b id="profit2">$--</b>
+</div>
+
+<div class="kv">
+<small>TP3 Profit</small>
+<b id="profit3">$--</b>
+</div>
+
+<div class="kv">
+<small>TP4 Profit</small>
+<b id="profit4">$--</b>
+</div>
+
+<div class="kv">
+<small>TP5 Profit</small>
+<b id="profit5">$--</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">
+24H MARKET DATA
+</div>
+
+<div class="flow">
+
+<div class="kv">
+<small>Change</small>
+<b id="change">--</b>
+</div>
+
+<div class="kv">
+<small>High</small>
+<b id="high">--</b>
+</div>
+
+<div class="kv">
+<small>Low</small>
+<b id="low">--</b>
+</div>
+
+<div class="kv">
+<small>Volume</small>
+<b id="volume">--</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">
+SMC MARKET STRUCTURE
+</div>
+
+<div class="setup">
+
+<div class="kv">
+<small>Structure</small>
+<b id="structure">--</b>
+</div>
+
+<div class="kv">
+<small>Order Block</small>
+<b id="orderBlock">--</b>
+</div>
+
+<div class="kv">
+<small>Liquidity</small>
+<b id="liquidity">--</b>
+</div>
+
+<div class="kv">
+<small>FVG</small>
+<b id="fvg">--</b>
+</div>
+
+<div class="kv">
+<small>Market Zone</small>
+<b id="marketZone">--</b>
+</div>
+
+<div class="kv">
+<small>Resistance</small>
+<b id="resistance">--</b>
+</div>
+
+<div class="kv">
+<small>Support</small>
+<b id="support">--</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card ai">
+
+<div class="title">
+
+KITT-X AI ANALYSIS
+<span class="yellow">
+V12.5 PRO
+</span>
+
+</div>
+
+<div id="analysis">
+Waiting for confirmed technical analysis...
+</div>
+
+<div class="signal-box"
+id="signalMessage">
+
+Signal message will appear here...
+
+</div>
+
+<div class="notice">
+
+This is a technical-analysis tool. No strategy can guarantee profit.
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<script>
+
+
+const $=id=>document.getElementById(id);
+
+const canvas=$("chart");
+
+const ctx=canvas.getContext("2d");
+
+
+let candles=[];
+
+let allCoins=[];
+
+let socket=null;
+
+let currentPrice=0;
+
+
+let showEMA=true;
+
+let showVWAP=false;
+
+let showVolume=false;
+
+let showRSI=false;
+
+let showMACD=false;
+
+
+let viewStart=0;
+
+let visibleCount=100;
+
+let candleWidthFactor=0.7;
+
+
+let dragging=false;
+
+let dragStartX=0;
+
+let dragStartView=0;
+
+let mouseX=-1;
+
+let mouseY=-1;
+
+
+let lockedSetup=null;
+
+
+/* FORMAT */
+
+
+function formatPrice(n){
+
+if(!isFinite(n))
+return "--";
+
+return Number(n).toLocaleString(
+"en-GB",
+{
+minimumFractionDigits:2,
+maximumFractionDigits:8
+}
+);
+
+}
+
+
+function money(n){
+
+if(!isFinite(n))
+return "$--";
+
+return "$"+
+Number(n).toFixed(2);
+}
+
+
+function formatTime(t){
+
+return new Date(t).toLocaleString(
+"en-GB",
+{
+day:"2-digit",
+month:"short",
+hour:"2-digit",
+minute:"2-digit"
+}
+);
+
+}
+
+
+/* EMA */
+
+
+function ema(v,p){
+
+if(!v.length)
+return[];
+
+let k=2/(p+1);
+
+let e=v[0];
+
+let out=[e];
+
+for(let i=1;i<v.length;i++){
+
+e=(v[i]-e)*k+e;
+
+out.push(e);
+
+}
+
+return out;
+
+}
+
+
+/* RSI */
+
+
+function rsi(v,p=14){
+
+if(v.length<=p)
+return 50;
+
+let gain=0;
+
+let loss=0;
+
+for(let i=1;i<=p;i++){
+
+let d=v[i]-v[i-1];
+
+if(d>=0)
+gain+=d;
+
+else
+loss-=d;
+
+}
+
+let ag=gain/p;
+
+let al=loss/p;
+
+for(let i=p+1;i<v.length;i++){
+
+let d=v[i]-v[i-1];
+
+let g=Math.max(d,0);
+
+let l=Math.max(-d,0);
+
+ag=(ag*(p-1)+g)/p;
+
+al=(al*(p-1)+l)/p;
+
+}
+
+if(al===0)
+return 100;
+
+return 100-(100/(1+ag/al));
+
+}
+
+
+/* ATR */
+
+
+function atr(data,p=14){
+
+if(data.length<=p)
+return 0;
+
+let tr=[];
+
+for(let i=1;i<data.length;i++){
+
+let c=data[i];
+
+let x=data[i-1];
+
+tr.push(
+Math.max(
+c.high-c.low,
+Math.abs(c.high-x.close),
+Math.abs(c.low-x.close)
+)
+);
+
+}
+
+let a=tr.slice(-p);
+
+return a.reduce(
+(x,y)=>x+y,
+0
+)/a.length;
+
+}
+
+
+/* VWAP */
+
+
+function vwap(data){
+
+let pv=0;
+
+let vol=0;
+
+data.forEach(c=>{
+
+let typical=
+(c.high+c.low+c.close)/3;
+
+pv+=typical*c.volume;
+
+vol+=c.volume;
+
+});
+
+return vol?
+pv/vol:
+data.at(-1)?.close||0;
+
+}
+
+
+/* COINS */
+
+
+async function loadCoins(){
+
+try{
+
+let r=await fetch(
+"https://api.binance.com/api/v3/exchangeInfo"
+);
+
+let d=await r.json();
+
+allCoins=d.symbols.filter(
+x=>
+x.status==="TRADING" &&
+x.quoteAsset==="USDT" &&
+x.isSpotTradingAllowed
+);
+
+allCoins.sort(
+(a,b)=>
+a.baseAsset.localeCompare(b.baseAsset)
+);
+
+renderCoins(allCoins);
+
+}
+
+catch(e){
+
+$("symbol").innerHTML=
+'<option value="BTCUSDT">BTC / USDT</option>';
+
+}
+
+}
+
+
+function renderCoins(list){
+
+let s=$("symbol");
+
+let old=s.value;
+
+s.innerHTML="";
+
+list.forEach(c=>{
+
+let o=document.createElement("option");
+
+o.value=c.symbol;
+
+o.textContent=
+c.baseAsset+
+" / USDT";
+
+s.appendChild(o);
+
+});
+
+if(list.some(c=>c.symbol===old))
+s.value=old;
+
+else if(list.length)
+s.value=list[0].symbol;
+
+}
+
+
+function filterCoins(){
+
+let q=$("coinSearch")
+.value
+.toUpperCase()
+.trim();
+
+renderCoins(
+allCoins.filter(
+c=>
+c.baseAsset.includes(q) ||
+c.symbol.includes(q)
+)
+);
+
+}
+
+
+/* VIEW */
+
+
+function resetView(){
+
+visibleCount=100;
+
+viewStart=Math.max(
+0,
+candles.length-visibleCount
+);
+
+drawChart();
+
+}
+
+
+function candlePlus(){
+
+candleWidthFactor=
+Math.min(
+1.4,
+candleWidthFactor+0.1
+);
+
+drawChart();
+
+}
+
+
+function candleMinus(){
+
+candleWidthFactor=
+Math.max(
+0.25,
+candleWidthFactor-0.1
+);
+
+drawChart();
+
+}
+
+
+function getVisible(){
+
+if(!candles.length)
+return[];
+
+let maxStart=Math.max(
+0,
+candles.length-visibleCount
+);
+
+viewStart=Math.max(
+0,
+Math.min(
+viewStart,
+maxStart
+)
+);
+
+return candles.slice(
+viewStart,
+viewStart+visibleCount
+);
+
+}
+
+
+/* CHART */
+
+
+function drawChart(){
+
+if(!candles.length)
+return;
+
+let w=canvas.clientWidth;
+
+let h=canvas.clientHeight;
+
+if(!w||!h)
+return;
+
+let dpr=window.devicePixelRatio||1;
+
+canvas.width=w*dpr;
+
+canvas.height=h*dpr;
+
+ctx.setTransform(
+dpr,0,0,dpr,0,0
+);
+
+ctx.clearRect(
+0,0,w,h
+);
+
+let data=getVisible();
+
+if(!data.length)
+return;
+
+let high=Math.max(
+...data.map(x=>x.high)
+);
+
+let low=Math.min(
+...data.map(x=>x.low)
+);
+
+let activePrice=
+currentPrice||
+data.at(-1).close;
+
+if(activePrice>high)
+high=activePrice;
+
+if(activePrice<low)
+low=activePrice;
+
+let range=high-low||1;
+
+let left=8;
+
+let right=78;
+
+let top=20;
+
+let bottom=35;
+
+let chartW=w-left-right;
+
+let chartH=h-top-bottom;
+
+let gap=chartW/data.length;
+
+let candleW=Math.max(
+2,
+Math.min(
+22,
+gap*candleWidthFactor
+)
+);
+
+
+function py(p){
+
+return top+
+((high-p)/range)*
+chartH;
+
+}
+
+
+/* GRID */
+
+
+ctx.strokeStyle="#142438";
+
+for(let i=1;i<8;i++){
+
+let y=top+i*chartH/8;
+
+ctx.beginPath();
+
+ctx.moveTo(left,y);
+
+ctx.lineTo(w-right,y);
+
+ctx.stroke();
+
+}
+
+for(let i=1;i<8;i++){
+
+let x=left+i*chartW/8;
+
+ctx.beginPath();
+
+ctx.moveTo(x,top);
+
+ctx.lineTo(x,h-bottom);
+
+ctx.stroke();
+
+}
+
+
+/* CANDLES */
+
+
+data.forEach((c,i)=>{
+
+let x=
+left+
+i*gap+
+gap/2;
+
+let bull=
+c.close>=c.open;
+
+ctx.strokeStyle=
+bull?
+"#20e68b":
+"#ff5864";
+
+ctx.fillStyle=
+ctx.strokeStyle;
+
+ctx.beginPath();
+
+ctx.moveTo(
+x,
+py(c.high)
+);
+
+ctx.lineTo(
+x,
+py(c.low)
+);
+
+ctx.stroke();
+
+let y1=
+py(
+Math.max(
+c.open,
+c.close
+)
+);
+
+let y2=
+py(
+Math.min(
+c.open,
+c.close
+)
+);
+
+ctx.fillRect(
+x-candleW/2,
+y1,
+candleW,
+Math.max(
+2,
+y2-y1
+)
+);
+
+});
+
+
+/* EMA */
+
+
+if(showEMA){
+
+let closes=candles.map(x=>x.close);
+
+drawLine(
+ema(closes,20)
+.slice(
+viewStart,
+viewStart+visibleCount
+),
+"#f2c94c",
+py,
+left,
+gap
+);
+
+drawLine(
+ema(closes,50)
+.slice(
+viewStart,
+viewStart+visibleCount
+),
+"#11d9f4",
+py,
+left,
+gap
+);
+
+drawLine(
+ema(closes,200)
+.slice(
+viewStart,
+viewStart+visibleCount
+),
+"#b878ff",
+py,
+left,
+gap
+);
+
+}
+
+
+/* VWAP */
+
+
+if(showVWAP){
+
+let v=vwap(data);
+
+horizontal(
+v,
+"#ffffff",
+py,
+left,
+w-right
+);
+
+}
+
+
+/* SUPPORT RESISTANCE */
+
+
+let recent=candles.slice(-50);
+
+let resistance=Math.max(
+...recent.map(x=>x.high)
+);
+
+let support=Math.min(
+...recent.map(x=>x.low)
+);
+
+horizontal(
+resistance,
+"#ff5864",
+py,
+left,
+w-right
+);
+
+horizontal(
+support,
+"#20e68b",
+py,
+left,
+w-right
+);
+
+
+/* LOCKED SETUP */
+
+
+if(lockedSetup){
+
+drawTradeLine(
+lockedSetup.entry,
+"#11d9f4",
+py,
+left,
+w-right,
+"ENTRY"
+);
+
+drawTradeLine(
+lockedSetup.sl,
+"#ff5864",
+py,
+left,
+w-right,
+"SL"
+);
+
+[
+["tp1","#20e68b"],
+["tp2","#20e68b"],
+["tp3","#20e68b"],
+["tp4","#20e68b"],
+["tp5","#20e68b"]
+].forEach(x=>{
+
+drawTradeLine(
+lockedSetup[x[0]],
+x[1],
+py,
+left,
+w-right,
+x[0].toUpperCase()
+);
+
+});
+
+}
+
+
+/* LIVE PRICE */
+
+
+if(currentPrice){
+
+let y=py(currentPrice);
+
+ctx.strokeStyle="#fff";
+
+ctx.setLineDash([5,5]);
+
+ctx.beginPath();
+
+ctx.moveTo(left,y);
+
+ctx.lineTo(w-right,y);
+
+ctx.stroke();
+
+ctx.setLineDash([]);
+
+ctx.fillStyle="#fff";
+
+ctx.font="bold 11px Arial";
+
+ctx.fillText(
+formatPrice(currentPrice),
+w-right+8,
+y+4
+);
+
+}
+
+
+/* PRICE SCALE */
+
+
+ctx.fillStyle="#8292aa";
+
+ctx.font="10px Arial";
+
+ctx.textAlign="left";
+
+for(let i=0;i<=8;i++){
+
+let p=
+high-
+(range*i/8);
+
+let y=
+top+
+(chartH*i/8);
+
+ctx.fillText(
+formatPrice(p),
+w-right+7,
+y+3
+);
+
+}
+
+
+/* TIME SCALE */
+
+
+ctx.textAlign="center";
+
+for(let i=0;i<6;i++){
+
+let idx=Math.floor(
+i*(data.length-1)/5
+);
+
+let x=
+left+
+idx*gap+
+gap/2;
+
+ctx.fillText(
+formatTime(data[idx].time),
+x,
+h-10
+);
+
+}
+
+
+/* CROSSHAIR */
+
+
+if(
+mouseX>left &&
+mouseX<w-right &&
+mouseY>top &&
+mouseY<h-bottom
+){
+
+let index=Math.floor(
+(mouseX-left)/gap
+);
+
+index=Math.max(
+0,
+Math.min(
+data.length-1,
+index
+)
+);
+
+let c=data[index];
+
+let x=
+left+
+index*gap+
+gap/2;
+
+ctx.strokeStyle="#75869d";
+
+ctx.setLineDash([3,3]);
+
+ctx.beginPath();
+
+ctx.moveTo(x,top);
+
+ctx.lineTo(x,h-bottom);
+
+ctx.stroke();
+
+ctx.beginPath();
+
+ctx.moveTo(left,mouseY);
+
+ctx.lineTo(w-right,mouseY);
+
+ctx.stroke();
+
+ctx.setLineDash([]);
+
+$("chartInfo").textContent=
+formatTime(c.time)+
+" | O "+
+formatPrice(c.open)+
+" H "+
+formatPrice(c.high)+
+" L "+
+formatPrice(c.low)+
+" C "+
+formatPrice(c.close);
+
+}
+
+}
+
+
+/* DRAW LINE */
+
+
+function drawLine(
+values,
+color,
+py,
+left,
+gap
+){
+
+if(!values.length)
+return;
+
+ctx.strokeStyle=color;
+
+ctx.lineWidth=1.4;
+
+ctx.beginPath();
+
+values.forEach((v,i)=>{
+
+let x=
+left+
+i*gap+
+gap/2;
+
+let y=py(v);
+
+if(i===0)
+ctx.moveTo(x,y);
+
+else
+ctx.lineTo(x,y);
+
+});
+
+ctx.stroke();
+
+}
+
+
+function horizontal(
+price,
+color,
+py,
+x1,
+x2
+){
+
+let y=py(price);
+
+ctx.strokeStyle=color;
+
+ctx.setLineDash([5,5]);
+
+ctx.beginPath();
+
+ctx.moveTo(x1,y);
+
+ctx.lineTo(x2,y);
+
+ctx.stroke();
+
+ctx.setLineDash([]);
+
+}
+
+
+function drawTradeLine(
+price,
+color,
+py,
+x1,
+x2,
+label
+){
+
+let y=py(price);
+
+ctx.strokeStyle=color;
+
+ctx.setLineDash([4,4]);
+
+ctx.beginPath();
+
+ctx.moveTo(x1,y);
+
+ctx.lineTo(x2,y);
+
+ctx.stroke();
+
+ctx.setLineDash([]);
+
+ctx.fillStyle=color;
+
+ctx.font="bold 10px Arial";
+
+ctx.fillText(
+label+" "+formatPrice(price),
+x2-115,
+y-5
+);
+
+}
+
+
+/* LOAD DATA */
+
+
+async function loadData(){
+
+let symbol=$("symbol").value;
+
+let interval=$("interval").value;
+
+try{
+
+let r=await fetch(
+"https://api.binance.com/api/v3/klines"+
+"?symbol="+symbol+
+"&interval="+interval+
+"&limit=500"
+);
+
+if(!r.ok)
+throw new Error(
+"Candle API Error"
+);
+
+let d=await r.json();
+
+candles=d.map(x=>({
+
+time:Number(x[0]),
+
+open:Number(x[1]),
+
+high:Number(x[2]),
+
+low:Number(x[3]),
+
+close:Number(x[4]),
+
+volume:Number(x[5])
+
+}));
+
+viewStart=Math.max(
+0,
+candles.length-visibleCount
+);
+
+analyzeMarket();
+
+drawChart();
+
+}
+
+catch(e){
+
+$("analysis").textContent=
+"Technical analysis error: "+
+e.message;
+
+}
+
+}
+
+
+/* MAIN ANALYSIS */
+
+
+function analyzeMarket(){
+
+if(candles.length<200)
+return;
+
+let closes=
+candles.map(x=>x.close);
+
+let e20=
+ema(closes,20).at(-1);
+
+let e50=
+ema(closes,50).at(-1);
+
+let e200=
+ema(closes,200).at(-1);
+
+let R=rsi(closes);
+
+let A=atr(candles);
+
+let e12=
+ema(closes,12).at(-1);
+
+let e26=
+ema(closes,26).at(-1);
+
+let MACD=e12-e26;
+
+let price=
+currentPrice||
+closes.at(-1);
+
+let bullish=
+e20>e50 &&
+price>e200;
+
+let bearish=
+e20<e50 &&
+price<e200;
+
+let trend=
+bullish?
+"BULLISH":
+bearish?
+"BEARISH":
+"RANGE";
+
+let score=50;
+
+if(bullish)
+score+=20;
+
+if(bearish)
+score-=20;
+
+if(R>55)
+score+=10;
+
+if(R<45)
+score-=10;
+
+if(MACD>0)
+score+=10;
+
+if(MACD<0)
+score-=10;
+
+score=Math.max(
+0,
+Math.min(
+100,
+Math.round(score)
+)
+);
+
+let distance=
+Math.abs(e20-e50)/
+e50*
+100;
+
+let strength=
+distance>2?
+"STRONG":
+distance>.5?
+"MEDIUM":
+"WEAK";
+
+$("score").textContent=score;
+
+$("trend").textContent=trend;
+
+$("trend").className=
+bullish?
+"green":
+bearish?
+"red":
+"yellow";
+
+$("strength").textContent=
+strength;
+
+$("rsi").textContent=
+R.toFixed(2);
+
+$("ema20").textContent=
+formatPrice(e20);
+
+$("ema50").textContent=
+formatPrice(e50);
+
+$("ema200").textContent=
+formatPrice(e200);
+
+$("macd").textContent=
+MACD.toFixed(6);
+
+$("atr").textContent=
+formatPrice(A);
+
+
+/* S/R */
+
+
+let recent=
+candles.slice(-50);
+
+let resistance=
+Math.max(
+...recent.map(x=>x.high)
+);
+
+let support=
+Math.min(
+...recent.map(x=>x.low)
+);
+
+$("resistance").textContent=
+formatPrice(resistance);
+
+$("support").textContent=
+formatPrice(support);
+
+
+/* STRUCTURE */
+
+
+let last=
+candles.at(-1);
+
+let prev=
+candles.at(-2);
+
+let structure="RANGE";
+
+if(
+last.high>prev.high &&
+last.low>prev.low
+)
+structure="BULLISH STRUCTURE";
+
+else if(
+last.high<prev.high &&
+last.low<prev.low
+)
+structure="BEARISH STRUCTURE";
+
+$("structure").textContent=
+structure;
+
+$("structure").className=
+structure.includes("BULLISH")?
+"green":
+structure.includes("BEARISH")?
+"red":
+"yellow";
+
+
+/* ORDER BLOCK */
+
+
+let ob=
+last.close>last.open?
+"BUY ORDER BLOCK":
+"SELL ORDER BLOCK";
+
+$("orderBlock").textContent=ob;
+
+$("orderBlock").className=
+last.close>last.open?
+"green":
+"red";
+
+
+/* LIQUIDITY */
+
+
+let liq="NEUTRAL";
+
+if(price>=resistance*.995)
+liq="BUY-SIDE LIQUIDITY";
+
+else if(price<=support*1.005)
+liq="SELL-SIDE LIQUIDITY";
+
+$("liquidity").textContent=liq;
+
+
+/* FVG */
+
+
+let fvg="NONE";
+
+if(candles.length>=3){
+
+let a=candles.at(-3);
+
+let c=candles.at(-1);
+
+if(c.low>a.high)
+fvg="BULLISH FVG";
+
+else if(c.high<a.low)
+fvg="BEARISH FVG";
+
+}
+
+$("fvg").textContent=fvg;
+
+
+/* ZONE */
+
+
+let zone;
+
+if(price>e20&&price>e50)
+zone="BULLISH PREMIUM";
+
+else if(price<e20&&price<e50)
+zone="BEARISH DISCOUNT";
+
+else
+zone="EQUILIBRIUM";
+
+$("marketZone").textContent=zone;
+
+}
+
+
+/* SIGNAL ENGINE */
+
+
+function getSignal(){
+
+let score=
+Number($("score").textContent);
+
+let trend=
+$("trend").textContent;
+
+let strength=
+$("strength").textContent;
+
+let R=
+Number($("rsi").textContent);
+
+let bias=
+$("finalBias").textContent;
+
+let bullish=
+trend==="BULLISH" &&
+R>=52 &&
+score>=70 &&
+(
+bias.includes("LONG")
+);
+
+let bearish=
+trend==="BEARISH" &&
+R<=48 &&
+score<=30 &&
+(
+bias.includes("SHORT")
+);
+
+if(bullish)
+return"LONG";
+
+if(bearish)
+return"SHORT";
+
+return"WAIT";
+
+}
+
+
+/* LOCK SETUP */
+
+
+function lockTradeSetup(direction){
+
+let price=
+currentPrice||
+candles.at(-1)?.close;
+
+let A=
+atr(candles);
+
+if(!price||!A)
+return;
+
+let sl,tp1,tp2,tp3,tp4,tp5;
+
+if(direction==="LONG"){
+
+sl=price-A*1.5;
+
+tp1=price+A*1.5;
+
+tp2=price+A*2.5;
+
+tp3=price+A*3.5;
+
+tp4=price+A*5;
+
+tp5=price+A*7;
+
+}
+
+else{
+
+sl=price+A*1.5;
+
+tp1=price-A*1.5;
+
+tp2=price-A*2.5;
+
+tp3=price-A*3.5;
+
+tp4=price-A*5;
+
+tp5=price-A*7;
+
+}
+
+lockedSetup={
+
+direction,
+
+entry:price,
+
+sl,
+
+tp1,
+
+tp2,
+
+tp3,
+
+tp4,
+
+tp5,
+
+time:Date.now()
+
+};
+
+renderLockedSetup();
+
+}
+
+
+/* RENDER SETUP */
+
+
+function renderLockedSetup(){
+
+if(!lockedSetup)
+return;
+
+let s=lockedSetup;
+
+$("entry").textContent=
+formatPrice(s.entry);
+
+$("sl").textContent=
+formatPrice(s.sl);
+
+$("tp1").textContent=
+formatPrice(s.tp1);
+
+$("tp2").textContent=
+formatPrice(s.tp2);
+
+$("tp3").textContent=
+formatPrice(s.tp3);
+
+$("tp4").textContent=
+formatPrice(s.tp4);
+
+$("tp5").textContent=
+formatPrice(s.tp5);
+
+let risk=
+Math.abs(s.entry-s.sl);
+
+let reward=
+Math.abs(s.tp5-s.entry);
+
+$("rr").textContent=
+"1 : "+
+(reward/risk).toFixed(2);
+
+$("confidence").textContent=
+"80%+";
+
+$("setupStatus").textContent=
+"LOCKED";
+
+$("setupStatus").className=
+"green";
+
+$("tradeSignal").textContent=
+s.direction+
+" CONFIRMED";
+
+$("tradeSignal").className=
+s.direction==="LONG"?
+"signal green":
+"signal red";
+
+calculateProfit();
+
+}
+
+
+/* PROFIT CALCULATOR */
+
+
+function calculateProfit(){
+
+if(!lockedSetup){
+
+[
+"profit1",
+"profit2",
+"profit3",
+"profit4",
+"profit5"
+].forEach(
+id=>$(id).textContent="$--"
+);
+
+return;
+
+}
+
+let capital=
+Number(
+$("positionSize").value
+)||100;
+
+let risk=
+Number(
+$("riskAmount").value
+)||1;
+
+let entry=
+lockedSetup.entry;
+
+let riskDistance=
+Math.abs(
+entry-lockedSetup.sl
+);
+
+let riskPercent=
+riskDistance/entry;
+
+let actualPosition=
+risk/riskPercent;
+
+let maxCapital=
+Math.min(
+capital,
+actualPosition
+);
+
+let tps=[
+lockedSetup.tp1,
+lockedSetup.tp2,
+lockedSetup.tp3,
+lockedSetup.tp4,
+lockedSetup.tp5
+];
+
+tps.forEach(
+(tp,i)=>{
+
+let move=
+Math.abs(tp-entry)/
+entry;
+
+let profit=
+maxCapital*move;
+
+$("profit"+(i+1))
+.textContent=
+money(profit);
+
+}
+);
+
+}
+
+
+/* TIMEFRAMES */
+
+
+async function analyzeTimeframes(){
+
+let symbol=
+$("symbol").value;
+
+let map={
+
+"5m":"tf5m",
+
+"15m":"tf15m",
+
+"1h":"tf1h",
+
+"4h":"tf4h"
+
+};
+
+let results=[];
+
+for(let tf in map){
+
+try{
+
+let r=await fetch(
+"https://api.binance.com/api/v3/klines"+
+"?symbol="+symbol+
+"&interval="+tf+
+"&limit=200"
+);
+
+let d=await r.json();
+
+let closes=
+d.map(x=>Number(x[4]));
+
+let e20=
+ema(closes,20).at(-1);
+
+let e50=
+ema(closes,50).at(-1);
+
+let R=
+rsi(closes);
+
+let m=
+ema(closes,12).at(-1)-
+ema(closes,26).at(-1);
+
+let signal="NEUTRAL";
+
+if(
+e20>e50 &&
+R>=52 &&
+m>=0
+)
+signal="BULLISH";
+
+else if(
+e20<e50 &&
+R<=48 &&
+m<0
+)
+signal="BEARISH";
+
+let el=
+$(map[tf]);
+
+el.textContent=
+signal;
+
+el.className=
+signal==="BULLISH"?
+"green":
+signal==="BEARISH"?
+"red":
+"yellow";
+
+results.push(signal);
+
+}
+
+catch(e){}
+
+}
+
+let bull=
+results.filter(
+x=>x==="BULLISH"
+).length;
+
+let bear=
+results.filter(
+x=>x==="BEARISH"
+).length;
+
+let bias;
+
+if(bull>=3)
+bias="STRONG LONG";
+
+else if(bear>=3)
+bias="STRONG SHORT";
+
+else if(bull>bear)
+bias="LONG BIAS";
+
+else if(bear>bull)
+bias="SHORT BIAS";
+
+else
+bias="WAIT - CONFLICT";
+
+$("finalBias").textContent=
+bias;
+
+$("finalBias").className=
+bias.includes("LONG")?
+"final-bias green":
+bias.includes("SHORT")?
+"final-bias red":
+"final-bias yellow";
+
+let direction=
+getSignal();
+
+if(
+direction==="LONG"||
+direction==="SHORT"
+){
+
+if(
+!lockedSetup||
+lockedSetup.direction!==direction
+){
+
+lockTradeSetup(direction);
+
+}
+
+}
+
+else{
+
+if(!lockedSetup){
+
+$("tradeSignal").textContent=
+"WAITING FOR CONFIRMATION";
+
+$("tradeSignal").className=
+"signal yellow";
+
+}
+
+}
+
+updateAnalysis();
+
+drawChart();
+
+}
+
+
+/* ANALYSIS */
+
+
+function updateAnalysis(){
+
+let bias=
+$("finalBias").textContent;
+
+let status=
+lockedSetup?
+lockedSetup.direction+
+" CONFIRMED":
+"WAITING";
+
+$("analysis").textContent=
+$("symbol").value+
+" "+
+$("interval").value+
+" analysis: "+
+status+
+". Multi-timeframe trend, EMA structure, RSI, MACD and ATR volatility are being combined. Entry and risk levels remain locked after confirmation.";
+
+$("signalMessage").textContent=
+signalText();
+
+}
+
+
+/* MARKET DATA */
+
+
+async function loadMarketData(){
+
+let symbol=
+$("symbol").value;
+
+try{
+
+let r=await fetch(
+"https://api.binance.com/api/v3/ticker/24hr?symbol="+
+symbol
+);
+
+let d=await r.json();
+
+$("change").textContent=
+Number(
+d.priceChangePercent
+).toFixed(2)+"%";
+
+$("high").textContent=
+formatPrice(
+Number(d.highPrice)
+);
+
+$("low").textContent=
+formatPrice(
+Number(d.lowPrice)
+);
+
+$("volume").textContent=
+Number(
+d.volume
+).toLocaleString(
+"en-GB"
+);
+
+if(!currentPrice)
+updatePrice(
+Number(d.lastPrice)
+);
+
+}
+
+catch(e){}
+
+}
+
+
+/* PRICE */
+
+
+function updatePrice(p){
+
+if(
+!p||
+!isFinite(p)
+)
+return;
+
+currentPrice=p;
+
+$("price").textContent=
+"$"+
+formatPrice(p);
+
+drawChart();
+
+}
+
+
+/* WEBSOCKET */
+
+
+function connectLivePrice(){
+
+if(socket){
+
+try{
+socket.close()
+}
+catch(e){}
+
+}
+
+let symbol=
+$("symbol")
+.value
+.toLowerCase();
+
+let interval=
+$("interval")
+.value;
+
+socket=
+new WebSocket(
+"wss://stream.binance.com:9443/ws/"+
+symbol+
+"@kline_"+
+interval
+);
+
+socket.onmessage=e=>{
+
+try{
+
+let d=
+JSON.parse(
+e.data
+);
+
+let k=d.k;
+
+let candle={
+
+time:Number(k.t),
+
+open:Number(k.o),
+
+high:Number(k.h),
+
+low:Number(k.l),
+
+close:Number(k.c),
+
+volume:Number(k.v)
+
+};
+
+let last=
+candles.at(-1);
+
+if(
+last&&
+last.time===candle.time
+){
+
+candles[candles.length-1]=candle;
+
+}
+
+else{
+
+candles.push(candle);
+
+if(candles.length>500)
+candles.shift();
+
+}
+
+updatePrice(
+candle.close
+);
+
+}
+
+catch(e){}
+
+};
+
+socket.onclose=()=>{
+
+setTimeout(
+()=>{
+
+if(
+$("symbol").value
+)
+connectLivePrice();
+
+},
+3000
+);
+
+};
+
+}
+
+
+/* REFRESH */
+
+
+function refreshAll(){
+
+currentPrice=0;
+
+candles=[];
+
+lockedSetup=null;
+
+$("setupStatus").textContent=
+"WAITING";
+
+$("setupStatus").className=
+"yellow";
+
+if(socket){
+
+try{
+socket.close()
+}
+catch(e){}
+
+}
+
+loadData();
+
+loadMarketData();
+
+analyzeTimeframes();
+
+connectLivePrice();
+
+}
+
+
+/* ZOOM */
+
+
+canvas.addEventListener(
+"wheel",
+e=>{
+
+e.preventDefault();
+
+if(!candles.length)
+return;
+
+let rect=
+canvas.getBoundingClientRect();
+
+let x=
+e.clientX-
+rect.left;
+
+let ratio=
+x/
+rect.width;
+
+let old=
+visibleCount;
+
+if(e.deltaY<0){
+
+visibleCount=
+Math.max(
+30,
+Math.floor(
+visibleCount*.8
+)
+);
+
+}
+
+else{
+
+visibleCount=
+Math.min(
+candles.length,
+Math.floor(
+visibleCount*1.25
+)
+);
+
+}
+
+let anchor=
+viewStart+
+Math.floor(
+ratio*old
+);
+
+viewStart=
+anchor-
+Math.floor(
+ratio*visibleCount
+);
+
+let maxStart=
+Math.max(
+0,
+candles.length-visibleCount
+);
+
+viewStart=
+Math.max(
+0,
+Math.min(
+viewStart,
+maxStart
+)
+);
+
+drawChart();
+
+},
+{
+passive:false
+}
+);
+
+
+/* DRAG HISTORY */
+
+
+canvas.addEventListener(
+"mousedown",
+e=>{
+
+dragging=true;
+
+dragStartX=e.clientX;
+
+dragStartView=viewStart;
+
+canvas.style.cursor=
+"grabbing";
+
+}
+);
+
+
+window.addEventListener(
+"mouseup",
+()=>{
+
+dragging=false;
+
+canvas.style.cursor=
+"crosshair";
+
+}
+);
+
+
+window.addEventListener(
+"mousemove",
+e=>{
+
+if(!dragging)
+return;
+
+let dx=
+e.clientX-
+dragStartX;
+
+let rect=
+canvas.getBoundingClientRect();
+
+let moved=
+Math.round(
+-dx/
+(rect.width/visibleCount)
+);
+
+viewStart=
+dragStartView+
+moved;
+
+let maxStart=
+Math.max(
+0,
+candles.length-visibleCount
+);
+
+viewStart=
+Math.max(
+0,
+Math.min(
+viewStart,
+maxStart
+)
+);
+
+drawChart();
+
+}
+);
+
+
+/* CROSSHAIR */
+
+
+canvas.addEventListener(
+"mousemove",
+e=>{
+
+let rect=
+canvas.getBoundingClientRect();
+
+mouseX=
+e.clientX-
+rect.left;
+
+mouseY=
+e.clientY-
+rect.top;
+
+drawChart();
+
+}
+);
+
+
+canvas.addEventListener(
+"mouseleave",
+()=>{
+
+mouseX=-1;
+
+mouseY=-1;
+
+$("chartInfo").textContent=
+"Move mouse over chart";
+
+drawChart();
+
+}
+);
+
+
+/* INDICATORS */
+
+
+function toggleEMA(){
+
+showEMA=!showEMA;
+
+drawChart();
+
+}
+
+
+function toggleVWAP(){
+
+showVWAP=!showVWAP;
+
+drawChart();
+
+}
+
+
+function toggleVolume(){
+
+showVolume=!showVolume;
+
+drawChart();
+
+}
+
+
+function toggleRSI(){
+
+showRSI=!showRSI;
+
+drawChart();
+
+}
+
+
+function toggleMACD(){
+
+showMACD=!showMACD;
+
+drawChart();
+
+}
+
+
+/* SIGNAL MESSAGE */
+
+
+function signalText(){
+
+if(!lockedSetup){
+
+return`
+
+KITT-X V12.5 PRO
+
+${$("symbol").value}
+${$("interval").value}
+
+SIGNAL: WAIT
+
+STATUS: WAITING FOR CONFIRMED MTF SIGNAL
+
+NO TRADE UNTIL CONFIRMATION
+
+`;
+
+}
+
+let s=
+lockedSetup;
+
+return`
+
+KITT-X V12.5 PRO
+
+━━━━━━━━━━━━━━
+
+PAIR: ${$("symbol").value}
+
+TIMEFRAME: ${$("interval").value}
+
+SIGNAL: ${s.direction} CONFIRMED
+
+━━━━━━━━━━━━━━
+
+ENTRY: ${formatPrice(s.entry)}
+
+STOP LOSS: ${formatPrice(s.sl)}
+
+TP1: ${formatPrice(s.tp1)}
+
+TP2: ${formatPrice(s.tp2)}
+
+TP3: ${formatPrice(s.tp3)}
+
+TP4: ${formatPrice(s.tp4)}
+
+TP5: ${formatPrice(s.tp5)}
+
+RISK / REWARD: ${
+$("rr").textContent
+}
+
+CONFIDENCE: ${
+$("confidence").textContent
+}
+
+━━━━━━━━━━━━━━
+
+TP1 PROFIT: ${
+$("profit1").textContent
+}
+
+TP2 PROFIT: ${
+$("profit2").textContent
+}
+
+TP3 PROFIT: ${
+$("profit3").textContent
+}
+
+TP4 PROFIT: ${
+$("profit4").textContent
+}
+
+TP5 PROFIT: ${
+$("profit5").textContent
+}
+
+━━━━━━━━━━━━━━
+
+STRUCTURE:
+${$("structure").textContent}
+
+ORDER BLOCK:
+${$("orderBlock").textContent}
+
+LIQUIDITY:
+${$("liquidity").textContent}
+
+━━━━━━━━━━━━━━
+
+KITT-X SMART TRADE ENGINE
+
+`;
+
+}
+
+
+/* COPY */
+
+
+function copySignal(){
+
+navigator.clipboard.writeText(
+signalText()
+);
+
+alert(
+"Signal copied!"
+);
+
+}
+
+
+/* WHATSAPP */
+
+
+function sendWhatsApp(){
+
+let text=
+encodeURIComponent(
+signalText()
+);
+
+window.open(
+"https://wa.me/?text="+
+text,
+"_blank"
+);
+
+}
+
+
+/* VOICE */
+
+
+function speak(){
+
+if(
+!("speechSynthesis"in window)
+)
+return;
+
+speechSynthesis.cancel();
+
+let u=
+new SpeechSynthesisUtterance(
+$("analysis").textContent
+);
+
+u.rate=.85;
+
+u.pitch=.7;
+
+speechSynthesis.speak(u);
+
+}
+
+
+/* EVENTS */
+
+
+$("symbol")
+.addEventListener(
+"change",
+refreshAll
+);
+
+$("interval")
+.addEventListener(
+"change",
+refreshAll
+);
+
+$("riskAmount")
+.addEventListener(
+"input",
+calculateProfit
+);
+
+$("positionSize")
+.addEventListener(
+"input",
+calculateProfit
+);
+
+window.addEventListener(
+"resize",
+drawChart
+);
+
+
+/* START */
+
+
+loadCoins()
+.then(
+()=>refreshAll()
+);
+
+
+/* AUTO UPDATE */
+
+
+setInterval(
+loadMarketData,
+10000
+);
+
+setInterval(
+loadData,
+30000
+);
+
+setInterval(
+analyzeTimeframes,
+30000
+);
+
+</script>
+
+</body>
+</html>
