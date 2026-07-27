@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>KITT-X V12.4 PRO</title>
+<title>KITT-X V12.5 PRO</title>
 
 <style>
 *{box-sizing:border-box}
@@ -12,13 +12,14 @@ body{
 margin:0;
 background:#050b14;
 color:#e8eef7;
-font-family:Arial,sans-serif
+font-family:Arial,sans-serif;
+overflow-x:hidden
 }
 
 .app{
 min-height:100vh;
 display:grid;
-grid-template-columns:minmax(0,1.55fr) minmax(350px,1fr);
+grid-template-columns:minmax(0,1.6fr) minmax(360px,1fr);
 gap:12px;
 padding:12px
 }
@@ -34,7 +35,7 @@ border-radius:14px
 .top{
 display:flex;
 align-items:center;
-gap:9px;
+gap:8px;
 padding:14px;
 border-bottom:1px solid #17263a;
 flex-wrap:wrap
@@ -61,19 +62,17 @@ border-radius:8px;
 padding:10px 12px
 }
 
-input{width:150px}
+input{width:145px}
 
-button{
-cursor:pointer
-}
+button{cursor:pointer}
 
 button:hover{
-background:#1c344c
+background:#1d344d
 }
 
 .price{
 margin-left:auto;
-font-size:23px;
+font-size:22px;
 font-weight:bold
 }
 
@@ -92,7 +91,7 @@ border-bottom:1px solid #17263a
 
 .chart-wrap{
 position:relative;
-height:650px;
+height:600px;
 background:#060d17
 }
 
@@ -105,14 +104,32 @@ cursor:crosshair
 
 .chart-info{
 position:absolute;
-left:10px;
-top:10px;
+top:9px;
+left:9px;
 background:#091522dd;
 border:1px solid #263b55;
 border-radius:6px;
 padding:7px 9px;
-font-size:12px;
+font-size:11px;
 pointer-events:none
+}
+
+.subpanel{
+background:#060d17;
+border-top:1px solid #17263a;
+padding:8px
+}
+
+.sub-title{
+font-size:11px;
+color:#8292aa;
+margin-bottom:5px
+}
+
+#volumeChart{
+width:100%;
+height:110px;
+display:block
 }
 
 .right{
@@ -161,6 +178,32 @@ font-weight:bold;
 background:#101d2e
 }
 
+.confirmed{
+padding:14px;
+border:1px solid #20e68b;
+border-radius:10px;
+background:#0b1d1b;
+margin-bottom:12px
+}
+
+.confirmed-title{
+font-size:12px;
+color:#20e68b;
+font-weight:bold;
+margin-bottom:7px
+}
+
+.confirmed-signal{
+font-size:25px;
+font-weight:bold
+}
+
+.locked{
+font-size:11px;
+color:#8292aa;
+margin-top:7px
+}
+
 .score{
 display:flex;
 gap:18px;
@@ -168,12 +211,16 @@ align-items:center
 }
 
 .circle{
-width:130px;
-height:130px;
+width:125px;
+height:125px;
 border-radius:50%;
 display:grid;
 place-items:center;
-background:conic-gradient(#20e68b 0deg,#20e68b 280deg,#263244 280deg);
+background:conic-gradient(
+#20e68b 0deg,
+#20e68b 280deg,
+#263244 280deg
+);
 position:relative;
 flex-shrink:0
 }
@@ -188,7 +235,7 @@ background:#0a1524
 
 .circle span{
 z-index:2;
-font-size:36px;
+font-size:35px;
 font-weight:bold
 }
 
@@ -238,43 +285,18 @@ gap:7px
 
 .flow .kv{text-align:center}
 
-.strategy{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:7px
-}
-
-.strategy .kv{
-display:flex;
-justify-content:space-between
-}
-
-.signal-box{
-background:#06101c;
-border:1px solid #29415d;
-border-radius:10px;
-padding:13px;
-font-family:monospace;
-font-size:12px;
-line-height:1.65;
-white-space:pre-wrap
-}
-
-.indicators{
-display:flex;
-flex-wrap:wrap;
-gap:6px
-}
-
-.indicators button.active{
-border-color:#20e68b;
-color:#20e68b
+.ai{
+line-height:1.7
 }
 
 .notice{
 font-size:11px;
 color:#8292aa;
 margin-top:8px
+}
+
+.danger{
+border-color:#ff5864
 }
 
 @media(max-width:950px){
@@ -315,7 +337,7 @@ font-size:18px
 }
 
 .chart-wrap{
-height:470px
+height:460px
 }
 
 }
@@ -332,17 +354,17 @@ height:470px
 
 <div>
 <div class="logo">KITT-X</div>
-<div class="sub">V12.4 PRO • CONFIRMATION SIGNAL ENGINE</div>
+<div class="sub">V12.5 PRO • SMART MONEY TRADING ENGINE</div>
 </div>
 
 <input
 id="coinSearch"
-placeholder="Search coin..."
+placeholder="Search BTC / BNB..."
 oninput="filterCoins()"
 >
 
 <select id="symbol">
-<option>Loading...</option>
+<option>Loading Coins...</option>
 </select>
 
 <select id="interval">
@@ -364,15 +386,18 @@ oninput="filterCoins()"
 
 <button onclick="refreshAll()">↻ Refresh</button>
 <button onclick="resetView()">⟳ Reset</button>
+<button onclick="zoomIn()">＋ Candle</button>
+<button onclick="zoomOut()">－ Candle</button>
 
-<button onclick="toggleIndicator('ema',this)">EMA</button>
-<button onclick="toggleIndicator('rsi',this)">RSI</button>
-<button onclick="toggleIndicator('macd',this)">MACD</button>
-<button onclick="toggleIndicator('bb',this)">BB</button>
-<button onclick="toggleIndicator('volume',this)">VOL</button>
+<button onclick="toggleEMA()">EMA</button>
+<button onclick="toggleVWAP()">VWAP</button>
+<button onclick="toggleSR()">S/R</button>
+<button onclick="toggleFVG()">FVG</button>
+<button onclick="toggleLiquidity()">Liquidity</button>
 
 <button onclick="copySignal()">Copy Signal</button>
 <button onclick="sendWhatsApp()">WhatsApp</button>
+<button onclick="sendTelegram()">Telegram</button>
 <button onclick="speak()">▶ Voice</button>
 
 </div>
@@ -387,11 +412,18 @@ Move mouse over chart
 
 </div>
 
+<div class="subpanel">
+
+<div class="sub-title">VOLUME / MARKET ACTIVITY</div>
+
+<canvas id="volumeChart"></canvas>
+
+</div>
+
 </section>
 
 
 <section class="right">
-
 
 <div class="card">
 
@@ -423,6 +455,138 @@ Move mouse over chart
 
 <div id="finalBias" class="final-bias yellow">
 ANALYZING MARKET...
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="confirmed">
+
+<div class="confirmed-title">
+🔒 CONFIRMED SIGNAL
+</div>
+
+<div id="confirmedSignal" class="confirmed-signal yellow">
+WAITING...
+</div>
+
+<div id="signalLock" class="locked">
+Signal price locked after confirmation
+</div>
+
+</div>
+
+<div class="title">SMART TRADE SETUP</div>
+
+<div id="tradeSignal" class="signal yellow">
+ANALYZING...
+</div>
+
+<div class="setup">
+
+<div class="kv">
+<small>Locked Entry</small>
+<b id="entry">--</b>
+</div>
+
+<div class="kv">
+<small>Stop Loss</small>
+<b id="sl">--</b>
+</div>
+
+<div class="kv">
+<small>TP 1</small>
+<b id="tp1">--</b>
+</div>
+
+<div class="kv">
+<small>TP 2</small>
+<b id="tp2">--</b>
+</div>
+
+<div class="kv">
+<small>TP 3</small>
+<b id="tp3">--</b>
+</div>
+
+<div class="kv">
+<small>TP 4</small>
+<b id="tp4">--</b>
+</div>
+
+<div class="kv">
+<small>TP 5</small>
+<b id="tp5">--</b>
+</div>
+
+<div class="kv">
+<small>Risk / Reward</small>
+<b id="rr">--</b>
+</div>
+
+<div class="kv">
+<small>Confidence</small>
+<b id="confidence">--</b>
+</div>
+
+<div class="kv">
+<small>Position Size</small>
+<b id="positionSize">--</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">💰 PROFIT CALCULATOR</div>
+
+<div class="setup">
+
+<div class="kv">
+<small>Capital ($)</small>
+<input id="capital" type="number" value="1" min="0.01">
+</div>
+
+<div class="kv">
+<small>Risk %</small>
+<input id="riskPercent" type="number" value="1" min="0.1">
+</div>
+
+<div class="kv">
+<small>TP1 Profit</small>
+<b id="profit1">$0.00</b>
+</div>
+
+<div class="kv">
+<small>TP2 Profit</small>
+<b id="profit2">$0.00</b>
+</div>
+
+<div class="kv">
+<small>TP3 Profit</small>
+<b id="profit3">$0.00</b>
+</div>
+
+<div class="kv">
+<small>TP4 Profit</small>
+<b id="profit4">$0.00</b>
+</div>
+
+<div class="kv">
+<small>TP5 Profit</small>
+<b id="profit5">$0.00</b>
+</div>
+
+<div class="kv">
+<small>Max Risk</small>
+<b id="maxRisk">$0.00</b>
+</div>
+
 </div>
 
 </div>
@@ -466,218 +630,59 @@ ANALYZING MARKET...
 </div>
 
 <div class="metric">
+<span>VWAP</span>
+<b id="vwap">--</b>
+</div>
+
+<div class="metric">
 <span>MACD</span>
 <b id="macd">--</b>
 </div>
 
 </div>
-
 </div>
-
 </div>
 
 
 <div class="card">
 
-<div class="title">SMART TRADE SETUP — CONFIRMED SIGNAL</div>
-
-<div id="tradeSignal" class="signal yellow">
-WAITING FOR CONFIRMATION
-</div>
+<div class="title">SMC MARKET STRUCTURE</div>
 
 <div class="setup">
 
 <div class="kv">
-<small>Confirmed Entry</small>
-<b id="entry">--</b>
+<small>Structure</small>
+<b id="structure">--</b>
 </div>
 
 <div class="kv">
-<small>Stop Loss</small>
-<b id="sl">--</b>
+<small>Order Block</small>
+<b id="orderBlock">--</b>
 </div>
 
 <div class="kv">
-<small>TP 1</small>
-<b id="tp1">--</b>
+<small>Liquidity</small>
+<b id="liquidity">--</b>
 </div>
 
 <div class="kv">
-<small>TP 2</small>
-<b id="tp2">--</b>
+<small>FVG</small>
+<b id="fvg">--</b>
 </div>
 
 <div class="kv">
-<small>TP 3</small>
-<b id="tp3">--</b>
+<small>Market Zone</small>
+<b id="marketZone">--</b>
 </div>
 
 <div class="kv">
-<small>TP 4</small>
-<b id="tp4">--</b>
+<small>Resistance</small>
+<b id="resistance">--</b>
 </div>
 
 <div class="kv">
-<small>TP 5</small>
-<b id="tp5">--</b>
-</div>
-
-<div class="kv">
-<small>R:R</small>
-<b id="rr">--</b>
-</div>
-
-<div class="kv">
-<small>Confidence</small>
-<b id="confidence">--</b>
-</div>
-
-<div class="kv">
-<small>Signal Status</small>
-<b id="signalStatus">WAIT</b>
-</div>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<div class="title">PROFIT CALCULATOR</div>
-
-<div class="setup">
-
-<div class="kv">
-<small>Risk Amount</small>
-<b>$<input id="riskAmount" value="1" type="number" min="0.1" step="0.1" style="width:80px;padding:5px"></b>
-</div>
-
-<div class="kv">
-<small>TP1 Profit</small>
-<b id="profit1">$--</b>
-</div>
-
-<div class="kv">
-<small>TP2 Profit</small>
-<b id="profit2">$--</b>
-</div>
-
-<div class="kv">
-<small>TP3 Profit</small>
-<b id="profit3">$--</b>
-</div>
-
-<div class="kv">
-<small>TP4 Profit</small>
-<b id="profit4">$--</b>
-</div>
-
-<div class="kv">
-<small>TP5 Profit</small>
-<b id="profit5">$--</b>
-</div>
-
-</div>
-
-<div class="notice">
-Profit values are theoretical R:R calculations. Actual exchange fees, slippage and leverage can change results.
-</div>
-
-</div>
-
-
-<div class="card">
-
-<div class="title">SIGNAL MESSAGE</div>
-
-<div id="signalMessage" class="signal-box">
-Waiting for confirmed signal...
-</div>
-
-<br>
-
-<button onclick="copySignal()">📋 COPY SIGNAL</button>
-<button onclick="sendWhatsApp()">📱 WHATSAPP</button>
-
-</div>
-
-
-<div class="card">
-
-<div class="title">PRO TRADER STRATEGY ENGINE</div>
-
-<div class="strategy">
-
-<div class="kv">
-<span>EMA Trend</span>
-<b id="stEMA">--</b>
-</div>
-
-<div class="kv">
-<span>RSI Momentum</span>
-<b id="stRSI">--</b>
-</div>
-
-<div class="kv">
-<span>MACD Momentum</span>
-<b id="stMACD">--</b>
-</div>
-
-<div class="kv">
-<span>Volume</span>
-<b id="stVolume">--</b>
-</div>
-
-<div class="kv">
-<span>ATR Volatility</span>
-<b id="stATR">--</b>
-</div>
-
-<div class="kv">
-<span>Liquidity</span>
-<b id="stLiquidity">--</b>
-</div>
-
-<div class="kv">
-<span>FVG</span>
-<b id="stFVG">--</b>
-</div>
-
-<div class="kv">
-<span>Market Structure</span>
-<b id="stStructure">--</b>
-</div>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<div class="title">24H MARKET DATA</div>
-
-<div class="flow">
-
-<div class="kv">
-<small>Change</small>
-<b id="change">--</b>
-</div>
-
-<div class="kv">
-<small>High</small>
-<b id="high">--</b>
-</div>
-
-<div class="kv">
-<small>Low</small>
-<b id="low">--</b>
-</div>
-
-<div class="kv">
-<small>Volume</small>
-<b id="volume">--</b>
+<small>Support</small>
+<b id="support">--</b>
 </div>
 
 </div>
@@ -688,7 +693,7 @@ Waiting for confirmed signal...
 <div class="card">
 
 <div class="title">
-KITT-X AI ANALYSIS <span class="yellow">V12.4 PRO</span>
+KITT-X AI ANALYSIS <span class="yellow">V12.5 PRO</span>
 </div>
 
 <div id="analysis">
@@ -696,7 +701,7 @@ Loading technical analysis...
 </div>
 
 <div class="notice">
-Mouse wheel = zoom • Drag = backward/forward • Move mouse = OHLC crosshair
+Chart: mouse wheel = zoom • drag = backward/forward • move mouse = crosshair
 </div>
 
 </div>
@@ -713,10 +718,19 @@ const $=id=>document.getElementById(id);
 const canvas=$("chart");
 const ctx=canvas.getContext("2d");
 
+const volumeCanvas=$("volumeChart");
+const vctx=volumeCanvas.getContext("2d");
+
 let candles=[];
 let allCoins=[];
 let socket=null;
 let currentPrice=0;
+
+let showEMA=true;
+let showVWAP=true;
+let showSR=true;
+let showFVG=true;
+let showLiquidity=true;
 
 let viewStart=0;
 let visibleCount=100;
@@ -728,15 +742,7 @@ let dragStartView=0;
 let mouseX=-1;
 let mouseY=-1;
 
-let indicators={
-ema:true,
-rsi:false,
-macd:false,
-bb:false,
-volume:false
-};
-
-let confirmedSignal=null;
+let lockedSignal=null;
 
 
 /* FORMAT */
@@ -752,6 +758,14 @@ minimumFractionDigits:2,
 maximumFractionDigits:8
 }
 );
+
+}
+
+function money(n){
+
+if(!isFinite(n))return "$0.00";
+
+return "$"+Number(n).toFixed(2);
 
 }
 
@@ -788,12 +802,16 @@ let d=await r.json();
 allCoins=d.symbols.filter(
 x=>
 x.status==="TRADING" &&
-x.quoteAsset==="USDT" &&
-x.isSpotTradingAllowed
+(
+x.quoteAsset==="USDT" ||
+x.quoteAsset==="USDC" ||
+x.quoteAsset==="BNB"
+)
 );
 
 allCoins.sort(
-(a,b)=>a.baseAsset.localeCompare(b.baseAsset)
+(a,b)=>
+a.baseAsset.localeCompare(b.baseAsset)
 );
 
 renderCoins(allCoins);
@@ -822,7 +840,9 @@ list.forEach(c=>{
 let o=document.createElement("option");
 
 o.value=c.symbol;
-o.textContent=c.baseAsset+" / USDT";
+
+o.textContent=
+c.baseAsset+" / "+c.quoteAsset;
 
 s.appendChild(o);
 
@@ -845,7 +865,8 @@ renderCoins(
 allCoins.filter(
 c=>
 c.baseAsset.includes(q) ||
-c.symbol.includes(q)
+c.symbol.includes(q) ||
+c.quoteAsset.includes(q)
 )
 );
 
@@ -854,17 +875,20 @@ c.symbol.includes(q)
 
 /* INDICATORS */
 
-function EMA(v,p){
+function ema(v,p){
 
 if(!v.length)return[];
 
 let k=2/(p+1);
+
 let e=v[0];
+
 let out=[e];
 
 for(let i=1;i<v.length;i++){
 
 e=(v[i]-e)*k+e;
+
 out.push(e);
 
 }
@@ -874,7 +898,7 @@ return out;
 }
 
 
-function RSI(v,p=14){
+function rsi(v,p=14){
 
 if(v.length<=p)return 50;
 
@@ -912,7 +936,7 @@ return 100-(100/(1+ag/al));
 }
 
 
-function ATR(data,p=14){
+function atr(data,p=14){
 
 if(data.length<=p)return 0;
 
@@ -921,13 +945,13 @@ let tr=[];
 for(let i=1;i<data.length;i++){
 
 let c=data[i];
-let p0=data[i-1];
+let x=data[i-1];
 
 tr.push(
 Math.max(
 c.high-c.low,
-Math.abs(c.high-p0.close),
-Math.abs(c.low-p0.close)
+Math.abs(c.high-x.close),
+Math.abs(c.low-x.close)
 )
 );
 
@@ -935,7 +959,39 @@ Math.abs(c.low-p0.close)
 
 let a=tr.slice(-p);
 
-return a.reduce((x,y)=>x+y,0)/a.length;
+return a.reduce(
+(x,y)=>x+y,0
+)/a.length;
+
+}
+
+
+/* VWAP */
+
+function calculateVWAP(data){
+
+let totalPV=0;
+let totalVolume=0;
+
+let result=[];
+
+data.forEach(c=>{
+
+let typical=
+(c.high+c.low+c.close)/3;
+
+totalPV+=typical*c.volume;
+totalVolume+=c.volume;
+
+result.push(
+totalVolume?
+totalPV/totalVolume:
+c.close
+);
+
+});
+
+return result;
 
 }
 
@@ -953,10 +1009,50 @@ candles.length-visibleCount
 
 drawChart();
 
+drawVolume();
+
+}
+
+
+function zoomIn(){
+
+visibleCount=Math.max(
+30,
+Math.floor(visibleCount*.8)
+);
+
+viewStart=Math.max(
+0,
+candles.length-visibleCount
+);
+
+drawChart();
+drawVolume();
+
+}
+
+
+function zoomOut(){
+
+visibleCount=Math.min(
+candles.length,
+Math.floor(visibleCount*1.25)
+);
+
+viewStart=Math.max(
+0,
+candles.length-visibleCount
+);
+
+drawChart();
+drawVolume();
+
 }
 
 
 function getVisible(){
+
+if(!candles.length)return[];
 
 let maxStart=Math.max(
 0,
@@ -976,7 +1072,7 @@ viewStart+visibleCount
 }
 
 
-/* CHART */
+/* MAIN CHART */
 
 function drawChart(){
 
@@ -992,7 +1088,9 @@ let dpr=window.devicePixelRatio||1;
 canvas.width=w*dpr;
 canvas.height=h*dpr;
 
-ctx.setTransform(dpr,0,0,dpr,0,0);
+ctx.setTransform(
+dpr,0,0,dpr,0,0
+);
 
 ctx.clearRect(0,0,w,h);
 
@@ -1000,8 +1098,13 @@ let data=getVisible();
 
 if(!data.length)return;
 
-let high=Math.max(...data.map(x=>x.high));
-let low=Math.min(...data.map(x=>x.low));
+let high=Math.max(
+...data.map(x=>x.high)
+);
+
+let low=Math.min(
+...data.map(x=>x.low)
+);
 
 if(currentPrice>high)high=currentPrice;
 if(currentPrice<low)low=currentPrice;
@@ -1010,8 +1113,8 @@ let range=high-low||1;
 
 let left=8;
 let right=75;
-let top=20;
-let bottom=35;
+let top=18;
+let bottom=30;
 
 let chartW=w-left-right;
 let chartH=h-top-bottom;
@@ -1027,21 +1130,24 @@ let gap=chartW/data.length;
 
 let candleW=Math.max(
 2,
-Math.min(22,gap*.72)
+Math.min(20,gap*.7)
 );
 
 
 /* GRID */
 
 ctx.strokeStyle="#142438";
+ctx.lineWidth=1;
 
 for(let i=1;i<8;i++){
 
 let y=top+i*chartH/8;
 
 ctx.beginPath();
+
 ctx.moveTo(left,y);
 ctx.lineTo(w-right,y);
+
 ctx.stroke();
 
 }
@@ -1051,8 +1157,10 @@ for(let i=1;i<8;i++){
 let x=left+i*chartW/8;
 
 ctx.beginPath();
+
 ctx.moveTo(x,top);
 ctx.lineTo(x,h-bottom);
+
 ctx.stroke();
 
 }
@@ -1066,9 +1174,8 @@ let x=left+i*gap+gap/2;
 
 let bull=c.close>=c.open;
 
-ctx.strokeStyle=bull?
-"#20e68b":
-"#ff5864";
+ctx.strokeStyle=
+bull?"#20e68b":"#ff5864";
 
 ctx.fillStyle=ctx.strokeStyle;
 
@@ -1093,12 +1200,15 @@ Math.max(2,y2-y1)
 
 /* EMA */
 
-if(indicators.ema){
+if(showEMA){
 
 let closes=candles.map(x=>x.close);
 
 drawLine(
-EMA(closes,20).slice(viewStart,viewStart+visibleCount),
+ema(closes,20).slice(
+viewStart,
+viewStart+visibleCount
+),
 "#f2c94c",
 py,
 left,
@@ -1106,58 +1216,21 @@ gap
 );
 
 drawLine(
-EMA(closes,50).slice(viewStart,viewStart+visibleCount),
+ema(closes,50).slice(
+viewStart,
+viewStart+visibleCount
+),
 "#11d9f4",
 py,
 left,
 gap
 );
 
-}
-
-
-/* BOLLINGER */
-
-if(indicators.bb){
-
-let closes=candles.map(x=>x.close);
-
-let period=20;
-
-let mid=EMA(closes,period);
-
-let upper=[];
-let lower=[];
-
-for(let i=0;i<closes.length;i++){
-
-let start=Math.max(0,i-period+1);
-let arr=closes.slice(start,i+1);
-
-let avg=arr.reduce((a,b)=>a+b,0)/arr.length;
-
-let sd=Math.sqrt(
-arr.reduce(
-(a,b)=>a+Math.pow(b-avg,2),
-0
-)/arr.length
-);
-
-upper.push(avg+sd*2);
-lower.push(avg-sd*2);
-
-}
-
 drawLine(
-upper.slice(viewStart,viewStart+visibleCount),
-"#b878ff",
-py,
-left,
-gap
-);
-
-drawLine(
-lower.slice(viewStart,viewStart+visibleCount),
+ema(closes,200).slice(
+viewStart,
+viewStart+visibleCount
+),
 "#b878ff",
 py,
 left,
@@ -1167,28 +1240,230 @@ gap
 }
 
 
-/* CURRENT PRICE */
+/* VWAP */
+
+if(showVWAP){
+
+let vw=calculateVWAP(candles);
+
+drawLine(
+vw.slice(
+viewStart,
+viewStart+visibleCount
+),
+"#ffffff",
+py,
+left,
+gap
+);
+
+}
+
+
+/* SUPPORT RESISTANCE */
+
+if(showSR){
+
+let recent=candles.slice(-40);
+
+let resistance=Math.max(
+...recent.map(x=>x.high)
+);
+
+let support=Math.min(
+...recent.map(x=>x.low)
+);
+
+horizontal(
+resistance,
+"#ff5864",
+py,
+left,
+w-right
+);
+
+horizontal(
+support,
+"#20e68b",
+py,
+left,
+w-right
+);
+
+}
+
+
+/* FVG */
+
+if(showFVG){
+
+for(let i=2;i<data.length;i++){
+
+let a=data[i-2];
+let c=data[i];
+
+let x1=left+(i-2)*gap;
+let x2=left+i*gap;
+
+if(c.low>a.high){
+
+ctx.fillStyle="#20e68b18";
+
+ctx.fillRect(
+x1,
+py(c.low),
+x2-x1,
+py(a.high)-py(c.low)
+);
+
+}
+
+if(c.high<a.low){
+
+ctx.fillStyle="#ff586418";
+
+ctx.fillRect(
+x1,
+py(a.low),
+x2-x1,
+py(c.high)-py(a.low)
+);
+
+}
+
+}
+
+}
+
+
+/* LIQUIDITY */
+
+if(showLiquidity){
+
+for(let i=2;i<data.length;i++){
+
+let a=data[i-1];
+let c=data[i];
+
+if(
+Math.abs(a.high-c.high)/
+a.high<.0015
+){
+
+let y=py((a.high+c.high)/2);
+
+ctx.strokeStyle="#f2c94c";
+
+ctx.setLineDash([3,4]);
+
+ctx.beginPath();
+
+ctx.moveTo(left+i*gap,y);
+ctx.lineTo(w-right,y);
+
+ctx.stroke();
+
+ctx.setLineDash([]);
+
+}
+
+if(
+Math.abs(a.low-c.low)/
+a.low<.0015
+){
+
+let y=py((a.low+c.low)/2);
+
+ctx.strokeStyle="#f2c94c";
+
+ctx.setLineDash([3,4]);
+
+ctx.beginPath();
+
+ctx.moveTo(left+i*gap,y);
+ctx.lineTo(w-right,y);
+
+ctx.stroke();
+
+ctx.setLineDash([]);
+
+}
+
+}
+
+}
+
+
+/* LOCKED TRADE LEVELS */
+
+if(lockedSignal){
+
+tradeLine(
+lockedSignal.entry,
+"#ffffff",
+"ENTRY",
+py,
+left,
+w-right
+);
+
+tradeLine(
+lockedSignal.sl,
+"#ff5864",
+"SL",
+py,
+left,
+w-right
+);
+
+[
+["tp1","#20e68b"],
+["tp2","#20e68b"],
+["tp3","#20e68b"],
+["tp4","#20e68b"],
+["tp5","#20e68b"]
+].forEach(x=>{
+
+tradeLine(
+lockedSignal[x[0]],
+x[1],
+x[0].toUpperCase(),
+py,
+left,
+w-right
+);
+
+});
+
+}
+
+
+/* LIVE PRICE */
 
 if(currentPrice){
 
 let y=py(currentPrice);
 
 ctx.strokeStyle="#fff";
+
 ctx.setLineDash([5,5]);
 
 ctx.beginPath();
+
 ctx.moveTo(left,y);
 ctx.lineTo(w-right,y);
+
 ctx.stroke();
 
 ctx.setLineDash([]);
 
 ctx.fillStyle="#fff";
+
 ctx.font="bold 11px Arial";
 
 ctx.fillText(
 formatPrice(currentPrice),
-w-right+8,
+w-right+7,
 y+4
 );
 
@@ -1198,11 +1473,13 @@ y+4
 /* PRICE SCALE */
 
 ctx.fillStyle="#8292aa";
+
 ctx.font="10px Arial";
 
 for(let i=0;i<=8;i++){
 
 let p=high-(range*i/8);
+
 let y=top+(chartH*i/8);
 
 ctx.fillText(
@@ -1229,7 +1506,7 @@ let x=left+idx*gap+gap/2;
 ctx.fillText(
 formatTime(data[idx].time),
 x,
-h-10
+h-8
 );
 
 }
@@ -1258,16 +1535,21 @@ let c=data[index];
 let x=left+index*gap+gap/2;
 
 ctx.strokeStyle="#75869d";
+
 ctx.setLineDash([3,3]);
 
 ctx.beginPath();
+
 ctx.moveTo(x,top);
 ctx.lineTo(x,h-bottom);
+
 ctx.stroke();
 
 ctx.beginPath();
+
 ctx.moveTo(left,mouseY);
 ctx.lineTo(w-right,mouseY);
+
 ctx.stroke();
 
 ctx.setLineDash([]);
@@ -1288,27 +1570,154 @@ formatPrice(c.close);
 }
 
 
+/* TRADE LINE */
+
+function tradeLine(
+price,
+color,
+label,
+py,
+x1,
+x2
+){
+
+let y=py(price);
+
+ctx.strokeStyle=color;
+
+ctx.setLineDash([6,4]);
+
+ctx.beginPath();
+
+ctx.moveTo(x1,y);
+ctx.lineTo(x2,y);
+
+ctx.stroke();
+
+ctx.setLineDash([]);
+
+ctx.fillStyle=color;
+
+ctx.font="bold 10px Arial";
+
+ctx.fillText(
+label,
+x1+5,
+y-4
+);
+
+}
+
+
 /* LINE */
 
-function drawLine(values,color,py,left,gap){
+function drawLine(
+values,
+color,
+py,
+left,
+gap
+){
 
 if(!values.length)return;
 
 ctx.strokeStyle=color;
 ctx.lineWidth=1.4;
+
 ctx.beginPath();
 
 values.forEach((v,i)=>{
 
 let x=left+i*gap+gap/2;
+
 let y=py(v);
 
-if(i===0)ctx.moveTo(x,y);
-else ctx.lineTo(x,y);
+if(i===0)
+ctx.moveTo(x,y);
+else
+ctx.lineTo(x,y);
 
 });
 
 ctx.stroke();
+
+}
+
+
+function horizontal(
+price,
+color,
+py,
+x1,
+x2
+){
+
+let y=py(price);
+
+ctx.strokeStyle=color;
+
+ctx.setLineDash([5,5]);
+
+ctx.beginPath();
+
+ctx.moveTo(x1,y);
+ctx.lineTo(x2,y);
+
+ctx.stroke();
+
+ctx.setLineDash([]);
+
+}
+
+
+/* VOLUME */
+
+function drawVolume(){
+
+if(!candles.length)return;
+
+let w=volumeCanvas.clientWidth;
+let h=volumeCanvas.clientHeight;
+
+let dpr=window.devicePixelRatio||1;
+
+volumeCanvas.width=w*dpr;
+volumeCanvas.height=h*dpr;
+
+vctx.setTransform(
+dpr,0,0,dpr,0,0
+);
+
+vctx.clearRect(0,0,w,h);
+
+let data=getVisible();
+
+let max=Math.max(
+...data.map(x=>x.volume)
+)||1;
+
+let gap=w/data.length;
+
+data.forEach((c,i)=>{
+
+let x=i*gap;
+
+let barH=
+(c.volume/max)*(h-15);
+
+vctx.fillStyle=
+c.close>=c.open?
+"#20e68b88":
+"#ff586488";
+
+vctx.fillRect(
+x,
+h-barH,
+Math.max(1,gap*.7),
+barH
+);
+
+});
 
 }
 
@@ -1318,6 +1727,7 @@ ctx.stroke();
 async function loadData(){
 
 let symbol=$("symbol").value;
+
 let interval=$("interval").value;
 
 try{
@@ -1330,6 +1740,9 @@ let r=await fetch(
 );
 
 let d=await r.json();
+
+if(!Array.isArray(d))
+throw new Error("Invalid candle data");
 
 candles=d.map(x=>({
 
@@ -1347,10 +1760,11 @@ viewStart=Math.max(
 candles.length-visibleCount
 );
 
-confirmedSignal=null;
-
 analyzeMarket();
+
 drawChart();
+
+drawVolume();
 
 }
 
@@ -1364,7 +1778,7 @@ $("analysis").textContent=
 }
 
 
-/* MARKET ANALYSIS */
+/* ANALYSIS */
 
 function analyzeMarket(){
 
@@ -1372,44 +1786,56 @@ if(candles.length<50)return;
 
 let closes=candles.map(x=>x.close);
 
-let e20=EMA(closes,20).at(-1);
-let e50=EMA(closes,50).at(-1);
+let e20=ema(closes,20).at(-1);
 
-let R=RSI(closes);
-let A=ATR(candles);
+let e50=ema(closes,50).at(-1);
 
-let e12=EMA(closes,12).at(-1);
-let e26=EMA(closes,26).at(-1);
+let e200=ema(closes,200).at(-1);
 
-let macd=e12-e26;
+let R=rsi(closes);
 
-let last=candles.at(-1);
-let prev=candles.at(-2);
+let A=atr(candles);
 
-let bull=e20>e50;
+let VW=calculateVWAP(candles).at(-1);
+
+let MACD=
+ema(closes,12).at(-1)-
+ema(closes,26).at(-1);
+
+let bull=
+e20>e50 &&
+currentPrice>VW;
+
+let trend=bull?
+"BULLISH":
+"BEARISH";
 
 let score=50;
 
 score+=bull?15:-15;
+
 score+=R>50?10:-10;
-score+=macd>0?10:-10;
 
-let volumeAvg=
-candles
-.slice(-20)
-.reduce((a,b)=>a+b.volume,0)/20;
+score+=MACD>0?10:-10;
 
-let volumeConfirm=
-last.volume>volumeAvg;
+score+=currentPrice>e200?10:-10;
 
-score+=volumeConfirm?10:-5;
+score+=currentPrice>VW?5:-5;
 
 score=Math.max(
 0,
 Math.min(100,Math.round(score))
 );
 
-let trend=bull?"BULLISH":"BEARISH";
+let distance=
+Math.abs(e20-e50)/e50*100;
+
+let strength=
+distance>2?
+"STRONG":
+distance>.5?
+"MEDIUM":
+"WEAK";
 
 $("score").textContent=score;
 
@@ -1418,47 +1844,17 @@ $("trend").textContent=trend;
 $("trend").className=
 bull?"green":"red";
 
-$("strength").textContent=
-Math.abs(e20-e50)/e50*100>1?
-"STRONG":
-"MEDIUM";
+$("strength").textContent=strength;
 
 $("rsi").textContent=R.toFixed(2);
+
 $("ema20").textContent=formatPrice(e20);
+
 $("ema50").textContent=formatPrice(e50);
-$("macd").textContent=macd.toFixed(6);
 
+$("vwap").textContent=formatPrice(VW);
 
-/* STRUCTURE */
-
-let structure="RANGE";
-
-if(last.high>prev.high && last.low>prev.low)
-structure="BULLISH";
-
-else if(last.high<prev.high && last.low<prev.low)
-structure="BEARISH";
-
-
-/* FVG */
-
-let fvg="NONE";
-
-if(candles.length>=3){
-
-let a=candles.at(-3);
-let c=candles.at(-1);
-
-if(c.low>a.high)
-fvg="BULLISH FVG";
-
-else if(c.high<a.low)
-fvg="BEARISH FVG";
-
-}
-
-
-/* LIQUIDITY */
+$("macd").textContent=MACD.toFixed(6);
 
 let recent=candles.slice(-40);
 
@@ -1470,63 +1866,133 @@ let support=Math.min(
 ...recent.map(x=>x.low)
 );
 
-let liquidity="NEUTRAL";
+$("resistance").textContent=
+formatPrice(resistance);
+
+$("support").textContent=
+formatPrice(support);
+
+
+/* STRUCTURE */
+
+let last=candles.at(-1);
+
+let prev=candles.at(-2);
+
+let structure="RANGE";
+
+if(
+last.high>prev.high &&
+last.low>prev.low
+)
+structure="BULLISH STRUCTURE";
+
+else if(
+last.high<prev.high &&
+last.low<prev.low
+)
+structure="BEARISH STRUCTURE";
+
+$("structure").textContent=structure;
+
+$("structure").className=
+structure.includes("BULLISH")?
+"green":
+structure.includes("BEARISH")?
+"red":
+"yellow";
+
+
+/* ORDER BLOCK */
+
+let ob=
+last.close>last.open?
+"BULLISH ZONE":
+"BEARISH ZONE";
+
+$("orderBlock").textContent=ob;
+
+$("orderBlock").className=
+last.close>last.open?
+"green":
+"red";
+
+
+/* LIQUIDITY */
+
+let liq="NEUTRAL";
 
 if(currentPrice>=resistance*.995)
-liquidity="BUY-SIDE";
+liq="BUY-SIDE";
 
 else if(currentPrice<=support*1.005)
-liquidity="SELL-SIDE";
+liq="SELL-SIDE";
+
+$("liquidity").textContent=liq;
 
 
-/* STRATEGY PANEL */
+/* FVG */
 
-$("stEMA").textContent=trend;
-$("stEMA").className=bull?"green":"red";
+let fvg="NONE";
 
-$("stRSI").textContent=
-R>55?"BULLISH":
-R<45?"BEARISH":"NEUTRAL";
+if(candles.length>=3){
 
-$("stMACD").textContent=
-macd>0?"BULLISH":"BEARISH";
+let a=candles.at(-3);
 
-$("stVolume").textContent=
-volumeConfirm?"CONFIRMED":"LOW";
+let c=candles.at(-1);
 
-$("stATR").textContent=formatPrice(A);
-$("stLiquidity").textContent=liquidity;
-$("stFVG").textContent=fvg;
-$("stStructure").textContent=structure;
+if(c.low>a.high)
+fvg="BULLISH FVG";
+
+else if(c.high<a.low)
+fvg="BEARISH FVG";
+
+}
+
+$("fvg").textContent=fvg;
 
 
-/* PROVISIONAL ANALYSIS */
+/* ZONE */
+
+let zone;
+
+if(currentPrice>e20 && currentPrice>e50)
+zone="BULLISH PREMIUM";
+
+else if(currentPrice<e20 && currentPrice<e50)
+zone="BEARISH DISCOUNT";
+
+else
+zone="EQUILIBRIUM";
+
+$("marketZone").textContent=zone;
+
+
+/* DO NOT CHANGE LOCKED SIGNAL */
+
+if(!lockedSignal){
 
 $("analysis").textContent=
 $("symbol").value+
 " "+
 $("interval").value+
-" market analysis: "+
-trend+
-". RSI "+R.toFixed(2)+
-", EMA trend "+trend+
-", MACD "+(macd>0?"positive":"negative")+
-", volume "+(volumeConfirm?"confirmed":"weak")+
-". Waiting for multi-timeframe confirmation before locking a trade signal.";
+" analysis: market structure, EMA trend, RSI, MACD, VWAP, liquidity and volume are being analysed. Waiting for multi-timeframe confirmation.";
+
+}
 
 }
 
 
-/* CONFIRMED TRADE */
+/* CONFIRM SIGNAL */
 
-function lockConfirmedSignal(direction){
+function confirmSignal(direction){
 
-if(confirmedSignal)return;
+let price=currentPrice||
+candles.at(-1)?.close;
 
-let price=currentPrice||candles.at(-1).close;
-let A=ATR(candles);
+let A=atr(candles);
 
-if(!A)return;
+if(!price||!A)return;
 
 let sl,tp1,tp2,tp3,tp4,tp5;
 
@@ -1535,9 +2001,13 @@ if(direction==="LONG"){
 sl=price-A*1.5;
 
 tp1=price+A*1.5;
+
 tp2=price+A*2.5;
+
 tp3=price+A*3.5;
+
 tp4=price+A*5;
+
 tp5=price+A*7;
 
 }
@@ -1547,123 +2017,198 @@ else{
 sl=price+A*1.5;
 
 tp1=price-A*1.5;
+
 tp2=price-A*2.5;
+
 tp3=price-A*3.5;
+
 tp4=price-A*5;
+
 tp5=price-A*7;
 
 }
 
-let risk=Math.abs(price-sl);
-let reward=Math.abs(tp5-price);
-
-confirmedSignal={
+lockedSignal={
 direction,
+time:Date.now(),
 entry:price,
 sl,
 tp1,
 tp2,
 tp3,
 tp4,
-tp5,
-rr:reward/risk,
-time:Date.now()
+tp5
 };
 
-updateTradePanel();
+$("confirmedSignal").textContent=
+direction==="LONG"?
+"🟢 CONFIRMED LONG":
+"🔴 CONFIRMED SHORT";
+
+$("confirmedSignal").className=
+"confirmed-signal "+
+(direction==="LONG"?"green":"red");
+
+$("signalLock").textContent=
+"🔒 Entry locked at "+
+formatPrice(price)+
+" • Signal time "+
+formatTime(Date.now());
+
+updateTradeSetup();
 
 }
 
 
-/* TRADE PANEL */
+/* TRADE SETUP */
 
-function updateTradePanel(){
+function updateTradeSetup(){
 
-if(!confirmedSignal){
+if(!lockedSignal){
 
-$("tradeSignal").textContent=
-"WAITING FOR CONFIRMATION";
+$("tradeSignal").textContent="WAITING FOR CONFIRMATION";
 
-$("tradeSignal").className=
-"signal yellow";
-
-$("signalStatus").textContent="WAIT";
+$("tradeSignal").className="signal yellow";
 
 return;
 
 }
 
-let s=confirmedSignal;
+let s=lockedSignal;
 
-let signal=
+$("tradeSignal").textContent=
 s.direction==="LONG"?
-"STRONG LONG":
-"STRONG SHORT";
-
-$("tradeSignal").textContent=signal;
+"CONFIRMED LONG":
+"CONFIRMED SHORT";
 
 $("tradeSignal").className=
-s.direction==="LONG"?
-"signal green":
-"signal red";
-
-$("signalStatus").textContent="CONFIRMED";
-
-$("signalStatus").className=
-s.direction==="LONG"?
-"green":"red";
+"signal "+
+(s.direction==="LONG"?"green":"red");
 
 $("entry").textContent=formatPrice(s.entry);
+
 $("sl").textContent=formatPrice(s.sl);
+
 $("tp1").textContent=formatPrice(s.tp1);
+
 $("tp2").textContent=formatPrice(s.tp2);
+
 $("tp3").textContent=formatPrice(s.tp3);
+
 $("tp4").textContent=formatPrice(s.tp4);
+
 $("tp5").textContent=formatPrice(s.tp5);
 
+let risk=Math.abs(s.entry-s.sl);
+
+let reward=Math.abs(s.tp5-s.entry);
+
 $("rr").textContent=
-"1 : "+s.rr.toFixed(2);
+"1 : "+(reward/risk).toFixed(2);
 
 $("confidence").textContent="85%";
 
-calculateProfit();
+let position=
+calculatePositionSize(
+s.entry,
+s.sl
+);
 
-$("signalMessage").textContent=
-signalText();
+$("positionSize").textContent=
+position.toFixed(6);
 
-}
+calculateProfits();
 
+$("analysis").textContent=
+$("symbol").value+
+" "+
+$("interval").value+
+" CONFIRMED "+
+s.direction+
+" signal. Entry price is locked. TP1 to TP5 are fixed from the confirmed entry. Current market price may move, but the original signal levels remain unchanged.";
 
-/* PROFIT */
-
-function calculateProfit(){
-
-if(!confirmedSignal)return;
-
-let risk=
-Number($("riskAmount").value)||1;
-
-let rr=confirmedSignal.rr;
-
-$("profit1").textContent=
-"$"+(risk*1.5).toFixed(2);
-
-$("profit2").textContent=
-"$"+(risk*2.5).toFixed(2);
-
-$("profit3").textContent=
-"$"+(risk*3.5).toFixed(2);
-
-$("profit4").textContent=
-"$"+(risk*5).toFixed(2);
-
-$("profit5").textContent=
-"$"+(risk*rr).toFixed(2);
+drawChart();
 
 }
 
 
-/* MULTI-TIMEFRAME */
+/* POSITION SIZE */
+
+function calculatePositionSize(entry,sl){
+
+let capital=
+Number($("capital").value)||1;
+
+let riskPercent=
+Number($("riskPercent").value)||1;
+
+let riskMoney=
+capital*riskPercent/100;
+
+let riskPerUnit=
+Math.abs(entry-sl);
+
+if(!riskPerUnit)return 0;
+
+return riskMoney/riskPerUnit;
+
+}
+
+
+/* PROFIT CALCULATOR */
+
+function calculateProfits(){
+
+if(!lockedSignal)return;
+
+let capital=
+Number($("capital").value)||1;
+
+let riskPercent=
+Number($("riskPercent").value)||1;
+
+let riskMoney=
+capital*riskPercent/100;
+
+let s=lockedSignal;
+
+let riskDistance=
+Math.abs(s.entry-s.sl);
+
+function profit(tp){
+
+let move=
+Math.abs(tp-s.entry);
+
+return riskDistance?
+riskMoney*(move/riskDistance):
+0;
+
+}
+
+$("profit1").textContent=money(profit(s.tp1));
+
+$("profit2").textContent=money(profit(s.tp2));
+
+$("profit3").textContent=money(profit(s.tp3));
+
+$("profit4").textContent=money(profit(s.tp4));
+
+$("profit5").textContent=money(profit(s.tp5));
+
+$("maxRisk").textContent=
+money(riskMoney);
+
+$("positionSize").textContent=
+calculatePositionSize(
+s.entry,
+s.sl
+).toFixed(6);
+
+}
+
+
+/* TIMEFRAMES */
 
 async function analyzeTimeframes(){
 
@@ -1693,21 +2238,30 @@ let d=await r.json();
 
 let closes=d.map(x=>Number(x[4]));
 
-let e20=EMA(closes,20).at(-1);
-let e50=EMA(closes,50).at(-1);
+let e20=ema(closes,20).at(-1);
 
-let R=RSI(closes);
+let e50=ema(closes,50).at(-1);
 
-let macd=
-EMA(closes,12).at(-1)-
-EMA(closes,26).at(-1);
+let R=rsi(closes);
+
+let M=
+ema(closes,12).at(-1)-
+ema(closes,26).at(-1);
 
 let signal="NEUTRAL";
 
-if(e20>e50 && R>=50 && macd>=0)
+if(
+e20>e50 &&
+R>=50 &&
+M>=0
+)
 signal="BULLISH";
 
-else if(e20<e50 && R<50 && macd<0)
+else if(
+e20<e50 &&
+R<50 &&
+M<0
+)
 signal="BEARISH";
 
 let el=$(map[tf]);
@@ -1729,52 +2283,57 @@ catch(e){}
 
 }
 
-let bull=results.filter(x=>x==="BULLISH").length;
-let bear=results.filter(x=>x==="BEARISH").length;
+let bull=
+results.filter(x=>x==="BULLISH").length;
 
+let bear=
+results.filter(x=>x==="BEARISH").length;
 
-/* ONLY 3 OF 4 CONFIRMATION */
+let bias;
 
-if(bull>=3){
+if(bull>=3)
+bias="STRONG LONG";
 
-$("finalBias").textContent="STRONG LONG";
+else if(bear>=3)
+bias="STRONG SHORT";
+
+else if(bull>bear)
+bias="LONG BIAS";
+
+else if(bear>bull)
+bias="SHORT BIAS";
+
+else
+bias="WAIT - CONFLICT";
+
+$("finalBias").textContent=bias;
 
 $("finalBias").className=
-"final-bias green";
+bias.includes("LONG")?
+"final-bias green":
+bias.includes("SHORT")?
+"final-bias red":
+"final-bias yellow";
 
-if(!confirmedSignal)
-lockConfirmedSignal("LONG");
 
-}
+/* ONLY CONFIRM NEW SIGNAL IF NO LOCK */
 
-else if(bear>=3){
+if(!lockedSignal){
 
-$("finalBias").textContent="STRONG SHORT";
+if(bias==="STRONG LONG")
+confirmSignal("LONG");
 
-$("finalBias").className=
-"final-bias red";
+else if(bias==="STRONG SHORT")
+confirmSignal("SHORT");
 
-if(!confirmedSignal)
-lockConfirmedSignal("SHORT");
+else
+updateTradeSetup();
 
 }
 
 else{
 
-$("finalBias").textContent=
-"WAIT - NO CONFIRMATION";
-
-$("finalBias").className=
-"final-bias yellow";
-
-if(!confirmedSignal){
-
-$("tradeSignal").textContent=
-"WAITING FOR CONFIRMATION";
-
-$("signalStatus").textContent="WAIT";
-
-}
+updateTradeSetup();
 
 }
 
@@ -1797,6 +2356,9 @@ let r=await fetch(
 
 let d=await r.json();
 
+$("price").textContent=
+"$"+formatPrice(Number(d.lastPrice));
+
 $("change").textContent=
 Number(d.priceChangePercent).toFixed(2)+"%";
 
@@ -1809,8 +2371,13 @@ formatPrice(Number(d.lowPrice));
 $("volume").textContent=
 Number(d.volume).toLocaleString("en-GB");
 
-if(!currentPrice)
-updatePrice(Number(d.lastPrice));
+if(!currentPrice){
+
+updatePrice(
+Number(d.lastPrice)
+);
+
+}
 
 }
 
@@ -1841,11 +2408,14 @@ function connectLivePrice(){
 
 if(socket){
 
-try{socket.close()}catch(e){}
+try{
+socket.close()
+}catch(e){}
 
 }
 
-let symbol=$("symbol").value.toLowerCase();
+let symbol=
+$("symbol").value.toLowerCase();
 
 socket=new WebSocket(
 "wss://stream.binance.com:9443/ws/"+
@@ -1858,6 +2428,7 @@ socket.onmessage=e=>{
 let d=JSON.parse(e.data);
 
 let p=Number(d.p);
+
 let t=Number(d.T);
 
 let ms=getIntervalMs();
@@ -1887,8 +2458,14 @@ candles.shift();
 else{
 
 last.close=p;
-last.high=Math.max(last.high,p);
-last.low=Math.min(last.low,p);
+
+last.high=Math.max(
+last.high,p
+);
+
+last.low=Math.min(
+last.low,p
+);
 
 }
 
@@ -1922,24 +2499,40 @@ return{
 function refreshAll(){
 
 currentPrice=0;
+
 candles=[];
-confirmedSignal=null;
+
+lockedSignal=null;
+
+$("confirmedSignal").textContent=
+"WAITING...";
+
+$("confirmedSignal").className=
+"confirmed-signal yellow";
+
+$("signalLock").textContent=
+"Signal price locked after confirmation";
 
 if(socket){
 
-try{socket.close()}catch(e){}
+try{
+socket.close()
+}catch(e){}
 
 }
 
 loadData();
+
 loadMarketData();
+
 analyzeTimeframes();
+
 connectLivePrice();
 
 }
 
 
-/* ZOOM */
+/* MOUSE ZOOM */
 
 canvas.addEventListener(
 "wheel",
@@ -1949,37 +2542,62 @@ e.preventDefault();
 
 if(!candles.length)return;
 
-let rect=canvas.getBoundingClientRect();
+let rect=
+canvas.getBoundingClientRect();
 
-let x=e.clientX-rect.left;
+let x=
+e.clientX-rect.left;
 
 let ratio=x/rect.width;
 
 let oldCount=visibleCount;
 
-if(e.deltaY<0)
+if(e.deltaY<0){
 
-visibleCount=Math.max(
+visibleCount=
+Math.max(
 30,
 Math.floor(visibleCount*.8)
 );
 
-else
+}
 
-visibleCount=Math.min(
+else{
+
+visibleCount=
+Math.min(
 candles.length,
 Math.floor(visibleCount*1.25)
 );
 
+}
+
 let anchor=
 viewStart+
-Math.floor(ratio*oldCount);
+Math.floor(
+ratio*oldCount
+);
 
 viewStart=
 anchor-
-Math.floor(ratio*visibleCount);
+Math.floor(
+ratio*visibleCount
+);
+
+let maxStart=
+Math.max(
+0,
+candles.length-visibleCount
+);
+
+viewStart=Math.max(
+0,
+Math.min(viewStart,maxStart)
+);
 
 drawChart();
+
+drawVolume();
 
 },
 {passive:false}
@@ -1995,6 +2613,7 @@ e=>{
 dragging=true;
 
 dragStartX=e.clientX;
+
 dragStartView=viewStart;
 
 canvas.style.cursor="grabbing";
@@ -2007,6 +2626,7 @@ window.addEventListener(
 ()=>{
 
 dragging=false;
+
 canvas.style.cursor="crosshair";
 
 }
@@ -2018,17 +2638,22 @@ e=>{
 
 if(!dragging)return;
 
-let dx=e.clientX-dragStartX;
+let dx=
+e.clientX-dragStartX;
 
-let rect=canvas.getBoundingClientRect();
+let rect=
+canvas.getBoundingClientRect();
 
-let moved=Math.round(
+let candlesMoved=
+Math.round(
 -dx/(rect.width/visibleCount)
 );
 
-viewStart=dragStartView+moved;
+viewStart=
+dragStartView+candlesMoved;
 
-let maxStart=Math.max(
+let maxStart=
+Math.max(
 0,
 candles.length-visibleCount
 );
@@ -2040,6 +2665,8 @@ Math.min(viewStart,maxStart)
 
 drawChart();
 
+drawVolume();
+
 }
 );
 
@@ -2050,10 +2677,14 @@ canvas.addEventListener(
 "mousemove",
 e=>{
 
-let rect=canvas.getBoundingClientRect();
+let rect=
+canvas.getBoundingClientRect();
 
-mouseX=e.clientX-rect.left;
-mouseY=e.clientY-rect.top;
+mouseX=
+e.clientX-rect.left;
+
+mouseY=
+e.clientY-rect.top;
 
 drawChart();
 
@@ -2065,6 +2696,7 @@ canvas.addEventListener(
 ()=>{
 
 mouseX=-1;
+
 mouseY=-1;
 
 $("chartInfo").textContent=
@@ -2076,99 +2708,88 @@ drawChart();
 );
 
 
-/* INDICATORS */
+/* TOGGLES */
 
-function toggleIndicator(name,btn){
+function toggleEMA(){
 
-indicators[name]=!indicators[name];
+showEMA=!showEMA;
 
-btn.classList.toggle(
-"active",
-indicators[name]
-);
+drawChart();
+
+}
+
+function toggleVWAP(){
+
+showVWAP=!showVWAP;
+
+drawChart();
+
+}
+
+function toggleSR(){
+
+showSR=!showSR;
+
+drawChart();
+
+}
+
+function toggleFVG(){
+
+showFVG=!showFVG;
+
+drawChart();
+
+}
+
+function toggleLiquidity(){
+
+showLiquidity=!showLiquidity;
 
 drawChart();
 
 }
 
 
-/* SIGNAL TEXT */
+/* SIGNAL MESSAGE */
 
 function signalText(){
 
-if(!confirmedSignal){
+if(!lockedSignal)
+return "KITT-X V12.5 PRO\n\nNO CONFIRMED SIGNAL";
 
-return `
-━━━━━━━━━━━━━━━━━━━━
-🚨 KITT-X PRO SIGNAL 🚨
+let s=lockedSignal;
 
-${$("symbol").value} | ${$("interval").value}
+return `KITT-X V12.5 PRO
 
-⏳ STATUS: WAITING FOR CONFIRMATION
+${$("symbol").value}
+TIMEFRAME: ${$("interval").value}
 
-📊 MTF confirmation required
-⚠️ No trade until signal confirmation
+🔒 CONFIRMED ${s.direction}
 
-━━━━━━━━━━━━━━━━━━━━
-`;
+ENTRY: ${formatPrice(s.entry)}
+STOP LOSS: ${formatPrice(s.sl)}
 
-}
+TP1: ${formatPrice(s.tp1)} | PROFIT ${$("profit1").textContent}
+TP2: ${formatPrice(s.tp2)} | PROFIT ${$("profit2").textContent}
+TP3: ${formatPrice(s.tp3)} | PROFIT ${$("profit3").textContent}
+TP4: ${formatPrice(s.tp4)} | PROFIT ${$("profit4").textContent}
+TP5: ${formatPrice(s.tp5)} | PROFIT ${$("profit5").textContent}
 
-let s=confirmedSignal;
+RISK / REWARD: ${$("rr").textContent}
+CONFIDENCE: ${$("confidence").textContent}
+MAX RISK: ${$("maxRisk").textContent}
 
-let signal=
-s.direction==="LONG"?
-"STRONG LONG":
-"STRONG SHORT";
+STRUCTURE: ${$("structure").textContent}
+ORDER BLOCK: ${$("orderBlock").textContent}
+LIQUIDITY: ${$("liquidity").textContent}
+FVG: ${$("fvg").textContent}
 
-let risk=
-Number($("riskAmount").value)||1;
-
-return `
-━━━━━━━━━━━━━━━━━━━━
-🚨 KITT-X PRO SIGNAL 🚨
-
-💎 ${$("symbol").value} | ${$("interval").value}
-
-📊 SIGNAL: ${signal}
-
-💰 ENTRY: ${formatPrice(s.entry)}
-🛑 STOP LOSS: ${formatPrice(s.sl)}
-
-🎯 TP1: ${formatPrice(s.tp1)}
-🎯 TP2: ${formatPrice(s.tp2)}
-🎯 TP3: ${formatPrice(s.tp3)}
-🎯 TP4: ${formatPrice(s.tp4)}
-🎯 TP5: ${formatPrice(s.tp5)}
-
-💵 $${risk.toFixed(2)} RISK
-💵 TP5 PROFIT: $${(risk*s.rr).toFixed(2)}
-
-📈 R:R: 1:${s.rr.toFixed(2)}
-🎯 CONFIDENCE: 85%
-
-✅ MTF CONFIRMATION
-5M: ${$("tf5m").textContent}
-15M: ${$("tf15m").textContent}
-1H: ${$("tf1h").textContent}
-4H: ${$("tf4h").textContent}
-
-🧠 STRATEGY:
-EMA + RSI + MACD
-ATR + Volume
-SMC + Liquidity + FVG
-
-⚠️ RISK MANAGEMENT REQUIRED
-
-━━━━━━━━━━━━━━━━━━━━
-KITT-X V12.4 PRO
-━━━━━━━━━━━━━━━━━━━━
-`;
+KITT-X V12.5 PRO
+SMART MONEY TRADING ENGINE`;
 
 }
 
-
-/* COPY */
 
 function copySignal(){
 
@@ -2176,16 +2797,15 @@ navigator.clipboard.writeText(
 signalText()
 );
 
-alert("Signal copied!");
+alert("Confirmed signal copied!");
 
 }
 
 
-/* WHATSAPP */
-
 function sendWhatsApp(){
 
-let text=encodeURIComponent(
+let text=
+encodeURIComponent(
 signalText()
 );
 
@@ -2197,40 +2817,42 @@ window.open(
 }
 
 
+function sendTelegram(){
+
+let text=
+encodeURIComponent(
+signalText()
+);
+
+window.open(
+"https://t.me/share/url?url=&text="+text,
+"_blank"
+);
+
+}
+
+
 /* VOICE */
 
 function speak(){
 
-if(!("speechSynthesis"in window))return;
+if(!("speechSynthesis"in window))
+return;
 
 speechSynthesis.cancel();
 
-let u=new SpeechSynthesisUtterance(
+let u=
+new SpeechSynthesisUtterance(
 $("analysis").textContent
 );
 
 u.rate=.85;
+
 u.pitch=.7;
 
 speechSynthesis.speak(u);
 
 }
-
-
-/* RISK UPDATE */
-
-$("riskAmount").addEventListener(
-"input",
-()=>{
-
-calculateProfit();
-
-if(confirmedSignal)
-$("signalMessage").textContent=
-signalText();
-
-}
-);
 
 
 /* EVENTS */
@@ -2245,9 +2867,25 @@ $("interval").addEventListener(
 refreshAll
 );
 
+$("capital").addEventListener(
+"input",
+calculateProfits
+);
+
+$("riskPercent").addEventListener(
+"input",
+calculateProfits
+);
+
 window.addEventListener(
 "resize",
-drawChart
+()=>{
+
+drawChart();
+
+drawVolume();
+
+}
 );
 
 
@@ -2258,7 +2896,7 @@ loadCoins().then(
 );
 
 
-/* AUTO */
+/* AUTO UPDATE */
 
 setInterval(
 loadMarketData,
