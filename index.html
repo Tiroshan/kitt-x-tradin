@@ -2410,15 +2410,12 @@ STRICT CONFIRMATION
 
 let bias;
 
-if(bull===4)
-bias="STRONG LONG";
-
-else if(bear===4)
-bias="STRONG SHORT";
-
+if (bull >= 3)
+    bias = "LONG";
+else if (bear >= 3)
+    bias = "SHORT";
 else
-bias="WAIT - CONFIRMATION NEEDED";
-
+    bias = "WAIT";
 
 lastSignalBias=bias;
 
