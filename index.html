@@ -355,11 +355,6 @@ height:420px;
 
 }
 
-}// ===============================
-// KITT-X V12.7 PRO
-// chart.js
-// ===============================
-
 const chartContainer = document.getElementById("chart");
 
 const chart = LightweightCharts.createChart(chartContainer, {
@@ -394,9 +389,7 @@ const candleSeries = chart.addCandlestickSeries({
 });
 
 let socket = null;
-let candles = [];// ===============================
-// Load Historical Candles
-// ===============================
+let candles = [];//
 
 async function loadHistory(symbol = "BTCUSDT", interval = "15m") {
 
@@ -430,9 +423,6 @@ async function loadHistory(symbol = "BTCUSDT", interval = "15m") {
 
     }
 
-}// ===============================
-// Live WebSocket
-// ===============================
 
 function connectLive(symbol = "BTCUSDT", interval = "15m") {
 
@@ -481,10 +471,6 @@ function connectLive(symbol = "BTCUSDT", interval = "15m") {
 
     };
 
-}// ===============================
-// Start Chart
-// ===============================
-
 async function startChart(){
 
     const symbol =
@@ -503,9 +489,7 @@ startChart();document.getElementById("symbol")
 .addEventListener("change", startChart);
 
 document.getElementById("interval")
-.addEventListener("change", startChart);// ===============================
-// EMA ENGINE
-// ===============================
+.addEventListener("change", startChart);//
 
 function calculateEMA(data, period){
 
@@ -593,9 +577,7 @@ function drawEMA(){
         .filter(Boolean)
     );
 
-}// ==========================================
-// VWAP (Volume Weighted Average Price)
-// ==========================================
+
 
 const vwapSeries = chart.addLineSeries({
     color: "#ff9800",
@@ -643,9 +625,7 @@ function drawVWAP(){
 
 }drawEMA();
 
-drawVWAP();// =======================================
-// Bollinger Bands (20,2)
-// =======================================
+drawVWAP();//
 
 const bbUpper = chart.addLineSeries({
     color:"#4FC3F7",
@@ -721,9 +701,7 @@ function drawBollinger(){
 
 }drawEMA();
 drawVWAP();
-drawBollinger();// ======================================
-// ATR (Average True Range)
-// ======================================
+drawBollinger();//
 
 function calculateATR(data, period = 14){
 
@@ -771,9 +749,6 @@ function calculateATR(data, period = 14){
 }
 
 
-// ======================================
-// SUPERTREND
-// ======================================
 
 const superTrendSeries = chart.addLineSeries({
 
@@ -826,9 +801,7 @@ function drawSuperTrend(){
 }drawEMA();
 drawVWAP();
 drawBollinger();
-drawSuperTrend();// ================================
-// RSI (14)
-// ================================
+drawSuperTrend();// 
 
 function calculateRSI(data, period = 14){
 
@@ -871,10 +844,6 @@ function calculateRSI(data, period = 14){
 
     return rsi;
 
-}// ================================
-// MACD
-// ================================
-
 function calculateMACD(data){
 
     const ema12 = calculateEMA(data,12);
@@ -888,11 +857,7 @@ function calculateMACD(data){
 
     }
 
-    return macd;
-
-}// ================================
-// ADX (Trend Strength)
-// ================================
+    return macd
 
 function calculateADX(data){
 
@@ -948,9 +913,6 @@ function calculateADX(data){
     document.getElementById("adxValue").textContent =
         adx;
 
-}// ======================================
-// SMART MONEY CONCEPTS ENGINE
-// ======================================
 
 function detectSMC(candles){
 
@@ -1039,12 +1001,6 @@ function detectSMC(candles){
 
     document.getElementById("resistance").textContent =
         smc.swingHigh.toFixed(4);
-
-}updateSMC();// ======================================
-// FAIR VALUE GAP (FVG)
-// ORDER BLOCK
-// PREMIUM / DISCOUNT
-// ======================================
 
 function detectAdvancedSMC(candles){
 
@@ -1136,10 +1092,7 @@ function detectAdvancedSMC(candles){
         smc.zone;
 
 }updateSMC();
-updateAdvancedSMC();// ======================================
-// KITT-X V12.7 PRO
-// SIGNAL ENGINE
-// ======================================
+updateAdvancedSMC();/
 
 function generateSignal(){
 
@@ -1231,9 +1184,7 @@ function generateSignal(){
     document.getElementById("score").innerHTML =
         s.confidence;
 
-}// ======================================
-// AUTO ENTRY / TP / SL ENGINE
-// ======================================
+}//
 
 function calculateTradeSetup() {
 
@@ -1354,9 +1305,7 @@ function calculateTradeSetup() {
 
 }updateSignalPanel();
 
-updateTradePanel();// ======================================
-// TELEGRAM / WHATSAPP SIGNAL MESSAGE
-// ======================================
+updateTradePanel();//
 
 function buildSignalMessage(){
 
@@ -1447,10 +1396,7 @@ KITT-X V12.7 PRO
     ).textContent =
         buildSignalMessage();
 
-}updateMessagePanel();// ======================================
-// KITT-X V12.7 PRO
-// AI MARKET ENGINE
-// ======================================
+}updateMessagePanel();//
 
 function generateAIAnalysis(){
 
@@ -1535,9 +1481,7 @@ function generateAIAnalysis(){
 
 🤖 KITT-X AI has completed market analysis. Always confirm with your own trading plan and risk management before entering a trade.`;
 
-}updateAIPanel();// ======================================
-// MARKET FILTER ENGINE
-// ======================================
+}updateAIPanel();//
 
 function getMarketFilters(){
 
@@ -1630,9 +1574,7 @@ function checkTradeQuality(){
 
 }updateAIPanel();
 
-showSignalAlert();// ======================================
-// STRATEGY SCORE
-// ======================================
+showSignalAlert();// 
 
 function calculateStrategyScore(){
 
@@ -1709,9 +1651,7 @@ function checkPriceAlert(){
 
 document.getElementById("strategyScore")
 .innerHTML=
-calculateStrategyScore()+"%";// ======================================
-// AUTO PATTERN DETECTION ENGINE
-// ======================================
+calculateStrategyScore()+"%";//
 
 function detectPattern(candles){
 
@@ -1783,9 +1723,7 @@ function detectPattern(candles){
     document.getElementById("patternConfidence").textContent =
         p.confidence + "%";
 
-}updatePatternPanel();// ======================================
-// AUTO TRENDLINE ENGINE
-// ======================================
+}updatePatternPanel();// 
 
 function detectTrendline(candles){
 
@@ -1900,10 +1838,6 @@ function detectTrendline(candles){
 
     return Math.min(probability,100);
 
-}// ======================================
-// VOLUME PROFILE LITE
-// ======================================
-
 function buildVolumeProfile(candles,bins=30){
 
     if(candles.length<50) return [];
@@ -2005,10 +1939,7 @@ function buildVolumeProfile(candles,bins=30){
     ).textContent=
         poc.price.toFixed(4);
 
-}// ======================================
-// INSTITUTIONAL ENGINE
-// Liquidity Grab + Equal High/Low
-// ======================================
+}/
 
 function detectInstitutionalZones(candles){
 
@@ -2100,9 +2031,7 @@ function detectInstitutionalZones(candles){
         .textContent =
         calculateSmartMoneyScore()+"%";
 
-}// ======================================
-// BACKTEST ENGINE
-// ======================================
+}//
 
 let replayMode = false;
 let replayIndex = 200;
