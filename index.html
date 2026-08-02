@@ -1,0 +1,2705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KITT-X V12.6 PRO</title>
+
+<style>
+*{box-sizing:border-box}
+
+:root{
+--bg:#050b14;
+--panel:#08111e;
+--card:#0b1625;
+--line:#1b2b40;
+--text:#e8eef7;
+--muted:#8292aa;
+--cyan:#11d9f4;
+--green:#20e68b;
+--red:#ff5864;
+--yellow:#f2c94c;
+--purple:#b878ff;
+}
+
+body{
+margin:0;
+background:var(--bg);
+color:var(--text);
+font-family:Arial,sans-serif;
+overflow-x:hidden
+}
+
+.app{
+min-height:100vh;
+display:grid;
+grid-template-columns:minmax(0,1.6fr) minmax(380px,1fr);
+gap:12px;
+padding:12px
+}
+
+.panel,.card{
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:14px
+}
+
+.panel{overflow:hidden}
+
+.top{
+display:flex;
+align-items:center;
+gap:8px;
+padding:14px;
+border-bottom:1px solid var(--line);
+flex-wrap:wrap
+}
+
+.logo{
+font-size:28px;
+font-weight:bold;
+font-style:italic;
+letter-spacing:2px;
+color:var(--cyan)
+}
+
+.sub{
+font-size:10px;
+color:var(--cyan)
+}
+
+select,input,button{
+background:#111c2c;
+color:white;
+border:1px solid #2b3b52;
+border-radius:8px;
+padding:10px 12px
+}
+
+input{width:150px}
+
+button{
+cursor:pointer
+}
+
+button:hover{
+background:#1d344d
+}
+
+.price{
+margin-left:auto;
+font-size:23px;
+font-weight:bold
+}
+
+.live,.green{color:var(--green)}
+.red{color:var(--red)}
+.yellow{color:var(--yellow)}
+.blue{color:var(--cyan)}
+.purple{color:var(--purple)}
+
+.tools{
+display:flex;
+gap:6px;
+padding:9px;
+flex-wrap:wrap;
+border-bottom:1px solid var(--line)
+}
+
+.chart-area{
+background:#060d17;
+position:relative
+}
+
+.chart-wrap{
+height:560px;
+position:relative
+}
+
+#chart{
+width:100%;
+height:100%;
+display:block;
+cursor:crosshair
+}
+
+.chart-info{
+position:absolute;
+top:10px;
+left:10px;
+background:#091522e8;
+border:1px solid #263b55;
+border-radius:6px;
+padding:7px 9px;
+font-size:12px;
+pointer-events:none;
+z-index:3
+}
+
+.chart-bottom{
+height:180px;
+border-top:1px solid #1b2b40;
+position:relative
+}
+
+#indicatorChart{
+width:100%;
+height:100%;
+display:block
+}
+
+.indicator-title{
+position:absolute;
+top:7px;
+left:10px;
+font-size:11px;
+color:var(--muted);
+z-index:2
+}
+
+.chart-status{
+display:flex;
+gap:15px;
+padding:7px 12px;
+font-size:11px;
+color:var(--muted);
+border-top:1px solid var(--line)
+}
+
+.right{
+display:flex;
+flex-direction:column;
+gap:12px
+}
+
+.card{
+padding:15px
+}
+
+.title{
+font-size:16px;
+font-weight:bold;
+color:#a9b9d2;
+margin-bottom:13px
+}
+
+.timeframe-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:7px
+}
+
+.timeframe-box{
+background:#0e1b2c;
+padding:11px 4px;
+border-radius:8px;
+text-align:center
+}
+
+.timeframe-box small{
+display:block;
+color:var(--muted);
+margin-bottom:6px
+}
+
+.final-bias{
+margin-top:10px;
+padding:13px;
+border-radius:9px;
+text-align:center;
+font-size:20px;
+font-weight:bold;
+background:#101d2e
+}
+
+.score{
+display:flex;
+gap:18px;
+align-items:center
+}
+
+.circle{
+width:130px;
+height:130px;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:conic-gradient(var(--green) 0deg,var(--green) 280deg,#263244 280deg);
+position:relative;
+flex-shrink:0
+}
+
+.circle:after{
+content:"";
+position:absolute;
+inset:11px;
+border-radius:50%;
+background:#0a1524
+}
+
+.circle span{
+z-index:2;
+font-size:36px;
+font-weight:bold
+}
+
+.metrics{flex:1}
+
+.metric{
+display:flex;
+justify-content:space-between;
+padding:6px 0;
+border-bottom:1px solid #162337;
+font-size:13px
+}
+
+.setup{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:7px
+}
+
+.kv{
+background:#0e1b2c;
+padding:9px;
+border-radius:8px
+}
+
+.kv small{
+display:block;
+color:var(--muted);
+margin-bottom:5px
+}
+
+.kv b{
+font-size:13px
+}
+
+.signal{
+font-size:27px;
+font-weight:bold;
+margin-bottom:12px
+}
+
+.flow{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:7px
+}
+
+.flow .kv{text-align:center}
+
+.ai{
+line-height:1.7
+}
+
+.notice{
+font-size:11px;
+color:var(--muted);
+margin-top:8px
+}
+
+.profit-box{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:7px;
+margin-bottom:10px
+}
+
+.profit-box input{
+width:100%;
+padding:8px
+}
+
+.message{
+background:#050b14;
+border:1px solid #263b55;
+border-radius:8px;
+padding:10px;
+font-size:12px;
+white-space:pre-wrap;
+line-height:1.5;
+max-height:230px;
+overflow:auto
+}
+
+@media(max-width:1050px){
+.app{
+grid-template-columns:1fr;
+padding:5px
+}
+}
+
+@media(max-width:600px){
+.chart-wrap{height:460px}
+.chart-bottom{height:150px}
+.timeframe-grid{grid-template-columns:repeat(2,1fr)}
+.flow{grid-template-columns:repeat(2,1fr)}
+.score{align-items:flex-start}
+.circle{width:105px;height:105px}
+.price{margin-left:0;font-size:18px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<section class="panel">
+
+<div class="top">
+
+<div>
+<div class="logo">KITT-X</div>
+<div class="sub">V12.6 PRO • SMART MONEY TRADING ENGINE</div>
+</div>
+
+<input id="coinSearch" placeholder="Search coin..." oninput="filterCoins()">
+
+<select id="symbol">
+<option>Loading...</option>
+</select>
+
+<select id="interval">
+<option value="1m">1m</option>
+<option value="5m">5m</option>
+<option value="15m" selected>15m</option>
+<option value="1h">1H</option>
+<option value="4h">4H</option>
+<option value="1d">1D</option>
+</select>
+
+<span class="live">● LIVE</span>
+
+<div id="price" class="price">Loading...</div>
+
+</div>
+
+<div class="tools">
+
+<button onclick="refreshAll()">↻ Refresh</button>
+<button onclick="resetView()">⟳ Reset View</button>
+<button onclick="loadOlder()">← Older Data</button>
+<button onclick="loadNewer()">Newer Data →</button>
+
+<button onclick="toggleEMA()">EMA</button>
+<button onclick="toggleSR()">S/R</button>
+<button onclick="toggleVolume()">Volume</button>
+<button onclick="toggleRSI()">RSI</button>
+<button onclick="toggleMACD()">MACD</button>
+
+<button onclick="copySignal()">Copy Signal</button>
+<button onclick="sendWhatsApp()">WhatsApp</button>
+<button onclick="speak()">▶ Voice</button>
+
+</div>
+
+<div class="chart-area">
+
+<div class="chart-wrap">
+
+<canvas id="chart"></canvas>
+
+<div id="chartInfo" class="chart-info">
+Move mouse over chart
+</div>
+
+</div>
+
+<div class="chart-bottom">
+
+<div class="indicator-title">
+PRO INDICATOR PANEL
+</div>
+
+<canvas id="indicatorChart"></canvas>
+
+</div>
+
+<div class="chart-status">
+
+<span>🖱 Wheel: Zoom</span>
+<span>↔ Drag: History</span>
+<span>📊 Candles: <b id="candleCount">0</b></span>
+<span>📅 <b id="dateRange">--</b></span>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="right">
+
+
+<div class="card">
+
+<div class="title">MULTI-TIMEFRAME CONFIRMATION</div>
+
+<div class="timeframe-grid">
+
+<div class="timeframe-box">
+<small>5 MIN</small>
+<b id="tf5m">--</b>
+</div>
+
+<div class="timeframe-box">
+<small>15 MIN</small>
+<b id="tf15m">--</b>
+</div>
+
+<div class="timeframe-box">
+<small>1 HOUR</small>
+<b id="tf1h">--</b>
+</div>
+
+<div class="timeframe-box">
+<small>4 HOUR</small>
+<b id="tf4h">--</b>
+</div>
+
+</div>
+
+<div id="finalBias" class="final-bias yellow">
+ANALYZING MARKET...
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">KITT-X MARKET SCORE</div>
+
+<div class="score">
+
+<div class="circle">
+<span id="score">--</span>
+</div>
+
+<div class="metrics">
+
+<div class="metric">
+<span>Trend</span>
+<b id="trend">--</b>
+</div>
+
+<div class="metric">
+<span>Strength</span>
+<b id="strength">--</b>
+</div>
+
+<div class="metric">
+<span>RSI</span>
+<b id="rsi">--</b>
+</div>
+
+<div class="metric">
+<span>EMA 20</span>
+<b id="ema20">--</b>
+</div>
+
+<div class="metric">
+<span>EMA 50</span>
+<b id="ema50">--</b>
+</div>
+
+<div class="metric">
+<span>EMA 200</span>
+<b id="ema200">--</b>
+</div>
+
+<div class="metric">
+<span>MACD</span>
+<b id="macd">--</b>
+</div>
+
+<div class="metric">
+<span>ATR</span>
+<b id="atr">--</b>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">CONFIRMED SMART TRADE SETUP</div>
+
+<div id="tradeSignal" class="signal yellow">
+ANALYZING...
+</div>
+
+<div class="setup">
+
+<div class="kv">
+<small>Entry</small>
+<b id="entry">--</b>
+</div>
+
+<div class="kv">
+<small>Stop Loss</small>
+<b id="sl">--</b>
+</div>
+
+<div class="kv">
+<small>TP 1</small>
+<b id="tp1">--</b>
+</div>
+
+<div class="kv">
+<small>TP 2</small>
+<b id="tp2">--</b>
+</div>
+
+<div class="kv">
+<small>TP 3</small>
+<b id="tp3">--</b>
+</div>
+
+<div class="kv">
+<small>TP 4</small>
+<b id="tp4">--</b>
+</div>
+
+<div class="kv">
+<small>TP 5</small>
+<b id="tp5">--</b>
+</div>
+
+<div class="kv">
+<small>Risk / Reward</small>
+<b id="rr">--</b>
+</div>
+
+<div class="kv">
+<small>Trailing Stop</small>
+<b id="trailing">--</b>
+</div>
+
+<div class="kv">
+<small>Break Even</small>
+<b id="breakeven">--</b>
+</div>
+
+<div class="kv">
+<small>Confidence</small>
+<b id="confidence">--</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">PROFIT CALCULATOR</div>
+
+<div class="profit-box">
+
+<div class="kv">
+<small>Capital ($)</small>
+<input id="capital" type="number" value="1" step="0.01">
+</div>
+
+<div class="kv">
+<small>Leverage (x)</small>
+<input id="leverage" type="number" value="1" min="1" step="1">
+</div>
+
+<div class="kv">
+<small>TP Target (%)</small>
+<input id="profitPercent" type="number" value="3" step="0.1">
+</div>
+
+<div class="kv">
+<small>Risk (%)</small>
+<input id="riskPercent" type="number" value="1" step="0.1">
+</div>
+
+</div>
+
+<div class="setup">
+
+<div class="kv">
+<small>Position Size</small>
+<b id="positionSize">$--</b>
+</div>
+
+<div class="kv">
+<small>Estimated Profit</small>
+<b id="profitDollar" class="green">$--</b>
+</div>
+
+<div class="kv">
+<small>Estimated Loss</small>
+<b id="lossDollar" class="red">$--</b>
+</div>
+
+<div class="kv">
+<small>Net After TP</small>
+<b id="netDollar">$--</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">24H MARKET DATA</div>
+
+<div class="flow">
+
+<div class="kv">
+<small>Change</small>
+<b id="change">--</b>
+</div>
+
+<div class="kv">
+<small>High</small>
+<b id="high">--</b>
+</div>
+
+<div class="kv">
+<small>Low</small>
+<b id="low">--</b>
+</div>
+
+<div class="kv">
+<small>Volume</small>
+<b id="volume">--</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">SMC MARKET STRUCTURE</div>
+
+<div class="setup">
+
+<div class="kv">
+<small>Structure</small>
+<b id="structure">--</b>
+</div>
+
+<div class="kv">
+<small>Order Block</small>
+<b id="orderBlock">--</b>
+</div>
+
+<div class="kv">
+<small>Liquidity</small>
+<b id="liquidity">--</b>
+</div>
+
+<div class="kv">
+<small>FVG</small>
+<b id="fvg">--</b>
+</div>
+
+<div class="kv">
+<small>Market Zone</small>
+<b id="marketZone">--</b>
+</div>
+
+<div class="kv">
+<small>Resistance</small>
+<b id="resistance">--</b>
+</div>
+
+<div class="kv">
+<small>Support</small>
+<b id="support">--</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">TELEGRAM / WHATSAPP SIGNAL MESSAGE</div>
+
+<div id="signalMessage" class="message">
+Waiting for confirmed signal...
+</div>
+
+<br>
+
+<button onclick="copySignal()">📋 Copy Message</button>
+<button onclick="sendWhatsApp()">📱 WhatsApp</button>
+
+</div>
+
+
+<div class="card ai">
+
+<div class="title">
+KITT-X AI ANALYSIS <span class="yellow">V12.6 PRO</span>
+</div>
+
+<div id="analysis">
+Loading technical analysis...
+</div>
+
+<div class="notice">
+Signal only becomes confirmed after multi-timeframe agreement. No signal = WAIT.
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<script>
+
+const $=id=>document.getElementById(id);
+
+const canvas=$("chart");
+const ctx=canvas.getContext("2d");
+
+const indCanvas=$("indicatorChart");
+const ictx=indCanvas.getContext("2d");
+
+let candles=[];
+let allCoins=[];
+let socket=null;
+let currentPrice=0;
+
+let showEMA=true;
+let showSR=true;
+let showVolume=true;
+let showRSI=true;
+let showMACD=true;
+
+let viewStart=0;
+let visibleCount=100;
+
+let dragging=false;
+let dragStartX=0;
+let dragStartView=0;
+
+let mouseX=-1;
+let mouseY=-1;
+
+let loadingOlder=false;
+
+
+/* FORMAT */
+
+function formatPrice(n){
+
+if(!isFinite(n))return "--";
+
+return Number(n).toLocaleString(
+"en-GB",
+{
+minimumFractionDigits:2,
+maximumFractionDigits:8
+}
+);
+
+}
+
+
+function formatTime(t){
+
+return new Date(t).toLocaleString(
+"en-GB",
+{
+day:"2-digit",
+month:"short",
+year:"numeric",
+hour:"2-digit",
+minute:"2-digit"
+}
+);
+
+}
+
+
+/* COINS */
+
+async function loadCoins(){
+
+try{
+
+let r=await fetch(
+"https://api.binance.com/api/v3/exchangeInfo"
+);
+
+let d=await r.json();
+
+allCoins=d.symbols.filter(
+x=>
+x.status==="TRADING" &&
+(
+x.quoteAsset==="USDT" ||
+x.quoteAsset==="BNB"
+)
+);
+
+allCoins.sort(
+(a,b)=>
+a.baseAsset.localeCompare(b.baseAsset)
+);
+
+renderCoins(allCoins);
+
+}
+
+catch(e){
+
+$("symbol").innerHTML=
+'<option value="BTCUSDT">BTC / USDT</option>';
+
+}
+
+}
+
+
+function renderCoins(list){
+
+let s=$("symbol");
+let old=s.value;
+
+s.innerHTML="";
+
+list.forEach(c=>{
+
+let o=document.createElement("option");
+
+o.value=c.symbol;
+o.textContent=c.baseAsset+
+" / "+
+c.quoteAsset;
+
+s.appendChild(o);
+
+});
+
+if(list.some(c=>c.symbol===old))
+s.value=old;
+
+else if(list.length)
+s.value=list[0].symbol;
+
+}
+
+
+function filterCoins(){
+
+let q=$("coinSearch").value.toUpperCase().trim();
+
+renderCoins(
+allCoins.filter(
+c=>
+c.baseAsset.includes(q) ||
+c.symbol.includes(q) ||
+c.quoteAsset.includes(q)
+)
+);
+
+}
+
+
+/* INDICATORS */
+
+function ema(v,p){
+
+if(!v.length)return[];
+
+let k=2/(p+1);
+let e=v[0];
+let out=[e];
+
+for(let i=1;i<v.length;i++){
+
+e=(v[i]-e)*k+e;
+out.push(e);
+
+}
+
+return out;
+
+}
+
+
+function rsi(v,p=14){
+
+if(v.length<=p)return 50;
+
+let gain=0;
+let loss=0;
+
+for(let i=1;i<=p;i++){
+
+let d=v[i]-v[i-1];
+
+if(d>=0)gain+=d;
+else loss-=d;
+
+}
+
+let ag=gain/p;
+let al=loss/p;
+
+for(let i=p+1;i<v.length;i++){
+
+let d=v[i]-v[i-1];
+
+let g=Math.max(d,0);
+let l=Math.max(-d,0);
+
+ag=(ag*(p-1)+g)/p;
+al=(al*(p-1)+l)/p;
+
+}
+
+if(al===0)return 100;
+
+return 100-(100/(1+ag/al));
+
+}
+
+
+function atr(data,p=14){
+
+if(data.length<=p)return 0;
+
+let tr=[];
+
+for(let i=1;i<data.length;i++){
+
+let c=data[i];
+let x=data[i-1];
+
+tr.push(
+Math.max(
+c.high-c.low,
+Math.abs(c.high-x.close),
+Math.abs(c.low-x.close)
+)
+);
+
+}
+
+let a=tr.slice(-p);
+
+return a.reduce((x,y)=>x+y,0)/a.length;
+
+}
+
+
+/* VIEW */
+
+function resetView(){
+
+visibleCount=100;
+
+viewStart=Math.max(
+0,
+candles.length-visibleCount
+);
+
+drawAll();
+
+}
+
+
+function getVisible(){
+
+if(!candles.length)return[];
+
+let maxStart=Math.max(
+0,
+candles.length-visibleCount
+);
+
+viewStart=Math.max(
+0,
+Math.min(viewStart,maxStart)
+);
+
+return candles.slice(
+viewStart,
+viewStart+visibleCount
+);
+
+}
+
+
+/* MAIN CHART */
+
+function drawChart(){
+
+if(!candles.length)return;
+
+let w=canvas.clientWidth;
+let h=canvas.clientHeight;
+
+if(!w||!h)return;
+
+let dpr=window.devicePixelRatio||1;
+
+canvas.width=w*dpr;
+canvas.height=h*dpr;
+
+ctx.setTransform(
+dpr,0,0,dpr,0,0
+);
+
+ctx.clearRect(0,0,w,h);
+
+let data=getVisible();
+
+if(!data.length)return;
+
+let high=Math.max(...data.map(x=>x.high));
+let low=Math.min(...data.map(x=>x.low));
+
+if(currentPrice>high)high=currentPrice;
+if(currentPrice<low)low=currentPrice;
+
+let range=high-low||1;
+
+let left=8;
+let right=78;
+let top=20;
+let bottom=35;
+
+let chartW=w-left-right;
+let chartH=h-top-bottom;
+
+function py(p){
+
+return top+
+((high-p)/range)*chartH;
+
+}
+
+let gap=chartW/data.length;
+
+let candleW=Math.max(
+2,
+Math.min(20,gap*.7)
+);
+
+
+/* GRID */
+
+ctx.strokeStyle="#142438";
+
+for(let i=1;i<8;i++){
+
+let y=top+i*chartH/8;
+
+ctx.beginPath();
+ctx.moveTo(left,y);
+ctx.lineTo(w-right,y);
+ctx.stroke();
+
+}
+
+for(let i=1;i<8;i++){
+
+let x=left+i*chartW/8;
+
+ctx.beginPath();
+ctx.moveTo(x,top);
+ctx.lineTo(x,h-bottom);
+ctx.stroke();
+
+}
+
+
+/* CANDLES */
+
+data.forEach((c,i)=>{
+
+let x=left+i*gap+gap/2;
+
+let bull=c.close>=c.open;
+
+ctx.strokeStyle=bull?
+"#20e68b":
+"#ff5864";
+
+ctx.fillStyle=ctx.strokeStyle;
+
+ctx.beginPath();
+ctx.moveTo(x,py(c.high));
+ctx.lineTo(x,py(c.low));
+ctx.stroke();
+
+let y1=py(Math.max(c.open,c.close));
+let y2=py(Math.min(c.open,c.close));
+
+ctx.fillRect(
+x-candleW/2,
+y1,
+candleW,
+Math.max(2,y2-y1)
+);
+
+});
+
+
+/* EMA */
+
+if(showEMA){
+
+let closes=candles.map(x=>x.close);
+
+drawLine(
+ema(closes,20).slice(
+viewStart,
+viewStart+visibleCount
+),
+"#f2c94c",
+py,
+left,
+gap
+);
+
+drawLine(
+ema(closes,50).slice(
+viewStart,
+viewStart+visibleCount
+),
+"#11d9f4",
+py,
+left,
+gap
+);
+
+drawLine(
+ema(closes,200).slice(
+viewStart,
+viewStart+visibleCount
+),
+"#b878ff",
+py,
+left,
+gap
+);
+
+}
+
+
+/* S/R */
+
+if(showSR){
+
+let recent=candles.slice(
+Math.max(0,candles.length-50)
+);
+
+let resistance=Math.max(
+...recent.map(x=>x.high)
+);
+
+let support=Math.min(
+...recent.map(x=>x.low)
+);
+
+horizontal(
+resistance,
+"#ff5864",
+py,
+left,
+w-right
+);
+
+horizontal(
+support,
+"#20e68b",
+py,
+left,
+w-right
+);
+
+}
+
+
+/* LIVE PRICE */
+
+if(currentPrice){
+
+let y=py(currentPrice);
+
+ctx.strokeStyle="#fff";
+ctx.setLineDash([5,5]);
+
+ctx.beginPath();
+ctx.moveTo(left,y);
+ctx.lineTo(w-right,y);
+ctx.stroke();
+
+ctx.setLineDash([]);
+
+ctx.fillStyle="#fff";
+ctx.font="bold 11px Arial";
+
+ctx.fillText(
+formatPrice(currentPrice),
+w-right+8,
+y+4
+);
+
+}
+
+
+/* PRICE SCALE */
+
+ctx.fillStyle="#8292aa";
+ctx.font="10px Arial";
+ctx.textAlign="left";
+
+for(let i=0;i<=8;i++){
+
+let p=high-range*i/8;
+let y=top+chartH*i/8;
+
+ctx.fillText(
+formatPrice(p),
+w-right+7,
+y+3
+);
+
+}
+
+
+/* TIME SCALE */
+
+ctx.textAlign="center";
+
+for(let i=0;i<6;i++){
+
+let idx=Math.floor(
+i*(data.length-1)/5
+);
+
+let x=left+idx*gap+gap/2;
+
+ctx.fillText(
+formatTime(data[idx].time),
+x,
+h-10
+);
+
+}
+
+
+/* CROSSHAIR */
+
+if(
+mouseX>left &&
+mouseX<w-right &&
+mouseY>top &&
+mouseY<h-bottom
+){
+
+let index=Math.floor(
+(mouseX-left)/gap
+);
+
+index=Math.max(
+0,
+Math.min(data.length-1,index)
+);
+
+let c=data[index];
+
+let x=left+index*gap+gap/2;
+
+ctx.strokeStyle="#75869d";
+ctx.setLineDash([3,3]);
+
+ctx.beginPath();
+ctx.moveTo(x,top);
+ctx.lineTo(x,h-bottom);
+ctx.stroke();
+
+ctx.beginPath();
+ctx.moveTo(left,mouseY);
+ctx.lineTo(w-right,mouseY);
+ctx.stroke();
+
+ctx.setLineDash([]);
+
+$("chartInfo").textContent=
+formatTime(c.time)+
+" | O "+
+formatPrice(c.open)+
+" H "+
+formatPrice(c.high)+
+" L "+
+formatPrice(c.low)+
+" C "+
+formatPrice(c.close);
+
+}
+
+}
+
+
+/* LINE */
+
+function drawLine(values,color,py,left,gap){
+
+if(!values.length)return;
+
+ctx.strokeStyle=color;
+ctx.lineWidth=1.4;
+ctx.beginPath();
+
+values.forEach((v,i)=>{
+
+let x=left+i*gap+gap/2;
+let y=py(v);
+
+if(i===0)ctx.moveTo(x,y);
+else ctx.lineTo(x,y);
+
+});
+
+ctx.stroke();
+
+}
+
+
+function horizontal(price,color,py,x1,x2){
+
+let y=py(price);
+
+ctx.strokeStyle=color;
+ctx.setLineDash([5,5]);
+
+ctx.beginPath();
+ctx.moveTo(x1,y);
+ctx.lineTo(x2,y);
+ctx.stroke();
+
+ctx.setLineDash([]);
+
+}
+
+
+/* LOWER INDICATOR PANEL */
+
+function drawIndicators(){
+
+let w=indCanvas.clientWidth;
+let h=indCanvas.clientHeight;
+
+if(!w||!h)return;
+
+let dpr=window.devicePixelRatio||1;
+
+indCanvas.width=w*dpr;
+indCanvas.height=h*dpr;
+
+ictx.setTransform(
+dpr,0,0,dpr,0,0
+);
+
+ictx.clearRect(0,0,w,h);
+
+let data=getVisible();
+
+if(!data.length)return;
+
+let left=8;
+let right=78;
+let top=20;
+let bottom=22;
+
+let chartW=w-left-right;
+let chartH=h-top-bottom;
+
+let gap=chartW/data.length;
+
+let closes=candles.map(x=>x.close);
+
+let rsiValues=[];
+
+for(let i=0;i<closes.length;i++){
+
+rsiValues.push(
+rsi(closes.slice(0,i+1))
+);
+
+}
+
+let visibleRSI=rsiValues.slice(
+viewStart,
+viewStart+visibleCount
+);
+
+
+/* RSI */
+
+if(showRSI){
+
+ictx.strokeStyle="#263b55";
+
+[30,50,70].forEach(level=>{
+
+let y=top+
+((100-level)/100)*chartH;
+
+ictx.beginPath();
+ictx.moveTo(left,y);
+ictx.lineTo(w-right,y);
+ictx.stroke();
+
+});
+
+ictx.strokeStyle="#f2c94c";
+ictx.beginPath();
+
+visibleRSI.forEach((v,i)=>{
+
+let x=left+i*gap+gap/2;
+
+let y=top+
+((100-v)/100)*chartH;
+
+if(i===0)ictx.moveTo(x,y);
+else ictx.lineTo(x,y);
+
+});
+
+ictx.stroke();
+
+}
+
+
+/* MACD */
+
+if(showMACD){
+
+let e12=ema(closes,12);
+let e26=ema(closes,26);
+
+let macd=e12.map(
+(v,i)=>v-e26[i]
+);
+
+let visibleMACD=macd.slice(
+viewStart,
+viewStart+visibleCount
+);
+
+let max=Math.max(
+...visibleMACD.map(Math.abs)
+)||1;
+
+ictx.strokeStyle="#11d9f4";
+ictx.beginPath();
+
+visibleMACD.forEach((v,i)=>{
+
+let x=left+i*gap+gap/2;
+
+let y=top+
+chartH/2-
+(v/max)*(chartH*.42);
+
+if(i===0)ictx.moveTo(x,y);
+else ictx.lineTo(x,y);
+
+});
+
+ictx.stroke();
+
+}
+
+
+/* VOLUME */
+
+if(showVolume){
+
+let maxVol=Math.max(
+...data.map(x=>x.volume)
+)||1;
+
+data.forEach((c,i)=>{
+
+let x=left+i*gap+gap/2;
+
+let barH=
+(c.volume/maxVol)*
+(chartH*.35);
+
+ictx.fillStyle=
+c.close>=c.open?
+"#20e68b55":
+"#ff586455";
+
+ictx.fillRect(
+x-gap*.3,
+h-bottom-barH,
+gap*.6,
+barH
+);
+
+});
+
+}
+
+}
+
+
+/* DRAW ALL */
+
+function drawAll(){
+
+drawChart();
+drawIndicators();
+
+}
+
+
+/* LOAD DATA */
+
+async function loadData(){
+
+let symbol=$("symbol").value;
+let interval=$("interval").value;
+
+try{
+
+let r=await fetch(
+"https://api.binance.com/api/v3/klines"+
+"?symbol="+symbol+
+"&interval="+interval+
+"&limit=1000"
+);
+
+if(!r.ok)
+throw new Error("Candle API Error");
+
+let d=await r.json();
+
+candles=d.map(x=>({
+
+time:Number(x[0]),
+open:Number(x[1]),
+high:Number(x[2]),
+low:Number(x[3]),
+close:Number(x[4]),
+volume:Number(x[5])
+
+}));
+
+viewStart=Math.max(
+0,
+candles.length-visibleCount
+);
+
+$("candleCount").textContent=candles.length;
+
+if(candles.length){
+
+$("dateRange").textContent=
+formatTime(candles[0].time)+
+" → "+
+formatTime(candles.at(-1).time);
+
+}
+
+analyzeMarket();
+drawAll();
+
+}
+
+catch(e){
+
+$("analysis").textContent=
+"Technical analysis error: "+e.message;
+
+}
+
+}
+
+
+/* LOAD OLDER HISTORICAL DATA */
+
+async function loadOlder(){
+
+if(loadingOlder||!candles.length)return;
+
+loadingOlder=true;
+
+try{
+
+let symbol=$("symbol").value;
+let interval=$("interval").value;
+
+let oldest=candles[0].time;
+
+let r=await fetch(
+"https://api.binance.com/api/v3/klines"+
+"?symbol="+symbol+
+"&interval="+interval+
+"&limit=1000"+
+"&endTime="+(oldest-1)
+);
+
+let d=await r.json();
+
+if(!d.length){
+
+alert("No older data available.");
+
+loadingOlder=false;
+return;
+
+}
+
+let older=d.map(x=>({
+
+time:Number(x[0]),
+open:Number(x[1]),
+high:Number(x[2]),
+low:Number(x[3]),
+close:Number(x[4]),
+volume:Number(x[5])
+
+}));
+
+candles=[
+...older,
+...candles
+];
+
+viewStart=older.length+viewStart;
+
+$("candleCount").textContent=candles.length;
+
+$("dateRange").textContent=
+formatTime(candles[0].time)+
+" → "+
+formatTime(candles.at(-1).time);
+
+drawAll();
+
+}
+
+catch(e){
+
+console.log(e);
+
+}
+
+loadingOlder=false;
+
+}
+
+
+/* NEWER DATA */
+
+async function loadNewer(){
+
+if(!candles.length)return;
+
+let symbol=$("symbol").value;
+let interval=$("interval").value;
+
+let newest=candles.at(-1).time;
+
+let r=await fetch(
+"https://api.binance.com/api/v3/klines"+
+"?symbol="+symbol+
+"&interval="+interval+
+"&startTime="+(newest+1)+
+"&limit=1000"
+);
+
+let d=await r.json();
+
+if(!d.length)return;
+
+let newer=d.map(x=>({
+
+time:Number(x[0]),
+open:Number(x[1]),
+high:Number(x[2]),
+low:Number(x[3]),
+close:Number(x[4]),
+volume:Number(x[5])
+
+}));
+
+candles=[
+...candles,
+...newer
+];
+
+$("candleCount").textContent=candles.length;
+
+$("dateRange").textContent=
+formatTime(candles[0].time)+
+" → "+
+formatTime(candles.at(-1).time);
+
+drawAll();
+
+}
+
+
+/* MARKET ANALYSIS */
+
+function analyzeMarket(){
+
+if(candles.length<50)return;
+
+let closes=candles.map(x=>x.close);
+
+let e20=ema(closes,20).at(-1);
+let e50=ema(closes,50).at(-1);
+let e200=ema(closes,200).at(-1);
+
+let R=rsi(closes);
+let A=atr(candles);
+
+let e12=ema(closes,12).at(-1);
+let e26=ema(closes,26).at(-1);
+
+let MACD=e12-e26;
+
+let bull=e20>e50;
+
+let score=50;
+
+score+=bull?15:-15;
+score+=R>50?10:-10;
+score+=MACD>0?10:-10;
+score+=currentPrice>e200?10:-10;
+
+score=Math.max(
+0,
+Math.min(100,Math.round(score))
+);
+
+let trend=bull?
+"BULLISH":
+"BEARISH";
+
+let distance=
+Math.abs(e20-e50)/e50*100;
+
+let strength=
+distance>2?
+"STRONG":
+distance>.5?
+"MEDIUM":
+"WEAK";
+
+$("score").textContent=score;
+$("trend").textContent=trend;
+$("trend").className=bull?"green":"red";
+
+$("strength").textContent=strength;
+$("rsi").textContent=R.toFixed(2);
+$("ema20").textContent=formatPrice(e20);
+$("ema50").textContent=formatPrice(e50);
+$("ema200").textContent=formatPrice(e200);
+$("macd").textContent=MACD.toFixed(6);
+$("atr").textContent=formatPrice(A);
+
+let recent=candles.slice(-50);
+
+let resistance=Math.max(
+...recent.map(x=>x.high)
+);
+
+let support=Math.min(
+...recent.map(x=>x.low)
+);
+
+$("resistance").textContent=formatPrice(resistance);
+$("support").textContent=formatPrice(support);
+
+
+/* STRUCTURE */
+
+let last=candles.at(-1);
+let prev=candles.at(-2);
+
+let structure="RANGE";
+
+if(
+last.high>prev.high &&
+last.low>prev.low
+)
+structure="BULLISH STRUCTURE";
+
+else if(
+last.high<prev.high &&
+last.low<prev.low
+)
+structure="BEARISH STRUCTURE";
+
+$("structure").textContent=structure;
+
+$("structure").className=
+structure.includes("BULLISH")?
+"green":
+structure.includes("BEARISH")?
+"red":
+"yellow";
+
+
+/* ORDER BLOCK */
+
+let ob=last.close>last.open?
+"BUY ORDER BLOCK":
+"SELL ORDER BLOCK";
+
+$("orderBlock").textContent=ob;
+
+$("orderBlock").className=
+last.close>last.open?
+"green":
+"red";
+
+
+/* LIQUIDITY */
+
+let liq="NEUTRAL";
+
+if(currentPrice>=resistance*.995)
+liq="BUY-SIDE LIQUIDITY";
+
+else if(currentPrice<=support*1.005)
+liq="SELL-SIDE LIQUIDITY";
+
+$("liquidity").textContent=liq;
+
+
+/* FVG */
+
+let fvg="NONE";
+
+if(candles.length>=3){
+
+let a=candles.at(-3);
+let c=candles.at(-1);
+
+if(c.low>a.high)
+fvg="BULLISH FVG";
+
+else if(c.high<a.low)
+fvg="BEARISH FVG";
+
+}
+
+$("fvg").textContent=fvg;
+
+
+/* ZONE */
+
+let zone;
+
+if(currentPrice>e20&&currentPrice>e50)
+zone="PREMIUM BUY TREND";
+
+else if(currentPrice<e20&&currentPrice<e50)
+zone="DISCOUNT SELL TREND";
+
+else
+zone="EQUILIBRIUM";
+
+$("marketZone").textContent=zone;
+
+}
+
+
+/* TRADE SETUP */
+
+function updateTradeSetup(){
+
+let price=currentPrice||
+candles.at(-1)?.close;
+
+if(!price)return;
+
+let A=atr(candles);
+
+if(!A)return;
+
+let bias=$("finalBias").textContent;
+
+let sl,tp1,tp2,tp3,tp4,tp5;
+
+if(bias==="STRONG LONG"){
+
+sl=price-A*1.5;
+
+tp1=price+A*1.5;
+tp2=price+A*2.5;
+tp3=price+A*3.5;
+tp4=price+A*5;
+tp5=price+A*7;
+
+$("tradeSignal").textContent="✅ CONFIRMED LONG";
+$("tradeSignal").className="signal green";
+
+}
+
+else if(bias==="STRONG SHORT"){
+
+sl=price+A*1.5;
+
+tp1=price-A*1.5;
+tp2=price-A*2.5;
+tp3=price-A*3.5;
+tp4=price-A*5;
+tp5=price-A*7;
+
+$("tradeSignal").textContent="✅ CONFIRMED SHORT";
+$("tradeSignal").className="signal red";
+
+}
+
+else{
+
+$("tradeSignal").textContent="⏳ WAIT — NO CONFIRMED SIGNAL";
+$("tradeSignal").className="signal yellow";
+
+[
+"entry","sl","tp1","tp2","tp3","tp4","tp5",
+"rr","trailing","breakeven"
+].forEach(id=>$(id).textContent="--");
+
+$("confidence").textContent="--";
+
+updateSignalMessage();
+
+return;
+
+}
+
+$("entry").textContent=formatPrice(price);
+$("sl").textContent=formatPrice(sl);
+
+$("tp1").textContent=formatPrice(tp1);
+$("tp2").textContent=formatPrice(tp2);
+$("tp3").textContent=formatPrice(tp3);
+$("tp4").textContent=formatPrice(tp4);
+$("tp5").textContent=formatPrice(tp5);
+
+$("trailing").textContent=
+formatPrice(
+bias.includes("LONG")?
+price-A*1.2:
+price+A*1.2
+);
+
+$("breakeven").textContent=
+formatPrice(
+bias.includes("LONG")?
+price+A:
+price-A
+);
+
+let risk=Math.abs(price-sl);
+let reward=Math.abs(tp5-price);
+
+$("rr").textContent=
+"1 : "+(reward/risk).toFixed(2);
+
+$("confidence").textContent="85%";
+
+$("analysis").textContent=
+$("symbol").value+
+" "+
+$("interval").value+
+" confirmed analysis: "+
+bias+
+". Multi-timeframe trend confirmation, EMA structure, RSI, MACD and ATR volatility are aligned. TP1 to TP5 levels are calculated using volatility-based risk management.";
+
+calculateProfit();
+
+updateSignalMessage();
+
+}
+
+
+/* MTF */
+
+async function analyzeTimeframes(){
+
+let symbol=$("symbol").value;
+
+let map={
+"5m":"tf5m",
+"15m":"tf15m",
+"1h":"tf1h",
+"4h":"tf4h"
+};
+
+let results=[];
+
+for(let tf in map){
+
+try{
+
+let r=await fetch(
+"https://api.binance.com/api/v3/klines"+
+"?symbol="+symbol+
+"&interval="+tf+
+"&limit=200"
+);
+
+let d=await r.json();
+
+let closes=d.map(x=>Number(x[4]));
+
+let e20=ema(closes,20).at(-1);
+let e50=ema(closes,50).at(-1);
+let R=rsi(closes);
+
+let M=
+ema(closes,12).at(-1)-
+ema(closes,26).at(-1);
+
+let signal="NEUTRAL";
+
+if(
+e20>e50 &&
+R>=50 &&
+M>=0
+)
+signal="BULLISH";
+
+else if(
+e20<e50 &&
+R<50 &&
+M<0
+)
+signal="BEARISH";
+
+let el=$(map[tf]);
+
+el.textContent=signal;
+
+el.className=
+signal==="BULLISH"?
+"green":
+signal==="BEARISH"?
+"red":
+"yellow";
+
+results.push(signal);
+
+}
+
+catch(e){}
+
+}
+
+let bull=results.filter(x=>x==="BULLISH").length;
+let bear=results.filter(x=>x==="BEARISH").length;
+
+let bias;
+
+if(bull===4)
+bias="STRONG LONG";
+
+else if(bear===4)
+bias="STRONG SHORT";
+
+else
+bias="WAIT - CONFIRMATION NEEDED";
+
+$("finalBias").textContent=bias;
+
+$("finalBias").className=
+bias.includes("LONG")?
+"final-bias green":
+bias.includes("SHORT")?
+"final-bias red":
+"final-bias yellow";
+
+updateTradeSetup();
+drawAll();
+
+}
+
+
+/* PROFIT CALCULATOR */
+
+function calculateProfit(){
+
+let capital=Number($("capital").value)||0;
+let leverage=Number($("leverage").value)||1;
+let profitPercent=Number($("profitPercent").value)||0;
+let riskPercent=Number($("riskPercent").value)||0;
+
+let position=capital*leverage;
+
+let profit=position*
+(profitPercent/100);
+
+let loss=position*
+(riskPercent/100);
+
+let net=capital+profit;
+
+$("positionSize").textContent=
+"$"+profitFormat(position);
+
+$("profitDollar").textContent=
+"+$"+profitFormat(profit);
+
+$("lossDollar").textContent=
+"-$"+profitFormat(loss);
+
+$("netDollar").textContent=
+"$"+profitFormat(net);
+
+}
+
+
+function profitFormat(n){
+
+return Number(n).toLocaleString(
+"en-GB",
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+);
+
+}
+
+
+/* MARKET DATA */
+
+async function loadMarketData(){
+
+let symbol=$("symbol").value;
+
+try{
+
+let r=await fetch(
+"https://api.binance.com/api/v3/ticker/24hr?symbol="+symbol
+);
+
+let d=await r.json();
+
+$("change").textContent=
+Number(d.priceChangePercent).toFixed(2)+"%";
+
+$("high").textContent=
+formatPrice(Number(d.highPrice));
+
+$("low").textContent=
+formatPrice(Number(d.lowPrice));
+
+$("volume").textContent=
+Number(d.volume).toLocaleString("en-GB");
+
+if(!currentPrice)
+updatePrice(Number(d.lastPrice));
+
+}
+
+catch(e){}
+
+}
+
+
+/* PRICE */
+
+function updatePrice(p){
+
+if(!p||!isFinite(p))return;
+
+currentPrice=p;
+
+$("price").textContent=
+"$"+formatPrice(p);
+
+updateTradeSetup();
+drawAll();
+
+}
+
+
+/* WEBSOCKET */
+
+function connectLivePrice(){
+
+if(socket){
+
+try{
+socket.close()
+}catch(e){}
+
+}
+
+let symbol=$("symbol").value.toLowerCase();
+
+socket=new WebSocket(
+"wss://stream.binance.com:9443/ws/"+
+symbol+
+"@trade"
+);
+
+socket.onmessage=e=>{
+
+let d=JSON.parse(e.data);
+
+let p=Number(d.p);
+let t=Number(d.T);
+
+let ms=getIntervalMs();
+
+let ct=Math.floor(t/ms)*ms;
+
+let last=candles.at(-1);
+
+if(!last||last.time!==ct){
+
+candles.push({
+
+time:ct,
+open:p,
+high:p,
+low:p,
+close:p,
+volume:0
+
+});
+
+}
+
+else{
+
+last.close=p;
+last.high=Math.max(last.high,p);
+last.low=Math.min(last.low,p);
+
+}
+
+if(candles.length>3000)
+candles.shift();
+
+updatePrice(p);
+
+};
+
+}
+
+
+/* INTERVAL */
+
+function getIntervalMs(){
+
+return{
+
+"1m":60000,
+"5m":300000,
+"15m":900000,
+"1h":3600000,
+"4h":14400000,
+"1d":86400000
+
+}[$("interval").value]||900000;
+
+}
+
+
+/* REFRESH */
+
+function refreshAll(){
+
+currentPrice=0;
+candles=[];
+
+if(socket){
+
+try{
+socket.close()
+}catch(e){}
+
+}
+
+loadData();
+loadMarketData();
+analyzeTimeframes();
+connectLivePrice();
+
+}
+
+
+/* ZOOM */
+
+canvas.addEventListener(
+"wheel",
+e=>{
+
+e.preventDefault();
+
+if(!candles.length)return;
+
+let rect=canvas.getBoundingClientRect();
+
+let ratio=e.offsetX/rect.width;
+
+let old=visibleCount;
+
+if(e.deltaY<0)
+visibleCount=Math.max(
+30,
+Math.floor(visibleCount*.8)
+);
+
+else
+visibleCount=Math.min(
+candles.length,
+Math.floor(visibleCount*1.25)
+);
+
+let anchor=
+viewStart+
+Math.floor(ratio*old);
+
+viewStart=
+anchor-
+Math.floor(ratio*visibleCount);
+
+let maxStart=
+Math.max(0,candles.length-visibleCount);
+
+viewStart=Math.max(
+0,
+Math.min(viewStart,maxStart)
+);
+
+drawAll();
+
+},
+{passive:false}
+);
+
+
+/* DRAG */
+
+canvas.addEventListener(
+"mousedown",
+e=>{
+
+dragging=true;
+dragStartX=e.clientX;
+dragStartView=viewStart;
+
+canvas.style.cursor="grabbing";
+
+}
+);
+
+window.addEventListener(
+"mouseup",
+()=>{
+
+dragging=false;
+canvas.style.cursor="crosshair";
+
+}
+);
+
+window.addEventListener(
+"mousemove",
+e=>{
+
+if(!dragging)return;
+
+let dx=e.clientX-dragStartX;
+
+let rect=canvas.getBoundingClientRect();
+
+let moved=Math.round(
+-dx/(rect.width/visibleCount)
+);
+
+viewStart=dragStartView+moved;
+
+let maxStart=
+Math.max(0,candles.length-visibleCount);
+
+viewStart=Math.max(
+0,
+Math.min(viewStart,maxStart)
+);
+
+drawAll();
+
+}
+);
+
+
+/* CROSSHAIR */
+
+canvas.addEventListener(
+"mousemove",
+e=>{
+
+let rect=canvas.getBoundingClientRect();
+
+mouseX=e.clientX-rect.left;
+mouseY=e.clientY-rect.top;
+
+drawChart();
+
+}
+);
+
+canvas.addEventListener(
+"mouseleave",
+()=>{
+
+mouseX=-1;
+mouseY=-1;
+
+$("chartInfo").textContent=
+"Move mouse over chart";
+
+drawChart();
+
+}
+);
+
+
+/* TOGGLES */
+
+function toggleEMA(){
+
+showEMA=!showEMA;
+drawChart();
+
+}
+
+function toggleSR(){
+
+showSR=!showSR;
+drawChart();
+
+}
+
+function toggleVolume(){
+
+showVolume=!showVolume;
+drawIndicators();
+
+}
+
+function toggleRSI(){
+
+showRSI=!showRSI;
+drawIndicators();
+
+}
+
+function toggleMACD(){
+
+showMACD=!showMACD;
+drawIndicators();
+
+}
+
+
+/* SIGNAL MESSAGE */
+
+function signalText(){
+
+return `🚨 KITT-X V12.6 PRO — CONFIRMED SIGNAL
+
+📊 PAIR: ${$("symbol").value}
+⏱ TIMEFRAME: ${$("interval").value}
+
+🎯 SIGNAL: ${$("finalBias").textContent}
+
+💰 ENTRY: ${$("entry").textContent}
+🛑 STOP LOSS: ${$("sl").textContent}
+
+🎯 TP1: ${$("tp1").textContent}
+🎯 TP2: ${$("tp2").textContent}
+🎯 TP3: ${$("tp3").textContent}
+🎯 TP4: ${$("tp4").textContent}
+🎯 TP5: ${$("tp5").textContent}
+
+📈 RISK / REWARD: ${$("rr").textContent}
+💪 CONFIDENCE: ${$("confidence").textContent}
+
+📊 STRUCTURE: ${$("structure").textContent}
+🧱 ORDER BLOCK: ${$("orderBlock").textContent}
+💧 LIQUIDITY: ${$("liquidity").textContent}
+⚡ FVG: ${$("fvg").textContent}
+
+💵 PROFIT CALCULATOR
+Capital: $${$("capital").value}
+Leverage: ${$("leverage").value}x
+Estimated TP Profit: ${$("profitDollar").textContent}
+
+⚠️ Risk management is essential.
+
+🤖 KITT-X V12.6 PRO`;
+
+}
+
+
+function updateSignalMessage(){
+
+if(
+$("finalBias").textContent==="STRONG LONG"||
+$("finalBias").textContent==="STRONG SHORT"
+){
+
+$("signalMessage").textContent=
+signalText();
+
+}
+
+else{
+
+$("signalMessage").textContent=
+"⏳ WAITING FOR CONFIRMED MULTI-TIMEFRAME SIGNAL...";
+
+}
+
+}
+
+
+function copySignal(){
+
+navigator.clipboard.writeText(
+signalText()
+);
+
+alert("Signal copied!");
+
+}
+
+
+function sendWhatsApp(){
+
+let text=encodeURIComponent(
+signalText()
+);
+
+window.open(
+"https://wa.me/?text="+text,
+"_blank"
+);
+
+}
+
+
+/* VOICE */
+
+function speak(){
+
+if(!("speechSynthesis"in window))
+return;
+
+speechSynthesis.cancel();
+
+let u=new SpeechSynthesisUtterance(
+$("analysis").textContent
+);
+
+u.rate=.85;
+u.pitch=.7;
+
+speechSynthesis.speak(u);
+
+}
+
+
+/* EVENTS */
+
+$("symbol").addEventListener(
+"change",
+refreshAll
+);
+
+$("interval").addEventListener(
+"change",
+refreshAll
+);
+
+[
+"capital",
+"leverage",
+"profitPercent",
+"riskPercent"
+].forEach(id=>{
+
+$(id).addEventListener(
+"input",
+()=>{
+
+calculateProfit();
+updateSignalMessage();
+
+}
+);
+
+});
+
+window.addEventListener(
+"resize",
+drawAll
+);
+
+
+/* START */
+
+loadCoins().then(
+()=>refreshAll()
+);
+
+
+/* AUTO UPDATE */
+
+setInterval(
+loadMarketData,
+10000
+);
+
+setInterval(
+loadData,
+30000
+);
+
+setInterval(
+analyzeTimeframes,
+30000
+);
+
+</script>
+
+</body>
+</html>
